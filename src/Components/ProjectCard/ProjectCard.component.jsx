@@ -2,7 +2,6 @@ import React from "react";
 import './ProjectCard.styles.css'
 
 const ProjectCard = (props) => {
-  // console.log(props)
   return (
     <div class="projects">
       <div class="project-container">
