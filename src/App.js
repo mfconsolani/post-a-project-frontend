@@ -18,13 +18,13 @@ const App = () => {
   return (
     <div className="App">
       <SignUp/>
-      {
+      {/* {
         fakeData.map(element => {
           return (
             <ProjectCard {...element} key={element.id} />
           )
         })
-      }
+      } */}
     </div>
   );
 }

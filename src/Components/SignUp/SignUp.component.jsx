@@ -1,71 +1,75 @@
 import React from "react";
 import { Field, Form } from 'react-final-form'
 import axios from 'axios'
-// import { TextInputField, Button } from 'evergreen-ui'
+import { TextInputField, Button } from 'evergreen-ui'
 import './SignUp.styles.css'
 
-// const TextInputAdapter = ({ input, ...rest }) => (
-//     <TextInputField {...input} {...rest}
-//         label={rest.label}
-//         placeholder={rest.placeholder}
-//         onChange={(event) => input.onChange(event)}
-//     />
-// )
+let strongRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{10,})');
+
+const validatePassword = (value) => {
+    if (!strongRegex.test(value)) {
+        const message = "Password must include: at least one capital letter, one lowercase letter, one number and one symbol and have at least 8 characters"
+        return { isInvalid: true, message }
+    }
+    return { isInvalid: false }
+}
+
+
+const TextInputAdapter = ({ input, ...rest }) => (
+    <TextInputField {...input} {...rest}
+        label={rest.label}
+        placeholder={rest.placeholder}
+        onChange={(event) => input.onChange(event)}
+    />
+)
+
 
 const SignUp = () => {
     const onSubmit = async values => {
-        console.log(values)
-        return await axios.post('http://localhost:8080/api/auth/local/signup', values).then(res => console.log(res)).catch(err => console.log(err))
+        !validatePassword(values.password).isInvalid && await axios.post('http://localhost:8080/api/auth/local/signup', values)
+            .then(res => console.log(res))
+            .catch(err => console.log(err))
     }
 
     return (
-        <Form
-            onSubmit={onSubmit}
-            render={({ handleSubmit }) => (
-                <form onSubmit={handleSubmit} className="form-container">
-                    <div>
-                        <h3>Sign Up Form</h3>
-                        {/* <Field
-                            component={TextInputAdapter}
-                            name="email"
-                            label="Email"
-                            placeholder="youremail@emailprovider.com"
-                            type="email"
-                            required
-                        />
-                        <Field
-                            component={TextInputAdapter}
-                            name="password"
-                            label="Password"
-                            type="password"
-                            required
-                        />
-                    </div>
-                    <Button marginRight={16} appearance="primary" intent="success">
-                        Sign Up!
-                    </Button> */}
-                    <Field
-                            component="input"
-                            name="email"
-                            label="Email"
-                            placeholder="youremail@emailprovider.com"
-                            type="email"
-                            required
-                        />
-                        <Field
-                            component="input"
-                            name="password"
-                            label="Password"
-                            type="password"
-                            required
-                        />
-                    </div>
-                    <button marginRight={16} appearance="primary" intent="success">
-                        Sign Up!
-                    </button>
-                </form>
-            )}
-        />
+        <div className="form-container-wrapper">
+            <Form
+                onSubmit={onSubmit}
+                render={({ handleSubmit, values }) => (
+                    <form onSubmit={handleSubmit} className="form-container">
+                        <div>
+                            <h3 className="signup-title">SIGN UP</h3>
+                            <Field
+                                component={TextInputAdapter}
+                                name="email"
+                                label="Email"
+                                placeholder="youremail@emailprovider.com"
+                                type="email"
+                                required
+                            />
+                            <Field
+                                component={TextInputAdapter}
+                                name="password"
+                                label="Password"
+                                type="password"
+                                required
+                                validationMessage={values.password && validatePassword(values.password).message}
+                                isInvalid={values.password && validatePassword(values.password).isInvalid}
+                            />
+                        </div>
+                        <div className="button-container">
+                            <Button
+                                marginRight={16}
+                                appearance="primary"
+                                intent="none"
+                            >
+                                Sign Up!
+                            </Button>
+                        </div>
+                    </form>
+                )}
+            />
+        </div>
     )
 }
 
