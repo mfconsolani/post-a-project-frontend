@@ -1,6 +1,5 @@
 import './App.css';
-import { ProjectCard } from './Components'
-import SignUp from './Components/SignUp/SignUp.component';
+import { ProjectCard, SignUp, SignIn } from './Components'
 import { fakeData } from './fakeData'
 
 //TODO
@@ -18,6 +17,7 @@ const App = () => {
   return (
     <div className="App">
       <SignUp/>
+      <SignIn/>
       {/* {
         fakeData.map(element => {
           return (

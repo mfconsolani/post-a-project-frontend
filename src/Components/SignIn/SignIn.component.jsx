@@ -2,9 +2,9 @@ import React from "react";
 import { Field, Form } from 'react-final-form'
 import axios from 'axios'
 import { TextInputField, Button, toaster } from 'evergreen-ui'
-import './SignUp.styles.css'
+import './SignIn.styles.css'
 
-let strongRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{10,})');
+const strongRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{10,})');
 
 const validatePassword = (value) => {
     if (!strongRegex.test(value)) {
@@ -24,19 +24,17 @@ const TextInputAdapter = ({ input, ...rest }) => (
 )
 
 
-const SignUp = () => {
+const SignIn = () => {
     const onSubmit = async values => {
-        !validatePassword(values.password).isInvalid && await axios.post('http://localhost:8080/api/auth/local/signup', values)
-        .then(res => {
-            if (res.data?.success){
-                toaster.success('Welcome! You\'ve been successfully signed up')
-            } else {
-                toaster.warning(res.data.message)
-            }
-        })
-        .catch(err => {
-            toaster.danger(err?.response.status === 409 && "Email might already be in use")
-        })
+        !validatePassword(values.password).isInvalid && await axios.post('http://localhost:8080/api/auth/local/login', values)
+            .then(res => {
+                if (res.data?.success){
+                    toaster.success('Welcome! You\'ve been successfully logged in')
+                }
+            })
+            .catch(err => {
+                toaster.danger(err?.response.status === 401 && "Incorrect email or password")
+            })
     }
 
     return (
@@ -46,7 +44,7 @@ const SignUp = () => {
                 render={({ handleSubmit, values }) => (
                     <form onSubmit={handleSubmit} className="form-container">
                         <div>
-                            <h3 className="signup-title">SIGN UP</h3>
+                            <h3 className="signin-title">SIGN IN</h3>
                             <Field
                                 component={TextInputAdapter}
                                 name="email"
@@ -69,9 +67,9 @@ const SignUp = () => {
                             <Button
                                 marginRight={16}
                                 appearance="primary"
-                                intent="none"
+                                intent="success"
                             >
-                                Sign Up!
+                                Login
                             </Button>
                         </div>
                     </form>
@@ -81,5 +79,5 @@ const SignUp = () => {
     )
 }
 
-export default SignUp;
+export default SignIn;
 
