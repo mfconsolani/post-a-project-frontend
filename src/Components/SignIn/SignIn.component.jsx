@@ -28,7 +28,7 @@ const SignIn = () => {
     const onSubmit = async values => {
         !validatePassword(values.password).isInvalid && await axios.post('http://localhost:8080/api/auth/local/login', values)
             .then(res => {
-                if (res.data?.success){
+                if (res.data?.success) {
                     toaster.success('Welcome! You\'ve been successfully logged in')
                 }
             })
