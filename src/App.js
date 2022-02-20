@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import './App.css';
 import { ProjectCard, SignUp, SignIn } from './Components'
 import { fakeData } from './fakeData'
@@ -13,6 +14,10 @@ import { fakeData } from './fakeData'
 
 
 const App = () => {
+
+  // const [isLoggedIn, setIsLoggedIn] = useState({loggedIn: false, userEmail: '', userId: ''})
+
+
 
   return (
     <div className="App">
