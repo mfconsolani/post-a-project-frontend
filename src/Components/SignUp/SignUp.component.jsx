@@ -29,6 +29,7 @@ const SignUp = () => {
         !validatePassword(values.password).isInvalid && await axios.post('http://localhost:8080/api/auth/local/signup', values)
         .then(res => {
             if (res.data?.success){
+                // console.log(props)
                 toaster.success('Welcome! You\'ve been successfully signed up')
             } else {
                 toaster.warning(res.data.message)

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import { ProjectCard, SignUp, SignIn } from './Components'
 import { fakeData } from './fakeData'
@@ -15,14 +15,16 @@ import { fakeData } from './fakeData'
 
 const App = () => {
 
-  // const [isLoggedIn, setIsLoggedIn] = useState({loggedIn: false, userEmail: '', userId: ''})
+  const [isLoggedIn, setIsLoggedIn] = useState({loggedIn: false, userEmail: '', userId: ''})
 
-
+  useEffect(()=>{
+    console.log(isLoggedIn)
+  }, [isLoggedIn])
 
   return (
     <div className="App">
+      <SignIn status={isLoggedIn} setStatus={setIsLoggedIn}/>
       <SignUp/>
-      <SignIn/>
       {/* {
         fakeData.map(element => {
           return (

@@ -24,11 +24,13 @@ const TextInputAdapter = ({ input, ...rest }) => (
 )
 
 
-const SignIn = () => {
+const SignIn = (props) => {
     const onSubmit = async values => {
         !validatePassword(values.password).isInvalid && await axios.post('http://localhost:8080/api/auth/local/login', values)
             .then(res => {
                 if (res.data?.success) {
+                    props.setStatus({loggedIn: true, userEmail: res.data?.userEmail, userId: res.data?.userId})
+                    console.log(props, props.status)
                     toaster.success('Welcome! You\'ve been successfully logged in')
                 }
             })
