@@ -67,6 +67,7 @@ const SignUp = () => {
                             />
                         </div>
                         <div className="button-container">
+                            
                             <Button
                                 marginRight={16}
                                 appearance="primary"

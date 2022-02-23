@@ -35,7 +35,7 @@ const SignIn = (props) => {
                 }
             })
             .catch(err => {
-                toaster.danger(err?.response.status === 401 && "Incorrect email or password")
+                toaster.danger(err?.response.status === 401 && "Wrong email or password")
             })
     }
 
