@@ -26,28 +26,29 @@ const App = () => {
   return (
     <div className="App">
       <Pane display="flex" flexDirection="row" justifyContent="flex-end" width="100vw">
+        <Link to="/projects" style={{ textDecoration: 'none' }}>
+          <Button marginRight={16} marginTop={8} appearance="minimal" >Projects</Button>
+        </Link>
         <Link to="/signin" style={{ textDecoration: 'none' }}>
-          <Button marginRight={16} marginTop={8} intent="success" >Sign In</Button>
+          <Button marginRight={16} marginTop={8} color="#3366FF" border="1px solid #3366FF" >Sign In</Button>
         </Link>
         <Link to="/signup" style={{ textDecoration: 'none' }}>
           <Button marginRight={16} marginTop={8} appearance="primary" >Sign Up</Button>
         </Link>
       </Pane>
       <Pane display="flex" flexDirection="column" alignItems="center">
-      <Routes>
-        <Route path="/" element=''/>
-        <Route path="/signin" element={<SignIn status={isLoggedIn} setStatus={setIsLoggedIn}/>} />
-        <Route path="/signup" element={<SignUp />} />
-      </Routes>
+        <Routes>
+          <Route path="/" element='' />
+          <Route path="/signin" element={<SignIn status={isLoggedIn} setStatus={setIsLoggedIn} />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/projects" element={fakeData.map(element => {
+            return (
+              <ProjectCard {...element} key={element.id} />
+            )
+          })} />
+        </Routes>
       </Pane>
 
-      {/* {
-        fakeData.map(element => {
-          return (
-            <ProjectCard {...element} key={element.id} />
-          )
-        })
-      } */}
     </div>
   );
 }

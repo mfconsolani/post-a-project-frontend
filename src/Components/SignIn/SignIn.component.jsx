@@ -29,7 +29,7 @@ const SignIn = (props) => {
         !validatePassword(values.password).isInvalid && await axios.post('http://localhost:8080/api/auth/local/login', values)
             .then(res => {
                 if (res.data?.success) {
-                    props.setStatus({loggedIn: true, userEmail: res.data?.userEmail, userId: res.data?.userId})
+                    props.setStatus({ loggedIn: true, userEmail: res.data?.userEmail, userId: res.data?.userId })
                     console.log(props, props.status)
                     toaster.success('Welcome! You\'ve been successfully logged in')
                 }
@@ -68,8 +68,8 @@ const SignIn = (props) => {
                         <div className="button-container">
                             <Button
                                 marginRight={16}
-                                appearance="primary"
-                                intent="success"
+                                color="#3366FF" 
+                                border="1px solid #3366FF"
                             >
                                 Login
                             </Button>
