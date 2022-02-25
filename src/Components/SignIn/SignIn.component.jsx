@@ -71,7 +71,7 @@ const SignIn = (props) => {
                                 color="#3366FF" 
                                 border="1px solid #3366FF"
                             >
-                                Login
+                                Sign In
                             </Button>
                         </div>
                     </form>

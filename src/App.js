@@ -4,6 +4,7 @@ import { ProjectCard, SignUp, SignIn } from './Components'
 import { Pane, Button } from 'evergreen-ui'
 import { fakeData } from './fakeData'
 import { Route, Routes, Link } from 'react-router-dom';
+import axios from 'axios'
 
 //TODO
 //Header
@@ -18,10 +19,23 @@ import { Route, Routes, Link } from 'react-router-dom';
 const App = () => {
 
   const [isLoggedIn, setIsLoggedIn] = useState({ loggedIn: false, userEmail: '', userId: '' })
+  const [projects, setProjects] = useState('')
 
   useEffect(() => {
     console.log(isLoggedIn)
   }, [isLoggedIn])
+
+  useEffect(() => {
+    const projectsPublished = async () => {
+      return await axios.get('http://localhost:8080/api/projects')
+        .then(res => {
+          setProjects(res.data)
+        })
+        .catch(err => console.log(err))
+    }
+    projectsPublished()
+    return 
+  }, [])
 
   return (
     <div className="App">
@@ -41,12 +55,14 @@ const App = () => {
           <Route path="/" element='' />
           <Route path="/signin" element={<SignIn status={isLoggedIn} setStatus={setIsLoggedIn} />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/projects" element={fakeData.map(element => {
+          <Route path="/projects" element={projects && projects?.data.map(element => {
             return (
               <ProjectCard {...element} key={element.id} />
             )
           })} />
         </Routes>
+
+        
       </Pane>
 
     </div>
