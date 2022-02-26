@@ -2,17 +2,11 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import { ProjectCard, SignUp, SignIn } from './Components'
 import { Pane, Button } from 'evergreen-ui'
-import { fakeData } from './fakeData'
 import { Route, Routes, Link } from 'react-router-dom';
 import axios from 'axios'
 
 //TODO
-//Header
-//Sign up 
-//Login
 //Profile form
-//Post a project form
-//
 
 
 
@@ -70,9 +64,3 @@ const App = () => {
 }
 
 export default App;
-
-// <Header>
-//   <SignIn/>
-//   <SignUp/>
-//   <Profile/>
-// </Header>

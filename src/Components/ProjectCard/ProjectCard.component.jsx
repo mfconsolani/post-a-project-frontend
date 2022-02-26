@@ -1,6 +1,5 @@
 import React from "react";
 import './ProjectCard.styles.css'
-import axios from 'axios'
 
 
 const ProjectCard = (props) => {
