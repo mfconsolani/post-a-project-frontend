@@ -1,0 +1,23 @@
+.form-container-wrapper{
+    margin: 1em;    
+    display: flex;
+    flex-direction: column;
+    width: 40vw;
+    /* border: 1px solid #4a4a4a; */
+    border-radius: 8px;
+    box-shadow: 2px 5px 10px 3px #ccc;
+}
+
+.form-container {
+    margin: 1em;
+}
+
+.button-container, .signup-title {
+    display: flex;
+    justify-content: center;
+}
+
+.input-container-header{
+    display: flex;
+    justify-content: flex-start;
+}
