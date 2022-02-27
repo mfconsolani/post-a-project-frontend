@@ -1,34 +1,25 @@
 import React from "react";
 import './ProjectCard.styles.css'
+import { Button, Pane, Heading, Paragraph } from 'evergreen-ui'
 
 
 const ProjectCard = (props) => {
 
   return (
-    <div className="projects">
-      <div className="project-container">
-        <div className="project-header-container">
-          <h4 className="project-heading">{props.title}</h4>
-          <div className="interactions">
-            <i className="bi bi-share"></i>
-            <i className="bi bi-heart"></i>
-          </div>
-        </div>
-        <div className="project-body">
-          <h6 className="project-subheading">{props.company}</h6>
-          <p className="project-description">{props.body}</p>
-          <p><u>Role required:</u> {props.role.map(elem => elem.role)}</p>
-          <p><u>Skills required:</u> {props.skill.map(elem => elem.skill)}</p>
-          <p><u>Estimated duration:</u> {props.duration}</p>
-        </div>
-        <div className="project-footer">
-          <div className="post-expiration-dates">
-            <small>Posting date: {props.createdAt} / Expiration date: {props.expiresBy} </small>
-          </div>
-          <button>Apply here</button>
-        </div>
-      </div>
-    </div>
+    <Pane margin="3%" >
+      <Pane border="1px solida #FFF" borderRadius="5px" padding="1rem" margin="1rem" elevation={3} float="left" display="flex" flexDirection="column">
+        <Heading> {props.title} </Heading>
+        <Heading> {props.company} </Heading>
+        <Paragraph color="black" >{props.body}</Paragraph>
+        <Paragraph color="black"><u>Role required:</u> {props.role.map(elem => elem.role)}</Paragraph>
+        <Paragraph color="black"><u>Skills required:</u> {props.skill.map(elem => elem.skill)}</Paragraph>
+        <Paragraph color="black"><u>Duration:</u> {props.duration}</Paragraph>  
+        <Pane display="flex" flexDirection="row" justifyContent="space-between">
+        <Paragraph color="black" fontSize="x-small"><i>Posting date: {props.createdAt} / Expiration date: {props.expiresBy}</i></Paragraph>
+        <Button marginLeft="1rem">Apply here</Button>
+        </Pane>
+      </Pane>
+    </Pane>
   )
 }
 
