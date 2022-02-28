@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import { ProjectCard, SignUp, SignIn } from './Components'
+import { ProjectCard, SignUp, SignIn, ProjectForm } from './Components'
 import { Pane, Button } from 'evergreen-ui'
 import { Route, Routes, Link } from 'react-router-dom';
 import axios from 'axios'
@@ -12,7 +12,7 @@ import axios from 'axios'
 
 const App = () => {
 
-  const [isLoggedIn, setIsLoggedIn] = useState({ loggedIn: false, userEmail: '', userId: '' })
+  const [isLoggedIn, setIsLoggedIn] = useState({ status: false, userEmail: '', userId: '' })
   const [projects, setProjects] = useState('')
 
   useEffect(() => {
@@ -55,6 +55,7 @@ const App = () => {
             )
           })} />
         </Routes>
+        {isLoggedIn.status && <ProjectForm/>}
 
         
       </Pane>

@@ -13,10 +13,10 @@ const ProjectCard = (props) => {
         <Paragraph color="black" >{props.body}</Paragraph>
         <Paragraph color="black"><u>Role required:</u> {props.role.map(elem => elem.role)}</Paragraph>
         <Paragraph color="black"><u>Skills required:</u> {props.skill.map(elem => elem.skill)}</Paragraph>
-        <Paragraph color="black"><u>Duration:</u> {props.duration}</Paragraph>  
+        <Paragraph color="black"><u>Duration:</u> {props.duration}</Paragraph>
         <Pane display="flex" flexDirection="row" justifyContent="space-between">
-        <Paragraph color="black" fontSize="x-small"><i>Posting date: {props.createdAt} / Expiration date: {props.expiresBy}</i></Paragraph>
-        <Button marginLeft="1rem">Apply here</Button>
+          <Paragraph color="black" fontSize="x-small"><i>Posting date: {props.createdAt} / Expiration date: {props.expiresBy}</i></Paragraph>
+          <Button marginLeft="1rem">Apply here</Button>
         </Pane>
       </Pane>
     </Pane>
