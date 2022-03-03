@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Pane, Button, Paragraph, Textarea, TextInputField, Label } from 'evergreen-ui';
 import { Field, Form } from 'react-final-form'
+import './ProjectForm.styles.css'
+import axios from 'axios'
+import { MultiSelect } from "react-multi-select-component";
 
 const TextInputAdapter = ({ input, ...rest }) => (
-    <TextInputField {...input} {...rest}
+    <TextInputField display="flex" flexDirection="column"  marginY="1em" {...input} {...rest}
         label={rest.label}
         placeholder={rest.placeholder}
         onChange={(event) => input.onChange(event)}
@@ -11,10 +14,9 @@ const TextInputAdapter = ({ input, ...rest }) => (
 )
 
 const TextAreaAdapter = ({ input, ...rest }) => {
-    // console.log(input.name)
     return (
-        <Pane display="flex" flexDirection="column">
-            <Label htmlFor={input.name}>
+        <Pane display="flex" flexDirection="column" marginY="1em">
+            <Label htmlFor={input.name} marginY="0.5em" >
                 {rest.label}
             </Label>
             <Textarea {...input} {...rest}
@@ -26,6 +28,55 @@ const TextAreaAdapter = ({ input, ...rest }) => {
     )
 }
 
+const Example = ({ input, ...rest }) => {
+    const options = [
+        { label: "Grapes 🍇", value: "grapes" },
+        { label: "Mango 🥭", value: "mango" },
+        { label: "Strawberry 🍓", value: "strawberry", disabled: true },
+    ];
+    const [selected, setSelected] = useState([]);
+    const [skills, setSkills] = useState([])
+
+    useEffect(() => {
+        const projectsPublished = async () => {
+            return await axios.get('http://localhost:8080/api/skills/')
+              .then(res => {
+                  console.log(res)
+                  const existingSkills = res.data.map(element => {
+                      return {label: element.skill, value: element.skill}
+                  })
+                setSkills(existingSkills)
+              })
+              .catch(err => console.log(err))
+          }
+          projectsPublished()
+          return
+    }, [])
+
+    return (
+        <Pane marginY="1em">
+            <Label htmlFor={input.name} marginY="0.5em">{rest.label}</Label>
+
+            {skills.length > 0 
+            ? <MultiSelect
+                // fontFamily="ui"
+                fontSize="12px"
+                {...rest}
+                {...input}
+                id={input.name}
+                name={input.name}
+                options={skills}
+                value={selected}
+                onChange={event => {
+                    setSelected(event)
+                    input.onChange(event)
+                }}
+                labelledBy="Select"
+            />
+            : <p>Loading skills</p>}
+        </Pane>
+    );
+};
 
 
 const ProjectForm = () => {
@@ -59,13 +110,13 @@ const ProjectForm = () => {
                             label="Based"
                             required
                         />
-                        {/* <Field
-                            component={TextInputAdapter}
-                            name="title"
-                            label="Project Title"
+                        <Field
+                            component={Example}
+                            name="skills"
+                            label="Skills"
                             required
-                        /> */}
-                        
+                        />
+
                         <Button
                             marginRight={16}
                             color="#3366FF"
