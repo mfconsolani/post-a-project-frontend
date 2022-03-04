@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Pane, Button, Paragraph, Textarea, TextInputField, Label } from 'evergreen-ui';
+import { Pane, Button, Spinner, Textarea, InlineAlert, TextInputField, Label } from 'evergreen-ui';
 import { Field, Form } from 'react-final-form'
 import './ProjectForm.styles.css'
 import axios from 'axios'
 import { MultiSelect } from "react-multi-select-component";
 
 const TextInputAdapter = ({ input, ...rest }) => (
-    <TextInputField display="flex" flexDirection="column"  marginY="1em" {...input} {...rest}
+    <TextInputField display="flex" flexDirection="column" marginY="1em" {...input} {...rest}
         label={rest.label}
         placeholder={rest.placeholder}
         onChange={(event) => input.onChange(event)}
@@ -28,58 +28,109 @@ const TextAreaAdapter = ({ input, ...rest }) => {
     )
 }
 
-const Example = ({ input, ...rest }) => {
-    const options = [
-        { label: "Grapes 🍇", value: "grapes" },
-        { label: "Mango 🥭", value: "mango" },
-        { label: "Strawberry 🍓", value: "strawberry", disabled: true },
-    ];
+const SkillsMultiSelect = ({ input, ...rest }) => {
     const [selected, setSelected] = useState([]);
     const [skills, setSkills] = useState([])
 
+
     useEffect(() => {
-        const projectsPublished = async () => {
+        const getSkills = async () => {
             return await axios.get('http://localhost:8080/api/skills/')
-              .then(res => {
-                  console.log(res)
-                  const existingSkills = res.data.map(element => {
-                      return {label: element.skill, value: element.skill}
-                  })
-                setSkills(existingSkills)
-              })
-              .catch(err => console.log(err))
-          }
-          projectsPublished()
-          return
+                .then(res => {
+                    console.log(res)
+                    const existingSkills = res.data.map(element => {
+                        return { label: element.skill, value: element.skill }
+                    })
+                    setSkills(existingSkills)
+                })
+                .catch(err => console.log(err))
+        }
+        getSkills()
+        return
     }, [])
 
     return (
         <Pane marginY="1em">
             <Label htmlFor={input.name} marginY="0.5em">{rest.label}</Label>
 
-            {skills.length > 0 
-            ? <MultiSelect
-                // fontFamily="ui"
-                fontSize="12px"
-                {...rest}
-                {...input}
-                id={input.name}
-                name={input.name}
-                options={skills}
-                value={selected}
-                onChange={event => {
-                    setSelected(event)
-                    input.onChange(event)
-                }}
-                labelledBy="Select"
-            />
-            : <p>Loading skills</p>}
+            {skills.length > 0
+                ? <MultiSelect
+                    fontSize="12px"
+                    {...rest}
+                    {...input}
+                    id={input.name}
+                    name={input.name}
+                    options={skills}
+                    value={selected}
+                    onChange={event => {
+                        setSelected(event)
+                        rest.setErrors({ skills: false })
+                        input.onChange(event)
+                    }}
+                    labelledBy="Select"
+                />
+                : <Spinner size={24} />}
+            {(rest.validationMessage && rest.validationMessage.length) && <InlineAlert intent="danger">
+                {rest.validationMessage}
+            </InlineAlert>}
+
         </Pane>
     );
 };
 
+const RolesMultiSelect = ({ input, meta, ...rest }) => {
+    const [selected, setSelected] = useState([]);
+    const [roles, setRoles] = useState([])
+
+    useEffect(() => {
+        const getRoles = async () => {
+            return await axios.get('http://localhost:8080/api/roles/')
+                .then(res => {
+                    console.log(res)
+                    const existingSkills = res.data.map(element => {
+                        return { label: element.role, value: element.role }
+                    })
+                    setRoles(existingSkills)
+                })
+                .catch(err => console.log(err))
+        }
+        getRoles()
+        return
+    }, [])
+
+    return (
+        <Pane marginY="1em" >
+            <Label htmlFor={input.name} marginY="0.5em">{rest.label}</Label>
+
+            {roles.length > 0
+                ? <MultiSelect
+                    // fontFamily="ui"
+                    fontSize="12px"
+                    {...rest}
+                    {...input}
+                    id={input.name}
+                    name={input.name}
+                    options={roles}
+                    value={selected}
+                    onChange={event => {
+                        setSelected(event)
+                        rest.setErrors({ roles: false })
+                        input.onChange(event)
+                    }}
+                    labelledBy="Select"
+                />
+                : <Spinner size={24} />}
+            {(rest.validationMessage && rest.validationMessage.length) 
+            && <InlineAlert marginY="0.5em" className="inline-alert" intent="danger">
+                {rest.validationMessage}
+            </InlineAlert>}
+        </Pane>
+    );
+};
 
 const ProjectForm = () => {
+    const [errors, setErrors] = useState({})
+
 
     const onSubmit = (event) => {
         console.log(event)
@@ -87,10 +138,10 @@ const ProjectForm = () => {
 
     return (
 
-        <Pane elevation={2} float="left" borderRadius="5px" padding="1rem" margin="1rem" minWidth="50vw">
+        <Pane elevation={4} float="left" borderRadius="5px" padding="1rem" margin="1rem" minWidth="50vw">
             <Form
                 onSubmit={onSubmit}
-                render={({ handleSubmit, values }) => (
+                render={({ handleSubmit, values, submitting, pristine }) => (
                     <form onSubmit={handleSubmit}>
                         <Field
                             component={TextInputAdapter}
@@ -109,18 +160,37 @@ const ProjectForm = () => {
                             name="location"
                             label="Based"
                             required
+
                         />
                         <Field
-                            component={Example}
+                            component={SkillsMultiSelect}
                             name="skills"
                             label="Skills"
-                            required
+                            setErrors={setErrors}
+                            beforeSubmit={() => {
+                                (!values.skills || values.skills.length < 1) && setErrors({ skills: true })
+                                return (!values.skills || values.skills.length < 1) ? false : true
+                            }}
+                            validationMessage={(errors && errors.skills) && "Must select at least one skill"}
+                        />
+                        <Field
+                            component={RolesMultiSelect}
+                            name="roles"
+                            label="Roles"
+                            setErrors={setErrors}
+                            beforeSubmit={() => {
+                                (!values.roles || values.roles.length < 1) && setErrors({ roles: true })
+                                return (!values.roles || values.roles.length < 1) ? false : true
+                            }}
+                            validationMessage={(errors && errors.roles) && "Must select at least one role"}
+
                         />
 
                         <Button
                             marginRight={16}
                             color="#3366FF"
                             border="1px solid #3366FF"
+                            disabled={submitting || pristine}
                         >
                             Publish project
                         </Button>
