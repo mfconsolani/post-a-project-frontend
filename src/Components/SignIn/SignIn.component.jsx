@@ -1,7 +1,7 @@
 import React from "react";
 import { Field, Form } from 'react-final-form'
 import axios from 'axios'
-import { TextInputField, Button, toaster } from 'evergreen-ui'
+import { TextInputField, Button, toaster, Spinner } from 'evergreen-ui'
 import './SignIn.styles.css'
 
 const strongRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{10,})');
@@ -43,8 +43,13 @@ const SignIn = (props) => {
         <div className="form-container-wrapper">
             <Form
                 onSubmit={onSubmit}
-                render={({ handleSubmit, values }) => (
-                    <form onSubmit={handleSubmit} className="form-container">
+                render={({ handleSubmit, values, form, submitSucceeded, submitting }) => (
+                    <form onSubmit={async event => {
+                        await handleSubmit(event)
+                        if (submitSucceeded) {
+                            form.reset()
+                        }
+                    }} className="form-container">
                         <div>
                             <h3 className="signin-title">SIGN IN</h3>
                             <Field
@@ -66,13 +71,17 @@ const SignIn = (props) => {
                             />
                         </div>
                         <div className="button-container">
-                            <Button
-                                marginRight={16}
-                                color="#3366FF" 
-                                border="1px solid #3366FF"
-                            >
-                                Sign In
-                            </Button>
+
+                            {!submitting
+                                ? <Button
+                                    marginRight={16}
+                                    color="#3366FF"
+                                    border="1px solid #3366FF"
+                                // onClick={form.restart}
+                                > Sign In
+                                </Button>
+                                : <Spinner size={32} />}
+
                         </div>
                     </form>
                 )}

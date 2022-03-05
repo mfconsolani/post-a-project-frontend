@@ -1,7 +1,7 @@
 import React from "react";
 import { Field, Form } from 'react-final-form'
 import axios from 'axios'
-import { TextInputField, Button, toaster } from 'evergreen-ui'
+import { TextInputField, Button, toaster, Spinner } from 'evergreen-ui'
 import './SignUp.styles.css'
 
 let strongRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{10,})');
@@ -27,25 +27,29 @@ const TextInputAdapter = ({ input, ...rest }) => (
 const SignUp = () => {
     const onSubmit = async values => {
         !validatePassword(values.password).isInvalid && await axios.post('http://localhost:8080/api/auth/local/signup', values)
-        .then(res => {
-            if (res.data?.success){
-                // console.log(props)
-                toaster.success('Welcome! You\'ve been successfully signed up')
-            } else {
-                toaster.warning(res.data.message)
-            }
-        })
-        .catch(err => {
-            toaster.danger(err?.response.status === 409 && "Email might already be in use")
-        })
+            .then(res => {
+                if (res.data?.success) {
+                    toaster.success('Welcome! You\'ve been successfully signed up')
+                } else {
+                    toaster.warning(res.data.message)
+                }
+            })
+            .catch(err => {
+                toaster.danger(err?.response.status === 409 && "Email might already be in use")
+            })
     }
 
     return (
         <div className="form-container-wrapper">
             <Form
                 onSubmit={onSubmit}
-                render={({ handleSubmit, values }) => (
-                    <form onSubmit={handleSubmit} className="form-container">
+                render={({ handleSubmit, values, submitting, submitSucceeded, form }) => (
+                    <form onSubmit={async event => {
+                        await handleSubmit(event)
+                        if(submitSucceeded){
+                            form.reset()
+                        }
+                    }} className="form-container">
                         <div>
                             <h3 className="signup-title">SIGN UP</h3>
                             <Field
@@ -67,14 +71,17 @@ const SignUp = () => {
                             />
                         </div>
                         <div className="button-container">
-                            
-                            <Button
-                                marginRight={16}
-                                appearance="primary"
-                                intent="none"
-                            >
-                                Sign Up!
-                            </Button>
+
+
+                            {!submitting
+                                ? <Button
+                                    marginRight={16}
+                                    appearance="primary"
+                                    intent="none"
+                                >
+                                    Sign Up!
+                                </Button>
+                                : <Spinner size={32} />}
                         </div>
                     </form>
                 )}
