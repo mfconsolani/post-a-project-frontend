@@ -25,17 +25,20 @@ const TextInputAdapter = ({ input, ...rest }) => (
 
 
 const SignIn = (props) => {
-    const onSubmit = async values => {
+    const onSubmit = async (values, form) => {
         !validatePassword(values.password).isInvalid && await axios.post('http://localhost:8080/api/auth/local/login', values)
             .then(res => {
                 if (res.data?.success) {
-                    props.setStatus({ status: true, userEmail: res.data?.userEmail, userId: res.data?.userId })
+                    props.setStatus({ status: true, userEmail: res.data?.userEmail, userId: res.data?.userId, profileType: res.data?.profile })
                     console.log(props, props.status)
                     toaster.success('Welcome! You\'ve been successfully logged in')
+                    form.reset()
+                    return {success: true}
                 }
             })
             .catch(err => {
                 toaster.danger(err?.response.status === 401 && "Wrong email or password")
+                return {success: false, message: err}
             })
     }
 
@@ -45,10 +48,7 @@ const SignIn = (props) => {
                 onSubmit={onSubmit}
                 render={({ handleSubmit, values, form, submitSucceeded, submitting }) => (
                     <form onSubmit={async event => {
-                        await handleSubmit(event)
-                        if (submitSucceeded) {
-                            form.reset()
-                        }
+                            await handleSubmit(event, form)
                     }} className="form-container">
                         <div>
                             <h3 className="signin-title">SIGN IN</h3>

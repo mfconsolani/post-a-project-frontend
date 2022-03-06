@@ -120,10 +120,10 @@ const RolesMultiSelect = ({ input, meta, ...rest }) => {
                     labelledBy="Select"
                 />
                 : <Spinner size={24} />}
-            {(rest.validationMessage && rest.validationMessage.length) 
-            && <InlineAlert marginY="0.5em" className="inline-alert" intent="danger">
-                {rest.validationMessage}
-            </InlineAlert>}
+            {(rest.validationMessage && rest.validationMessage.length)
+                && <InlineAlert marginY="0.5em" className="inline-alert" intent="danger">
+                    {rest.validationMessage}
+                </InlineAlert>}
         </Pane>
     );
 };
@@ -160,7 +160,6 @@ const ProjectForm = () => {
                             name="location"
                             label="Based"
                             required
-
                         />
                         <Field
                             component={SkillsMultiSelect}
@@ -185,7 +184,13 @@ const ProjectForm = () => {
                             validationMessage={(errors && errors.roles) && "Must select at least one role"}
 
                         />
-
+                        <Field
+                            component={TextInputAdapter}
+                            name="duration"
+                            label="Duration"
+                            placeholder="i.e.: 3 months; 10 days; 1 year"
+                            required
+                        />
                         <Button
                             marginRight={16}
                             color="#3366FF"

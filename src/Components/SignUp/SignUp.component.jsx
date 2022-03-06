@@ -25,11 +25,13 @@ const TextInputAdapter = ({ input, ...rest }) => (
 
 
 const SignUp = () => {
-    const onSubmit = async values => {
+    const onSubmit = async (values, form) => {
         !validatePassword(values.password).isInvalid && await axios.post('http://localhost:8080/api/auth/local/signup', values)
             .then(res => {
                 if (res.data?.success) {
                     toaster.success('Welcome! You\'ve been successfully signed up')
+                    console.log(res.data)
+                    form.reset()
                 } else {
                     toaster.warning(res.data.message)
                 }
@@ -43,12 +45,9 @@ const SignUp = () => {
         <div className="form-container-wrapper">
             <Form
                 onSubmit={onSubmit}
-                render={({ handleSubmit, values, submitting, submitSucceeded, form }) => (
+                render={({ handleSubmit, values, submitting, form }) => (
                     <form onSubmit={async event => {
-                        await handleSubmit(event)
-                        if(submitSucceeded){
-                            form.reset()
-                        }
+                        await handleSubmit(event, form)
                     }} className="form-container">
                         <div>
                             <h3 className="signup-title">SIGN UP</h3>
