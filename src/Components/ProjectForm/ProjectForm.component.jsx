@@ -4,6 +4,7 @@ import { Field, Form } from 'react-final-form'
 import './ProjectForm.styles.css'
 import axios from 'axios'
 import { MultiSelect } from "react-multi-select-component";
+import DateTimePicker from 'react-datetime-picker';
 
 const TextInputAdapter = ({ input, ...rest }) => (
     <TextInputField display="flex" flexDirection="column" marginY="1em" {...input} {...rest}
@@ -128,9 +129,28 @@ const RolesMultiSelect = ({ input, meta, ...rest }) => {
     );
 };
 
+// border: thin solid #ccc;
+//     border-radius: 5px;
+//     padding: 0.5em;
+
+const DatePicker = ({ input, ...rest }) => {
+    return (
+        <Pane>
+            <Label marginBottom="10em" >{rest.label}</Label>
+            <Pane>
+                <DateTimePicker
+                    className="custom-date-picker-style"
+                    {...rest} {...input}
+                    format="dd-MM-yy h:mm:ss a"
+                    name={input.name}
+                    onChange={(e) => input.onChange(e)} />
+            </Pane>
+        </Pane>
+    )
+}
+
 const ProjectForm = () => {
     const [errors, setErrors] = useState({})
-
 
     const onSubmit = (event) => {
         console.log(event)
@@ -161,6 +181,31 @@ const ProjectForm = () => {
                             label="Based"
                             required
                         />
+                        <Field
+                            component={DatePicker}
+                            name="expiresBy"
+                            label="Offer expiring date"
+                            required
+                        />
+
+                        {/* <Field
+                            //TODO
+                            // create a separate component 
+                            // format date before submitt
+                            // component={TextInputAdapter}
+                            name="expiresBy"
+                            label="Offer expiring date"
+                            type="date"
+                            required
+                            render={props => {
+                                return (
+                                    <Pane>
+                                    <Label>{props.label}</Label>
+                                    <input type={props.input.type} name="expiresBy" onChange={e => props.input.onChange(e)}/>
+                                    </Pane>
+                                )
+                            }}
+                        /> */}
                         <Field
                             component={SkillsMultiSelect}
                             name="skills"

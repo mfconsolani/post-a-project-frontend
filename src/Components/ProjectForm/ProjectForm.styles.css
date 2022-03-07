@@ -5,3 +5,10 @@
 .inline-alert>span {
     font-size: 0.7em;
 }
+
+
+.custom-date-picker-style{
+    border:thin solid #ccc;
+    padding:0.5em;
+    border-radius:5px;
+}
