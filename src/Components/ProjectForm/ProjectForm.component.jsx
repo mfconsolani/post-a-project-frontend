@@ -134,11 +134,16 @@ const RolesMultiSelect = ({ input, meta, ...rest }) => {
 //     padding: 0.5em;
 
 const DatePicker = ({ input, ...rest }) => {
+    const date = new Date();
+    const oneWeekAfter = new Date(date.getTime() + (86400000 * 7))
+
     return (
         <Pane>
             <Label marginBottom="10em" >{rest.label}</Label>
             <Pane>
                 <DateTimePicker
+                    maxDate={oneWeekAfter}
+                    minDate={date}
                     className="custom-date-picker-style"
                     {...rest} {...input}
                     format="dd-MM-yy h:mm:ss a"
@@ -155,7 +160,6 @@ const ProjectForm = () => {
     const onSubmit = (event) => {
         console.log(event)
     }
-
     return (
 
         <Pane elevation={4} float="left" borderRadius="5px" padding="1rem" margin="1rem" minWidth="50vw">
@@ -183,6 +187,8 @@ const ProjectForm = () => {
                         />
                         <Field
                             component={DatePicker}
+                            maxDetail="minute"
+                            disableClock={true}
                             name="expiresBy"
                             label="Offer expiring date"
                             required
@@ -232,7 +238,7 @@ const ProjectForm = () => {
                         <Field
                             component={TextInputAdapter}
                             name="duration"
-                            label="Duration"
+                            label="Duration of the assignment"
                             placeholder="i.e.: 3 months; 10 days; 1 year"
                             required
                         />
