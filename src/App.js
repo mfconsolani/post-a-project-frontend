@@ -54,13 +54,13 @@ const App = () => {
           <Route path="/signin" element={<SignIn status={isLoggedIn} setStatus={setIsLoggedIn} />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/postproject" element={isLoggedIn.profileType
-            ? <ProjectForm />
+            ? <ProjectForm user={isLoggedIn} />
             : <Alert intent="danger" title="Unauthorized route" margin={16}>
               Sorry! This option is only available for certain type of users 😔
             </Alert>} />
           <Route path="/projects" element={projects && projects?.data.map(element => {
             return (
-              <ProjectCard {...element} key={element.id} />
+              <ProjectCard userLogged={isLoggedIn.status} {...element} key={element.id} />
             )
           })} />
         </Routes>

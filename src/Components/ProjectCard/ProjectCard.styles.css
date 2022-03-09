@@ -55,3 +55,7 @@
     font-size: x-small;
     font-family: 'Dosis', sans-serif;
   }
+
+  .heart-icon-button:active{
+    border: none;
+  }

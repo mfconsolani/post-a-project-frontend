@@ -7,7 +7,8 @@ import { MultiSelect } from "react-multi-select-component";
 import DateTimePicker from 'react-datetime-picker';
 
 const TextInputAdapter = ({ input, ...rest }) => (
-    <TextInputField display="flex" flexDirection="column" marginY="1em" {...input} {...rest}
+    <TextInputField display="flex" flexDirection="column" marginY="1em"
+        {...input} {...rest}
         label={rest.label}
         placeholder={rest.placeholder}
         onChange={(event) => input.onChange(event)}
@@ -129,10 +130,6 @@ const RolesMultiSelect = ({ input, meta, ...rest }) => {
     );
 };
 
-// border: thin solid #ccc;
-//     border-radius: 5px;
-//     padding: 0.5em;
-
 const DatePicker = ({ input, ...rest }) => {
     const date = new Date();
     const oneWeekAfter = new Date(date.getTime() + (86400000 * 7))
@@ -153,8 +150,12 @@ const DatePicker = ({ input, ...rest }) => {
         </Pane>
     )
 }
+//TODO
+//complete company field when I have the proper props
+//implement axios.post on form submission
+//isolate components
 
-const ProjectForm = () => {
+const ProjectForm = (props) => {
     const [errors, setErrors] = useState({})
 
     const onSubmit = (event) => {
@@ -165,6 +166,7 @@ const ProjectForm = () => {
         <Pane elevation={4} float="left" borderRadius="5px" padding="1rem" margin="1rem" minWidth="50vw">
             <Form
                 onSubmit={onSubmit}
+                initialValues={{ owner: props.user.userEmail }}
                 render={({ handleSubmit, values, submitting, pristine }) => (
                     <form onSubmit={handleSubmit}>
                         <Field
@@ -193,25 +195,6 @@ const ProjectForm = () => {
                             label="Offer expiring date"
                             required
                         />
-
-                        {/* <Field
-                            //TODO
-                            // create a separate component 
-                            // format date before submitt
-                            // component={TextInputAdapter}
-                            name="expiresBy"
-                            label="Offer expiring date"
-                            type="date"
-                            required
-                            render={props => {
-                                return (
-                                    <Pane>
-                                    <Label>{props.label}</Label>
-                                    <input type={props.input.type} name="expiresBy" onChange={e => props.input.onChange(e)}/>
-                                    </Pane>
-                                )
-                            }}
-                        /> */}
                         <Field
                             component={SkillsMultiSelect}
                             name="skills"
@@ -241,6 +224,18 @@ const ProjectForm = () => {
                             label="Duration of the assignment"
                             placeholder="i.e.: 3 months; 10 days; 1 year"
                             required
+                        />
+                        {/* <Field
+                            component={TextInputAdapter}
+                            name="company"
+                            label="Company name"
+                            disabled
+                        /> */}
+                        <Field
+                            component={TextInputAdapter}
+                            name="owner"
+                            label="Project owner contact"
+                            disabled
                         />
                         <Button
                             marginRight={16}
