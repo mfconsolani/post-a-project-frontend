@@ -60,7 +60,7 @@ const App = () => {
             </Alert>} />
           <Route path="/projects" element={projects && projects?.data.map(element => {
             return (
-              <ProjectCard userLogged={isLoggedIn.status} {...element} key={element.id} />
+              <ProjectCard userLogged={isLoggedIn} {...element} key={element.id} />
             )
           })} />
         </Routes>

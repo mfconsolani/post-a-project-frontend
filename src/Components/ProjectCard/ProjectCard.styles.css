@@ -59,3 +59,13 @@
   .heart-icon-button:active{
     border: none;
   }
+
+.heart-icon:active{
+    animation: scale 100ms ease-in-out forwards;
+}
+
+@keyframes scale {
+    to {
+      transform: scale(0.8);
+    }
+  }

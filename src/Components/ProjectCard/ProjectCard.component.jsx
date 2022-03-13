@@ -1,25 +1,75 @@
 import React, { useEffect, useState } from "react";
 import './ProjectCard.styles.css'
-import { Button, Pane, Heading, Paragraph, Text } from 'evergreen-ui'
+import { Button, Pane, Heading, Paragraph, Spinner, toaster } from 'evergreen-ui'
 import { HeartIcon } from 'evergreen-ui'
+import axios from "axios";
+import { useIsMount } from '../../helpers/isMountHook'
 
+//TODO
+//on component render, must check if the user's id is registered as a user that liked the project. 
+// if so, heart should be in red, 
 
 const ProjectCard = (props) => {
-
-  //TODO
-  //Global likes for this project
-  //Grey icon for unliked 
-  //Red icon for liked
-  //hit API to check accumulated likes
+  const projectId = props.id
+  const userId = props.userLogged.userId
+  const isMount = useIsMount()
   const [isLiked, setIsLiked] = useState(false)
-  const [isLikePressedLoading, setisLikePressedLoading] = useState(true)
-  const [accumualatedLikes, setAccumulatedLikes] = useState(95)
+  const [isLikePressedLoading, setIsLikePressedLoading] = useState(false)
+  const [accumualatedLikes, setAccumulatedLikes] = useState(0)
+
+
 
   useEffect(() => {
-    console.log(isLiked)
-    //logic here to hit API to change isLike status
-  }, [isLiked])
+    const updateLikesInDB = async () => {
+      axios.get(`http://localhost:8080/api/projects/like/${projectId}/`)
+        .then(res => {
+          setAccumulatedLikes(res.data?.payload._count.likesRegistered)
+          const userAlreadyLikedProject = res.data?.payload.likesRegistered.filter(elem => {
+            return elem.id === userId 
+          })
+          userAlreadyLikedProject.length > 0 && setIsLiked(true)
+        })
+        .catch(err => console.log(err))
+    }
+    updateLikesInDB()
+  }, [projectId, userId])
 
+  const onLikeButtonClick = () => {
+    if (userId){
+      setIsLikePressedLoading(true)
+      setIsLiked(prevState => !prevState)
+      setIsLikePressedLoading(false)
+    } else {
+      return toaster.warning("Please login to save projects!")
+    }
+  }
+
+  useEffect(() => {
+    if (isMount) {
+      return
+    } else if (!isMount && userId) {
+      const updateLikesInDB = async () => {
+        axios.post(`http://localhost:8080/api/projects/like/${projectId}/?like=${isLiked}`, { userId: userId })
+          .then(res => {
+            if (res.data?.success) {
+              setAccumulatedLikes(res.data?.payload._count.likesRegistered)
+              return
+            } else {
+              toaster.warning(res.data.message)
+              return
+            }
+          })
+          .catch(err => {
+            toaster.danger(err?.response.status === 404 && "Like/unlike project action failed")
+            return
+          })
+      }
+      // console.log()
+      updateLikesInDB()
+      return
+    }
+
+  }, [isLiked, projectId, userId, isMount])
 
   return (
     <Pane margin="3%" >
@@ -27,16 +77,13 @@ const ProjectCard = (props) => {
         <Pane display="flex" flexDirection="row" justifyContent="space-between">
           <Heading> {props.title} </Heading>
           <Pane display="flex" flexDirection="column" alignContent="center">
-            <HeartIcon
-              color={isLiked ? "danger" : "disabled"}
-              size={20}
-              onClick={() => {
-                setIsLiked(!isLiked)
-                !isLiked
-                  ? setAccumulatedLikes(accumualatedLikes + 1)
-                  : setAccumulatedLikes(accumualatedLikes - 1)
-              }} />
-            <Paragraph fontSize={10} textAlign="center">{accumualatedLikes}</Paragraph>
+            {isLikePressedLoading ? <Spinner size={18} /> :
+              <HeartIcon
+                color={isLiked ? "danger" : "disabled"}
+                className="heart-icon"
+                size={20}
+                onClick={onLikeButtonClick} />}
+            <Paragraph fontSize={10} textAlign="center" lineHeight="none">{accumualatedLikes}</Paragraph>
           </Pane>
         </Pane>
         <Heading> {props.company} </Heading>
