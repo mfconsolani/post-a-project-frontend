@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import { ProjectCard, SignUp, SignIn, ProjectForm } from './Components'
-import { Pane, Button, Alert } from 'evergreen-ui'
+import { Pane, Button, Alert, Avatar } from 'evergreen-ui'
 import { Route, Routes, Link } from 'react-router-dom';
 import axios from 'axios'
 
@@ -41,12 +41,16 @@ const App = () => {
         <Link to="/projects" style={{ textDecoration: 'none' }}>
           <Button marginRight={16} marginTop={8} appearance="minimal" >Projects</Button>
         </Link>
-        <Link to="/signin" style={{ textDecoration: 'none' }}>
-          <Button marginRight={16} marginTop={8} color="#3366FF" border="1px solid #3366FF" >Sign In</Button>
-        </Link>
-        <Link to="/signup" style={{ textDecoration: 'none' }}>
-          <Button marginRight={16} marginTop={8} appearance="primary" >Sign Up</Button>
-        </Link>
+        {isLoggedIn.status ? <Avatar name={isLoggedIn.userEmail} size={40} marginRight={16} marginTop={8} /> :
+          <React.Fragment>
+            <Link to="/signin" style={{ textDecoration: 'none' }}>
+              <Button marginRight={16} marginTop={8} color="#3366FF" border="1px solid #3366FF" >Sign In</Button>
+            </Link>
+            <Link to="/signup" style={{ textDecoration: 'none' }}>
+              <Button marginRight={16} marginTop={8} appearance="primary" >Sign Up</Button>
+            </Link>
+          </React.Fragment>
+        }
       </Pane>
       <Pane display="flex" flexDirection="column" alignItems="center">
         <Routes>

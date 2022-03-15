@@ -3,6 +3,7 @@ import { Field, Form } from 'react-final-form'
 import axios from 'axios'
 import { TextInputField, Button, toaster, Spinner } from 'evergreen-ui'
 import './SignIn.styles.css'
+import { useNavigate } from "react-router-dom";
 
 const strongRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{10,})');
 
@@ -25,6 +26,7 @@ const TextInputAdapter = ({ input, ...rest }) => (
 
 
 const SignIn = (props) => {
+    let navigate = useNavigate()
     const onSubmit = async (values, form) => {
         !validatePassword(values.password).isInvalid && await axios.post('http://localhost:8080/api/auth/local/login', values)
             .then(res => {
@@ -33,6 +35,7 @@ const SignIn = (props) => {
                     console.log(props, props.status)
                     toaster.success('Welcome! You\'ve been successfully logged in')
                     form.reset()
+                    navigate('/projects')
                     return {success: true}
                 }
             })
