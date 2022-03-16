@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { ProjectCard, SignUp, SignIn, ProjectForm } from './Components'
-import { Pane, Button, Alert, Avatar } from 'evergreen-ui'
+import { ProjectCard, SignUp, SignIn, ProjectForm, ProfileForm } from './Components'
+import {
+  Pane,
+  Button, Alert, Avatar,
+  Menu, Popover, Position,
+  PeopleIcon, LogOutIcon, EditIcon,
+  HeartIcon
+} from 'evergreen-ui'
 import { Route, Routes, Link } from 'react-router-dom';
 import axios from 'axios'
 
@@ -41,8 +47,33 @@ const App = () => {
         <Link to="/projects" style={{ textDecoration: 'none' }}>
           <Button marginRight={16} marginTop={8} appearance="minimal" >Projects</Button>
         </Link>
-        {isLoggedIn.status ? <Avatar name={isLoggedIn.userEmail} size={40} marginRight={16} marginTop={8} /> :
-          <React.Fragment>
+        {isLoggedIn.status ?
+          <Popover
+            position={Position.BOTTOM_LEFT}
+            content={
+              <Menu>
+                <Menu.Group>
+                  <Link to="/profile" style={{ textDecoration: 'none' }}>
+                    <Menu.Item icon={PeopleIcon}>My Profile</Menu.Item>
+                  </Link>
+
+                  <Menu.Item icon={HeartIcon}>Favs</Menu.Item>
+                  <Menu.Item icon={EditIcon} secondaryText="⌘R">
+                    Rename...
+                  </Menu.Item>
+                </Menu.Group>
+                <Menu.Divider />
+                <Menu.Group>
+                  <Menu.Item icon={LogOutIcon} intent="danger">
+                    Logout
+                  </Menu.Item>
+                </Menu.Group>
+              </Menu>
+            }
+          >
+            <Avatar cursor="pointer" name={isLoggedIn.userEmail} size={40} marginRight={16} marginTop={8} />
+          </Popover>
+          : <React.Fragment>
             <Link to="/signin" style={{ textDecoration: 'none' }}>
               <Button marginRight={16} marginTop={8} color="#3366FF" border="1px solid #3366FF" >Sign In</Button>
             </Link>
@@ -67,6 +98,7 @@ const App = () => {
               <ProjectCard userLogged={isLoggedIn} {...element} key={element.id} />
             )
           })} />
+          <Route path="/profile" element={<ProfileForm user={isLoggedIn} />} />
         </Routes>
 
 
