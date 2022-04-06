@@ -35,7 +35,7 @@ const ProjectCard = (props) => {
       setIsLiked(prevState => !prevState)
       setIsLikePressedLoading(false)
     } else {
-      return toaster.notify("Please login to save projects!")
+      return toaster.notify("Please login to save projects!", { id: 'forbidden-action' })
     }
   }
 

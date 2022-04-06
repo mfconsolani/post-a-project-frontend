@@ -106,7 +106,6 @@ const RolesMultiSelect = ({ input, meta, ...rest }) => {
 
             {roles.length > 0
                 ? <MultiSelect
-                    // fontFamily="ui"
                     fontSize="12px"
                     {...rest}
                     {...input}
@@ -132,8 +131,8 @@ const RolesMultiSelect = ({ input, meta, ...rest }) => {
 };
 
 const DatePickerCustom = ({ input, ...rest }) => {
-    const date = new Date();
-    const oneWeekAfter = new Date(date.getTime() + (86400000 * 7))
+    // const date = new Date();
+    // const oneWeekAfter = new Date(date.getTime() + (86400000 * 7))
 
     return (
         <Pane>

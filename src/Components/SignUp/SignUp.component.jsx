@@ -4,12 +4,21 @@ import axios from 'axios'
 import { TextInputField, Button, toaster, Spinner } from 'evergreen-ui'
 import './SignUp.styles.css'
 
+//TODO
+//Implement second password check
+//Prevent isInvalid from popping at the very first time: use onBlur
+
+
 let strongRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{10,})');
 
-const validatePassword = (value) => {
-    if (!strongRegex.test(value)) {
+const validatePassword = (password, passwordRepeat=null) => {
+    if (!strongRegex.test(password)) {
         const message = "Password must include: at least one capital letter, one lowercase letter, one number and one symbol and have at least 8 characters"
         return { isInvalid: true, message }
+    // } else if (strongRegex.test(password) && passwordRepeat !== password){
+    //     // console.log(password, passwordRepeat, passwordRepeat === password)
+    //     const message = "Passwords are different"
+    //     return { isInvalid: true, message }
     }
     return { isInvalid: false }
 }
@@ -26,7 +35,9 @@ const TextInputAdapter = ({ input, ...rest }) => (
 
 const SignUp = () => {
     const onSubmit = async (values, form) => {
-        !validatePassword(values.password).isInvalid && await axios.post('http://localhost:8080/api/auth/local/signup', values)
+        // console.log(values.password, values.passwordRepeat, values.passwordRepeat === values.password, !validatePassword(values.password, values.passwordRepeat).isInvalid, validatePassword(values.password).isInvalid )
+        !validatePassword(values.password, values.passwordRepeat).isInvalid 
+        && await axios.post('http://localhost:8080/api/auth/local/signup', values)
             .then(res => {
                 if (res.data?.success) {
                     toaster.success('Welcome! You\'ve been successfully signed up')
@@ -68,18 +79,20 @@ const SignUp = () => {
                                 validationMessage={values.password && validatePassword(values.password).message}
                                 isInvalid={values.password && validatePassword(values.password).isInvalid}
                             />
+                            {/* <Field
+                                component={TextInputAdapter}
+                                name="passwordRepeat"
+                                label="Repeat password"
+                                type="password"
+                                required
+                                validationMessage={values.passwordRepeat && validatePassword(values.password, values.passwordRepeat).message}
+                                isInvalid={values.passwordRepeat && validatePassword(values.password, values.passwordRepeat).isInvalid}
+                            /> */}
                         </div>
                         <div className="button-container">
-
-
                             {!submitting
-                                ? <Button
-                                    marginRight={16}
-                                    appearance="primary"
-                                    intent="none"
-                                >
-                                    Sign Up!
-                                </Button>
+                                ? <Button marginRight={16} appearance="primary" intent="none"
+                                    >Sign Up!</Button>
                                 : <Spinner size={32} />}
                         </div>
                     </form>
