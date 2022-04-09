@@ -4,7 +4,10 @@ import { Button, Pane, Heading, Paragraph, Spinner, toaster, Badge } from 'everg
 import { HeartIcon } from 'evergreen-ui'
 import axios from "axios";
 import { useIsMount } from '../../helpers/isMountHook'
+import { TrashIcon, TickCircleIcon } from 'evergreen-ui'
 
+//TODO
+//
 
 const ProjectCard = (props) => {
   const projectId = props.id
@@ -13,7 +16,15 @@ const ProjectCard = (props) => {
   const [isLiked, setIsLiked] = useState(false)
   const [isLikePressedLoading, setIsLikePressedLoading] = useState(false)
   const [accumualatedLikes, setAccumulatedLikes] = useState(0)
+  const [applied, setApplied] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
+
+  //TODO
+  //This is not efficient as it will hit API on every render. Multiply this for every project and it 
+  //will be the slowest API in the world. Maybe lifting up one level this function and passing
+  //props down to children?
+  //Another option is to store the data retrieved in first render in LocalStorage
   useEffect(() => {
     const updateLikesInDB = async () => {
       axios.get(`http://localhost:8080/api/projects/like/${projectId}/`)
@@ -29,6 +40,26 @@ const ProjectCard = (props) => {
     updateLikesInDB()
   }, [projectId, userId])
 
+    //TODO
+  //This is not efficient as it will hit API on every render. Multiply this for every project and it 
+  //will be the slowest API in the world. Maybe lifting up one level this function and passing
+  //props down to children?
+  //Another option is to store the data retrieved in first render in LocalStorage
+  useEffect(() => {
+    const updateApplicationsInDB = async () => {
+      axios.get(`http://localhost:8080/api/projects/apply/${projectId}/`)
+        .then(res => {
+          // setAccumulatedLikes(res.data?.payload._count.likesRegistered)
+          const userAlreadyAppliedToProject = res.data?.payload.applicationsRegistered.filter(elem => {
+            return elem.id === userId
+          })
+          userAlreadyAppliedToProject.length > 0 && setApplied(true)
+        })
+        .catch(err => console.log(err))
+    }
+    updateApplicationsInDB()
+  }, [projectId, userId])
+
   const onLikeButtonClick = () => {
     if (userId) {
       setIsLikePressedLoading(true)
@@ -39,10 +70,18 @@ const ProjectCard = (props) => {
     }
   }
 
+  //TODO
+  //This is not efficient as it will hit API on every render. Multiply this for every project and it 
+  //will be the slowest API in the world. Maybe lifting up one level this function and passing
+  //props down to children?
+  //Another option is to store the data retrieved in first render in LocalStorage
+
   useEffect(() => {
     if (isMount) {
+      // console.log("first render")
       return
     } else if (!isMount && userId) {
+      // console.log("this is not the first render")
       const updateLikesInDB = async () => {
         axios.post(`http://localhost:8080/api/projects/like/${projectId}/?like=${isLiked}`, { userId: userId })
           .then(res => {
@@ -63,8 +102,50 @@ const ProjectCard = (props) => {
       updateLikesInDB()
       return
     }
-
   }, [isLiked, projectId, userId, isMount])
+
+  const onProjectApply = () => {
+    if (userId) {
+      setIsLoading(true)    
+      setApplied(prevState => !prevState)
+      setIsLoading(false)
+    } else {
+      return toaster.notify("Please login to apply!", { id: 'forbidden-action' })
+    }
+  }
+
+  useEffect(() => {
+    if (isMount) {
+      // console.log("first render")
+      return
+    } else if (!isMount && userId) {
+      // console.log("this is not the first render")
+
+      const updateApplicationInDB = async () => {
+        axios.post(`http://localhost:8080/api/projects/apply/${projectId}/?apply=${applied}`, { userId: userId })
+        .then(res => {
+          if (res.data?.success) {
+            console.log(res.data)
+            applied 
+            ? toaster.success(`You've successfully applied to ${res.data.payload.title} project` )
+            : toaster.notify(`You've removed your application from ${res.data.payload.title} project` )
+            return
+          } else {
+            toaster.warning(res.data.message)
+            return
+          }
+              
+            })
+            .catch(err => {
+              toaster.danger(err?.response.status === 404 && "Apply/discard project action failed")
+              return
+            })
+          }
+      updateApplicationInDB()
+      return
+    }
+  }, [applied, projectId, userId, isMount])
+
 
   return (
     <Pane margin="0.1em" >
@@ -90,7 +171,10 @@ const ProjectCard = (props) => {
         <Paragraph color="black"><u>Duration:</u> {props.duration}</Paragraph>
         <Pane display="flex" flexDirection="row" justifyContent="space-between">
           <Paragraph color="black" fontSize="x-small"><i>Posting date: {props.createdAt} / Expiration date: {props.expiresBy}</i></Paragraph>
-          <Button marginLeft="1rem">Apply here</Button>
+          { !applied 
+          ? <Button onClick={onProjectApply} marginLeft="1rem" iconAfter={TickCircleIcon} intent="success">Apply here</Button>
+          : <Button onClick={onProjectApply} marginLeft="1rem" iconBefore={TrashIcon} intent="danger">Discard</Button>
+          }
         </Pane>
       </Pane>
     </Pane>
