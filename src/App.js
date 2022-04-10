@@ -29,6 +29,7 @@ const App = () => {
     const projectsPublished = async () => {
       return await axios.get('http://localhost:8080/api/projects')
         .then(res => {
+          console.log(res.data)
           setProjects(res.data)
         })
         .catch(err => console.log(err))

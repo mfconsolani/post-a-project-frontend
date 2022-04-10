@@ -5,6 +5,7 @@ import { HeartIcon } from 'evergreen-ui'
 import axios from "axios";
 import { useIsMount } from '../../helpers/isMountHook'
 import { TrashIcon, TickCircleIcon } from 'evergreen-ui'
+import { useFetchLikes } from "../../helpers/isLikedHook";
 
 //TODO
 //
@@ -12,33 +13,20 @@ import { TrashIcon, TickCircleIcon } from 'evergreen-ui'
 const ProjectCard = (props) => {
   const projectId = props.id
   const userId = props.userLogged.userId
+  // const isMount = useIsMount()
   const [isLiked, setIsLiked] = useState(false)
   const [isLikePressedLoading, setIsLikePressedLoading] = useState(false)
-  const [accumualatedLikes, setAccumulatedLikes] = useState(0)
   const [applied, setApplied] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const isMount = useIsMount()
-
-
-  //TODO
-  //This is not efficient as it will hit API on every render. Multiply this for every project and it 
-  //will be the slowest API in the world. Maybe lifting up one level this function and passing
-  //props down to children?
-  //Another option is to store the data retrieved in first render in LocalStorage
-  useEffect(() => {
-    const updateLikesInDB = async () => {
-      axios.get(`http://localhost:8080/api/projects/like/${projectId}/`)
-        .then(res => {
-          setAccumulatedLikes(res.data?.payload._count.likesRegistered)
-          const userAlreadyLikedProject = res.data?.payload.likesRegistered.filter(elem => {
-            return elem.id === userId
-          })
-          userAlreadyLikedProject.length > 0 && setIsLiked(true)
-        })
-        .catch(err => console.log(err))
+  const {fetchLikes, error, isLikedByUser, accumualatedLikes: accumLikes} = useFetchLikes()
+  
+  useEffect(()=> {
+    if (userId && props.likesRegistered.some( elem => elem.id === userId)){
+      setIsLiked(true)
     }
-    updateLikesInDB()
-  }, [projectId, userId])
+    return
+  }, [props.likesRegistered, userId])
+
 
     //TODO
   //This is not efficient as it will hit API on every render. Multiply this for every project and it 
@@ -60,9 +48,10 @@ const ProjectCard = (props) => {
     updateApplicationsInDB()
   }, [projectId, userId])
 
-  const onLikeButtonClick = () => {
+  const onLikeButtonClick = async () => {
     if (userId) {
       setIsLikePressedLoading(true)
+      await fetchLikes(projectId, userId, !isLiked)
       setIsLiked(prevState => !prevState)
       setIsLikePressedLoading(false)
     } else {
@@ -70,39 +59,12 @@ const ProjectCard = (props) => {
     }
   }
 
-  //TODO
-  //This is not efficient as it will hit API on every render. Multiply this for every project and it 
-  //will be the slowest API in the world. Maybe lifting up one level this function and passing
-  //props down to children?
-  //Another option is to store the data retrieved in first render in LocalStorage
+  // useEffect(() => {
+  //   console.log("accumLikes -->", accumLikes, "Linea 92", Boolean(accaccumLikesumLikes))
+  //   console.log("isLiked -->", isLiked, "Linea 64", Boolean(isLiked))
+  //   console.log("isLikedByUser -->", isLikedByUser, "Linea 65", Boolean(isLiked))
+  // }, [isLiked, isLikedByUser])
 
-  useEffect(() => {
-    if (isMount) {
-      console.log("first render")
-      return
-    } else if (!isMount && userId) {
-      console.log("this is not the first render")
-      const updateLikesInDB = async () => {
-        axios.post(`http://localhost:8080/api/projects/like/${projectId}/?like=${isLiked}`, { userId: userId })
-          .then(res => {
-            if (res.data?.success) {
-              setAccumulatedLikes(res.data?.payload._count.likesRegistered)
-              return
-            } else {
-              toaster.warning(res.data.message)
-              return
-            }
-          })
-          .catch(err => {
-            toaster.danger(err?.response.status === 404 && "Like/unlike project action failed")
-            return
-          })
-      }
-      // console.log()
-      updateLikesInDB()
-      return
-    }
-  }, [isLiked, projectId, userId, isMount])
 
 //TODO
 //Dirty solution here. I should use useEffect to levarge the updated "applied" state but if I 
@@ -163,7 +125,6 @@ const ProjectCard = (props) => {
   //           toaster.warning(res.data.message)
   //           return
   //         }
-              
   //           })
   //           .catch(err => {
   //             toaster.danger(err?.response.status === 404 && "Apply/discard project action failed")
@@ -188,7 +149,7 @@ const ProjectCard = (props) => {
                 className="heart-icon"
                 size={20}
                 onClick={onLikeButtonClick} />}
-            <Paragraph fontSize={10} textAlign="center" lineHeight="none">{accumualatedLikes}</Paragraph>
+            <Paragraph fontSize={10} textAlign="center" lineHeight="none">{accumLikes !== false ? accumLikes : props.likesRegistered.length}</Paragraph>
           </Pane>
         </Pane>
         <Heading> {props.company} </Heading>
