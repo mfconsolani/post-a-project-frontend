@@ -1,34 +1,88 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import './ProjectCard.styles.css'
-
+import { Button, Pane, Heading, Paragraph, Spinner, toaster, Badge } from 'evergreen-ui'
+import { HeartIcon } from 'evergreen-ui'
+import { TrashIcon, TickCircleIcon } from 'evergreen-ui'
+import { useFetchLikes } from "../../helpers/likesCountHook";
+import { useFetchProjectApplication } from "../../helpers/projectApplyHook";
 
 const ProjectCard = (props) => {
+  const projectId = props.id
+  const userId = props.userLogged.userId
+  const [isLiked, setIsLiked] = useState(false)
+  const [applied, setApplied] = useState(false)
+  const { fetchLikes, accumualatedLikes: accumLikes, isLoading: isLikeLoading } = useFetchLikes()
+  const { isLoading: isApplicationLoading, fetchApplication } = useFetchProjectApplication()
+
+  useEffect(() => {
+    if (userId && props.likesRegistered.some(elem => elem.id === userId)) {
+      setIsLiked(true)
+    }
+    if (userId && props.applicationsRegistered.some(elem => elem.id === userId)) {
+      setApplied(true)
+    }
+    return
+  }, [props.likesRegistered, props.applicationsRegistered, userId])
+
+  const onLikeButtonClick = async () => {
+    try {
+      if (userId) {
+        await fetchLikes(projectId, userId, !isLiked)
+        setIsLiked(prevState => !prevState)
+      } else {
+        return toaster.notify("Please login to save projects!", { id: 'forbidden-action' })
+      }
+    } catch (error) {
+      toaster.warning("An error has occurred when liking/discarding project", { id: 'forbidden-action' })
+      return error
+    }
+  }
+
+  const onProjectApply = async () => {
+    try {
+      if (userId) {
+        await fetchApplication(projectId, userId, !applied)
+        setApplied(prevState => !prevState)
+      } else {
+        return toaster.notify("Please login to apply!", { id: 'forbidden-action' })
+      }
+    } catch (error) {
+      toaster.warning("An error has occurred when liking/discarding project", { id: 'forbidden-action' })
+      return error
+    }
+  }
 
   return (
-    <div className="projects">
-      <div className="project-container">
-        <div className="project-header-container">
-          <h4 className="project-heading">{props.title}</h4>
-          <div className="interactions">
-            <i className="bi bi-share"></i>
-            <i className="bi bi-heart"></i>
-          </div>
-        </div>
-        <div className="project-body">
-          <h6 className="project-subheading">{props.company}</h6>
-          <p className="project-description">{props.body}</p>
-          <p><u>Role required:</u> {props.role.map(elem => elem.role)}</p>
-          <p><u>Skills required:</u> {props.skill.map(elem => elem.skill)}</p>
-          <p><u>Estimated duration:</u> {props.duration}</p>
-        </div>
-        <div className="project-footer">
-          <div className="post-expiration-dates">
-            <small>Posting date: {props.createdAt} / Expiration date: {props.expiresBy} </small>
-          </div>
-          <button>Apply here</button>
-        </div>
-      </div>
-    </div>
+    <Pane margin="0.1em" >
+      <Pane border="1px solida #FFF" borderRadius="5px" padding="1rem" margin="1rem" elevation={3} float="left" display="flex" flexDirection="column" width="70vw">
+        <Pane display="flex" flexDirection="row" justifyContent="space-between">
+          <Heading> {props.title} </Heading>
+          <Pane display="flex" flexDirection="column" alignContent="center">
+            {isLikeLoading ? <Spinner size={18} /> :
+              <HeartIcon
+                color={isLiked ? "danger" : "disabled"}
+                className="heart-icon"
+                size={20}
+                onClick={onLikeButtonClick} />}
+            <Paragraph fontSize={10} textAlign="center" lineHeight="none">{accumLikes !== false ? accumLikes : props.likesRegistered.length}</Paragraph>
+          </Pane>
+        </Pane>
+        <Heading> {props.company} </Heading>
+        <Paragraph color="black" maxWidth="80%">{props.body}</Paragraph>
+        <Paragraph color="black"><u>Role required:</u> {props.role.map(elem => elem.role)}</Paragraph>
+        <Paragraph color="black"><u>Skills required:</u> {props.skill.map(elem => {
+          return <span key={elem.id}  > <Badge>{elem.skill}</Badge> </span>
+        })}</Paragraph>
+        <Paragraph color="black"><u>Duration:</u> {props.duration}</Paragraph>
+        <Pane display="flex" flexDirection="row" justifyContent="space-between">
+          <Paragraph color="black" fontSize="x-small"><i>Posting date: {props.createdAt} / Expiration date: {props.expiresBy}</i></Paragraph>
+          {isApplicationLoading ? <Spinner marginRight="2rem" size={32} /> : (applied
+            ? <Button onClick={onProjectApply} marginLeft="1rem" iconBefore={TrashIcon} intent="danger">Discard</Button>
+            : <Button onClick={onProjectApply} marginLeft="1rem" iconAfter={TickCircleIcon} intent="success">Apply here</Button>)
+          }
+        </Pane>
+      </Pane>
+    </Pane>
   )
 }
 

@@ -1,8 +1,9 @@
 import React from "react";
 import { Field, Form } from 'react-final-form'
 import axios from 'axios'
-import { TextInputField, Button, toaster } from 'evergreen-ui'
+import { TextInputField, Button, toaster, Spinner } from 'evergreen-ui'
 import './SignIn.styles.css'
+import { useNavigate } from "react-router-dom";
 
 const strongRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{10,})');
 
@@ -25,17 +26,22 @@ const TextInputAdapter = ({ input, ...rest }) => (
 
 
 const SignIn = (props) => {
-    const onSubmit = async values => {
+    let navigate = useNavigate()
+    const onSubmit = async (values, form) => {
         !validatePassword(values.password).isInvalid && await axios.post('http://localhost:8080/api/auth/local/login', values)
             .then(res => {
                 if (res.data?.success) {
-                    props.setStatus({ loggedIn: true, userEmail: res.data?.userEmail, userId: res.data?.userId })
+                    props.setStatus({ status: true, userEmail: res.data?.userEmail, userId: res.data?.userId, profileType: res.data?.profile })
                     console.log(props, props.status)
                     toaster.success('Welcome! You\'ve been successfully logged in')
+                    form.reset()
+                    navigate('/projects')
+                    return {success: true}
                 }
             })
             .catch(err => {
                 toaster.danger(err?.response.status === 401 && "Wrong email or password")
+                return {success: false, message: err}
             })
     }
 
@@ -43,8 +49,10 @@ const SignIn = (props) => {
         <div className="form-container-wrapper">
             <Form
                 onSubmit={onSubmit}
-                render={({ handleSubmit, values }) => (
-                    <form onSubmit={handleSubmit} className="form-container">
+                render={({ handleSubmit, values, form, submitSucceeded, submitting }) => (
+                    <form onSubmit={async event => {
+                            await handleSubmit(event, form)
+                    }} className="form-container">
                         <div>
                             <h3 className="signin-title">SIGN IN</h3>
                             <Field
@@ -66,13 +74,17 @@ const SignIn = (props) => {
                             />
                         </div>
                         <div className="button-container">
-                            <Button
-                                marginRight={16}
-                                color="#3366FF" 
-                                border="1px solid #3366FF"
-                            >
-                                Sign In
-                            </Button>
+
+                            {!submitting
+                                ? <Button
+                                    marginRight={16}
+                                    color="#3366FF"
+                                    border="1px solid #3366FF"
+                                // onClick={form.restart}
+                                > Sign In
+                                </Button>
+                                : <Spinner size={32} />}
+
                         </div>
                     </form>
                 )}
