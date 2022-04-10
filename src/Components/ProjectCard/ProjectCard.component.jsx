@@ -3,22 +3,16 @@ import './ProjectCard.styles.css'
 import { Button, Pane, Heading, Paragraph, Spinner, toaster, Badge } from 'evergreen-ui'
 import { HeartIcon } from 'evergreen-ui'
 import axios from "axios";
-import { useIsMount } from '../../helpers/isMountHook'
 import { TrashIcon, TickCircleIcon } from 'evergreen-ui'
 import { useFetchLikes } from "../../helpers/isLikedHook";
-
-//TODO
-//
 
 const ProjectCard = (props) => {
   const projectId = props.id
   const userId = props.userLogged.userId
-  // const isMount = useIsMount()
   const [isLiked, setIsLiked] = useState(false)
-  const [isLikePressedLoading, setIsLikePressedLoading] = useState(false)
   const [applied, setApplied] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const {fetchLikes, error, isLikedByUser, accumualatedLikes: accumLikes} = useFetchLikes()
+  const {fetchLikes, error, accumualatedLikes: accumLikes, isLoading: isLikeLoading} = useFetchLikes()
   
   useEffect(()=> {
     if (userId && props.likesRegistered.some( elem => elem.id === userId)){
@@ -49,13 +43,16 @@ const ProjectCard = (props) => {
   }, [projectId, userId])
 
   const onLikeButtonClick = async () => {
-    if (userId) {
-      setIsLikePressedLoading(true)
-      await fetchLikes(projectId, userId, !isLiked)
-      setIsLiked(prevState => !prevState)
-      setIsLikePressedLoading(false)
-    } else {
-      return toaster.notify("Please login to save projects!", { id: 'forbidden-action' })
+    try {
+      if (userId) {
+        await fetchLikes(projectId, userId, !isLiked)
+        setIsLiked(prevState => !prevState)
+      } else {
+        return toaster.notify("Please login to save projects!", { id: 'forbidden-action' })
+      }
+    } catch (error){
+      toaster.warning("An error has occurred when liking/discarding project", { id: 'forbidden-action' })
+      return error
     }
   }
 
@@ -143,7 +140,7 @@ const ProjectCard = (props) => {
         <Pane display="flex" flexDirection="row" justifyContent="space-between">
           <Heading> {props.title} </Heading>
           <Pane display="flex" flexDirection="column" alignContent="center">
-            {isLikePressedLoading ? <Spinner size={18} /> :
+            {isLikeLoading ? <Spinner size={18} /> :
               <HeartIcon
                 color={isLiked ? "danger" : "disabled"}
                 className="heart-icon"
