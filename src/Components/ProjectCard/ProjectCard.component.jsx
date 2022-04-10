@@ -2,45 +2,27 @@ import React, { useEffect, useState } from "react";
 import './ProjectCard.styles.css'
 import { Button, Pane, Heading, Paragraph, Spinner, toaster, Badge } from 'evergreen-ui'
 import { HeartIcon } from 'evergreen-ui'
-import axios from "axios";
 import { TrashIcon, TickCircleIcon } from 'evergreen-ui'
-import { useFetchLikes } from "../../helpers/isLikedHook";
+import { useFetchLikes } from "../../helpers/likesCountHook";
+import { useFetchProjectApplication } from "../../helpers/projectApplyHook";
 
 const ProjectCard = (props) => {
   const projectId = props.id
   const userId = props.userLogged.userId
   const [isLiked, setIsLiked] = useState(false)
   const [applied, setApplied] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const {fetchLikes, error, accumualatedLikes: accumLikes, isLoading: isLikeLoading} = useFetchLikes()
-  
-  useEffect(()=> {
-    if (userId && props.likesRegistered.some( elem => elem.id === userId)){
+  const { fetchLikes, accumualatedLikes: accumLikes, isLoading: isLikeLoading } = useFetchLikes()
+  const { isLoading: isApplicationLoading, fetchApplication } = useFetchProjectApplication()
+
+  useEffect(() => {
+    if (userId && props.likesRegistered.some(elem => elem.id === userId)) {
       setIsLiked(true)
     }
-    return
-  }, [props.likesRegistered, userId])
-
-
-    //TODO
-  //This is not efficient as it will hit API on every render. Multiply this for every project and it 
-  //will be the slowest API in the world. Maybe lifting up one level this function and passing
-  //props down to children?
-  //Another option is to store the data retrieved in first render in LocalStorage
-  useEffect(() => {
-    const updateApplicationsInDB = async () => {
-      axios.get(`http://localhost:8080/api/projects/apply/${projectId}/`)
-        .then(res => {
-          // setAccumulatedLikes(res.data?.payload._count.likesRegistered)
-          const userAlreadyAppliedToProject = res.data?.payload.applicationsRegistered.filter(elem => {
-            return elem.id === userId
-          })
-          userAlreadyAppliedToProject.length > 0 && setApplied(true)
-        })
-        .catch(err => console.log(err))
+    if (userId && props.applicationsRegistered.some(elem => elem.id === userId)) {
+      setApplied(true)
     }
-    updateApplicationsInDB()
-  }, [projectId, userId])
+    return
+  }, [props.likesRegistered, props.applicationsRegistered, userId])
 
   const onLikeButtonClick = async () => {
     try {
@@ -50,89 +32,25 @@ const ProjectCard = (props) => {
       } else {
         return toaster.notify("Please login to save projects!", { id: 'forbidden-action' })
       }
-    } catch (error){
+    } catch (error) {
       toaster.warning("An error has occurred when liking/discarding project", { id: 'forbidden-action' })
       return error
     }
   }
 
-  // useEffect(() => {
-  //   console.log("accumLikes -->", accumLikes, "Linea 92", Boolean(accaccumLikesumLikes))
-  //   console.log("isLiked -->", isLiked, "Linea 64", Boolean(isLiked))
-  //   console.log("isLikedByUser -->", isLikedByUser, "Linea 65", Boolean(isLiked))
-  // }, [isLiked, isLikedByUser])
-
-
-//TODO
-//Dirty solution here. I should use useEffect to levarge the updated "applied" state but if I 
-//use useEffect, I'm not able to prevent the effect from firing several times on the first 1-3 renders
-// as there are so many things rendering after each other in chain and the isMount hook only works
-// to prevent first render
-
-  const onProjectApply = () => {
-    if (userId) {
-      setIsLoading(true)    
-      
-      const updateApplicationInDB = async () => {
-        console.log(applied)
+  const onProjectApply = async () => {
+    try {
+      if (userId) {
+        await fetchApplication(projectId, userId, !applied)
         setApplied(prevState => !prevState)
-        axios.post(`http://localhost:8080/api/projects/apply/${projectId}/?apply=${!applied}`, { userId: userId })
-        .then(res => {
-          if (res.data?.success) {
-            console.log(res.data)
-            !applied 
-            ? toaster.success(`You've successfully applied to ${res.data.payload.title} project`,{duration: 1.5} )
-            : toaster.notify(`You've removed your application from ${res.data.payload.title} project`,{duration: 1.5} )
-            return 
-          } else {
-            toaster.warning(res.data.message)
-            return
-          }
-            })
-            .catch(err => {
-              toaster.danger(err?.response.status === 404 && "Apply/discard project action failed")
-              return
-            })
-        console.log(applied)
-          }
-      updateApplicationInDB()
-      setIsLoading(false)
-    } else {
-      return toaster.notify("Please login to apply!", { id: 'forbidden-action' })
+      } else {
+        return toaster.notify("Please login to apply!", { id: 'forbidden-action' })
+      }
+    } catch (error) {
+      toaster.warning("An error has occurred when liking/discarding project", { id: 'forbidden-action' })
+      return error
     }
   }
-
-  // useEffect(() => {
-  //   if (isMount) {
-  //     // console.log("first render")
-  //     return
-  //   } else if (!isMount && userId) {
-  //     // console.log("this is not the first render")
-
-  //     const updateApplicationInDB = async () => {
-  //       axios.post(`http://localhost:8080/api/projects/apply/${projectId}/?apply=${applied}`, { userId: userId })
-  //       .then(res => {
-  //         if (res.data?.success) {
-  //           console.log(res.data)
-  //           applied 
-  //           ? toaster.success(`You've successfully applied to ${res.data.payload.title} project` )
-  //           : toaster.notify(`You've removed your application from ${res.data.payload.title} project` )
-  //           return
-  //         } else {
-  //           toaster.warning(res.data.message)
-  //           return
-  //         }
-  //           })
-  //           .catch(err => {
-  //             toaster.danger(err?.response.status === 404 && "Apply/discard project action failed")
-  //             return
-  //           })
-  //         }
-  //     updateApplicationInDB()
-  //     return
-  //   }
-  // }, [applied, projectId, userId, isMount])
-
 
   return (
     <Pane margin="0.1em" >
@@ -158,10 +76,9 @@ const ProjectCard = (props) => {
         <Paragraph color="black"><u>Duration:</u> {props.duration}</Paragraph>
         <Pane display="flex" flexDirection="row" justifyContent="space-between">
           <Paragraph color="black" fontSize="x-small"><i>Posting date: {props.createdAt} / Expiration date: {props.expiresBy}</i></Paragraph>
-          {  isLoading ? <Spinner size={18}/> : !applied 
-          // { applied 
-          ? <Button onClick={onProjectApply} marginLeft="1rem" iconAfter={TickCircleIcon} intent="success">Apply here</Button>
-          : <Button onClick={onProjectApply} marginLeft="1rem" iconBefore={TrashIcon} intent="danger">Discard</Button>
+          {isApplicationLoading ? <Spinner marginRight="2rem" size={32} /> : (applied
+            ? <Button onClick={onProjectApply} marginLeft="1rem" iconBefore={TrashIcon} intent="danger">Discard</Button>
+            : <Button onClick={onProjectApply} marginLeft="1rem" iconAfter={TickCircleIcon} intent="success">Apply here</Button>)
           }
         </Pane>
       </Pane>

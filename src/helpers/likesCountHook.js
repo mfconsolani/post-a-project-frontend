@@ -12,7 +12,6 @@ export const useFetchLikes = (projectId, userId, like) => {
             axios.post(`http://localhost:8080/api/projects/like/${projectId}/?like=${like}`, { userId: userId })
                 .then(res => {
                     if (res.data?.success) {
-                        // console.log(res.data?.payload)
                         setAccumulatedLikes(res.data?.payload.likesCount)
                         setIsLikedByUser(res.data?.payload.isLiked)
                         return
