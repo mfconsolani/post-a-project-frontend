@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { ProjectCard, SignUp, SignIn, ProjectForm, ProfileForm } from './Components'
+import { ProjectCard, SignUp, SignIn, ProjectForm, ProfileForm, ProfileCard } from './Components'
 import {
   Pane,
   Button, Alert, Avatar,
@@ -102,6 +102,7 @@ const App = () => {
           <Route path="/profile" element={<ProfileForm user={isLoggedIn} />} />
         </Routes>
 
+          <ProfileCard/>
 
 
       </Pane>
