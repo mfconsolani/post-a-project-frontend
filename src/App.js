@@ -48,6 +48,9 @@ const App = () => {
         <Link to="/projects" style={{ textDecoration: 'none' }}>
           <Button marginRight={16} marginTop={8} appearance="minimal" >Projects</Button>
         </Link>
+        <Link to="/candidates" style={{ textDecoration: 'none' }}>
+          <Button marginRight={16} marginTop={8} appearance="minimal" >Candidates</Button>
+        </Link>
         {isLoggedIn.status ?
           <Popover
             position={Position.BOTTOM_LEFT}
@@ -89,6 +92,7 @@ const App = () => {
           <Route path="/" element='' />
           <Route path="/signin" element={<SignIn status={isLoggedIn} setStatus={setIsLoggedIn} />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/candidates" element={<ProfileCard/>} />
           <Route path="/postproject" element={isLoggedIn.profileType
             ? <ProjectForm user={isLoggedIn} />
             : <Alert intent="danger" title="Unauthorized route" margin={16}>
@@ -101,8 +105,6 @@ const App = () => {
           })} />
           <Route path="/profile" element={<ProfileForm user={isLoggedIn} />} />
         </Routes>
-
-          <ProfileCard/>
 
 
       </Pane>

@@ -54,7 +54,24 @@ const ProfileCard = () => {
                             </ul>
                         </div>
                     </div>
+
+                <Pane elevation={4} float="left" display="flex" flexDirection="column">
+                    <Pane> 
+                        <Paragraph>
+                            Card Body
+                        </Paragraph>
+                    </Pane>
+                    <Pane>
+                        <Paragraph>
+                            Card Footer
+                        </Paragraph>
+                    </Pane>
+                </Pane>
+
+
+
                 </div>
+                
             )
         })
     )
