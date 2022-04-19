@@ -40,7 +40,8 @@ const App = () => {
 
   return (
     <div className="App">
-      <Pane display="flex" flexDirection="row" justifyContent="flex-end" width="100vw" marginBottom={16}>
+      <Pane display="flex" flexDirection="row" justifyContent="flex-end" width="100vw" 
+      marginBottom={16} position="fixed" top="0" bottom="0" left="0" right="0">
         {isLoggedIn.status &&
           <Link to="/postproject" style={{ textDecoration: 'none' }}>
             <Button marginRight={16} marginTop={8} appearance="minimal" >Post project</Button>

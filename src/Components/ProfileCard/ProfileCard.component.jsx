@@ -27,35 +27,7 @@ const ProfileCard = () => {
 
         userProfiles && userProfiles.map(elem => {
             return (
-                <Pane display="flex" flexDirection="column" alignItems="center" >
-                    <div className="card-container" key={elem.id + "d" + (elem.profile && elem.profile.id) + 3}>
-                        <span className="pro">PRO</span>
-                        <img className="round" src={`https://randomuser.me/api/portraits/women/${Math.floor(Math.random() * 100)}.jpg`} alt="user" />
-                        <h3>{elem.username ? capitalizeFirstLetter(elem.username) : elem.email.split('@')[0]}</h3>
-                        <h6>New York</h6>
-                        <p>User interface designer and <br /> front-end developer</p>
-                        <div className="buttons">
-                            <button className="primary">
-                                Message
-                            </button>
-                            <button className="primary ghost">
-                                Following
-                            </button>
-                        </div>
-                        <div className="skills">
-                            <h6>Skills</h6>
-                            <ul>
-                                <li>UI / UX</li>
-                                <li>Front End Development</li>
-                                <li>HTML</li>
-                                <li>CSS</li>
-                                <li>JavaScript</li>
-                                <li>React</li>
-                                <li>Node</li>
-                            </ul>
-                        </div>
-                    </div>
-
+                <Pane display="flex" flexDirection="row" alignItems="center" >
                     <Pane
                         key={elem.id + "d" + (elem.profile && elem.profile.id)}
                         elevation={3}
@@ -63,48 +35,46 @@ const ProfileCard = () => {
                         display="flex"
                         flexDirection="column"
                         borderRadius="5px"
+                        backgroundColor="#eee"
                         marginY={30}
                         padding={20}
                         width={300}>
                         <Pane>
                             <Pane display="flex" flexDirection="column" alignItems="center">
-                                <Paragraph>
-                                    Card Header
-                                </Paragraph>
                                 <Avatar
                                     src={`https://randomuser.me/api/portraits/women/${Math.floor(Math.random() * 100)}.jpg`}
                                     name="Alan Turing"
                                     size={100}
+                                    border="3px solid white"
 
                                 />
-                                <Text size={300}>{elem.username ? capitalizeFirstLetter(elem.username) : elem.email.split('@')[0]}</Text>
+                                <Text size={600}>{elem.username ? capitalizeFirstLetter(elem.username) : elem.email.split('@')[0]}</Text>
                             </Pane>
                             <Pane display="flex" flexDirection="column" alignItems="center">
                                 <Paragraph>
-                                    Location 🇦🇹
+                                    {elem.profile && elem.profile.country}
                                 </Paragraph>
-                                <Paragraph>
-                                    Role 🖥
+                                <Paragraph size={300}>
+                                    {elem.profile && elem.profile.description}
                                 </Paragraph>
+
                             </Pane>
                         </Pane>
-                        <Pane>
-                            <Paragraph>
-                                Skills
+                        <Pane borderTop="1px solid #444" marginY="1em" paddingX="0.5em">
+                            <Paragraph size={300}>
+                                SKILLS
                             </Paragraph>
                             <Pane>
                                 {elem.profile && elem.profile.skills.map(elem => {
                                     return (
-                                        <Badge color="teal" marginRight={8}>
+                                        <Badge color="blue" marginRight={8}>
                                             {elem.skill}
                                         </Badge>)
                                 })}
-
                             </Pane>
                         </Pane>
                     </Pane>
-                </Pane>
-
+                 </Pane>
             )
         })
     )
