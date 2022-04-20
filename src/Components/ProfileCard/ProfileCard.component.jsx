@@ -24,10 +24,10 @@ const ProfileCard = () => {
 
 
     return (
+        <Pane display="flex" flexDirection="row" alignItems="center" >
 
-        userProfiles && userProfiles.map(elem => {
+{        userProfiles && userProfiles.map(elem => {
             return (
-                <Pane display="flex" flexDirection="row" alignItems="center" >
                     <Pane
                         key={elem.id + "d" + (elem.profile && elem.profile.id)}
                         elevation={3}
@@ -38,7 +38,10 @@ const ProfileCard = () => {
                         backgroundColor="#eee"
                         marginY={30}
                         padding={20}
-                        width={300}>
+                        minWidth={300}
+                        minHeight={300}
+                        margin="0.5em"
+                        >
                         <Pane>
                             <Pane display="flex" flexDirection="column" alignItems="center">
                                 <Avatar
@@ -74,9 +77,9 @@ const ProfileCard = () => {
                             </Pane>
                         </Pane>
                     </Pane>
-                 </Pane>
             )
-        })
+        })}
+        </Pane>
     )
 }
 
