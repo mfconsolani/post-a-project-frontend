@@ -1,8 +1,9 @@
 import React from "react";
 import { Field, Form } from 'react-final-form'
 import axios from 'axios'
-import { TextInputField, Button, toaster, Spinner } from 'evergreen-ui'
+import { TextInputField, Button, toaster, Spinner, Text, Paragraph } from 'evergreen-ui'
 import './SignUp.styles.css'
+import {Link} from 'react-router-dom'
 
 //TODO
 //Implement second password check
@@ -71,6 +72,7 @@ const SignUp = () => {
                                 required
                             />
                             <Field
+                                marginBottom="0.3em"
                                 component={TextInputAdapter}
                                 name="password"
                                 label="Password"
@@ -79,6 +81,7 @@ const SignUp = () => {
                                 validationMessage={values.password && validatePassword(values.password).message}
                                 isInvalid={values.password && validatePassword(values.password).isInvalid}
                             />
+                            <Paragraph marginBottom="24px" size={300}>Already signed? <Link to="/signin">Log in</Link></Paragraph>
                             {/* <Field
                                 component={TextInputAdapter}
                                 name="passwordRepeat"
