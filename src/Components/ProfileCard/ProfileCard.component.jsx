@@ -4,6 +4,9 @@ import axios from "axios";
 import capitalizeFirstLetter from '../../helpers/capitalizeFirstLetter'
 import './ProfileCard.styles.css'
 
+//TODO
+//Build it in such a way that only users with profile completed will be shown
+
 
 const ProfileCard = () => {
     const [userProfiles, setUserProfiles] = useState([])
@@ -24,10 +27,16 @@ const ProfileCard = () => {
 
 
     return (
-        <Pane display="flex" flexDirection="row" alignItems="center" >
-
-{        userProfiles && userProfiles.map(elem => {
-            return (
+        <Pane
+            display="flex"
+            flexDirection="row"
+            alignItems="center"
+            flexWrap="wrap"
+            justifyContent="space-between"
+            padding="1em"
+        >
+            {userProfiles && userProfiles.map(elem => {
+                return (
                     <Pane
                         key={elem.id + "d" + (elem.profile && elem.profile.id)}
                         elevation={3}
@@ -41,7 +50,7 @@ const ProfileCard = () => {
                         minWidth={300}
                         minHeight={300}
                         margin="0.5em"
-                        >
+                    >
                         <Pane>
                             <Pane display="flex" flexDirection="column" alignItems="center">
                                 <Avatar
@@ -77,8 +86,8 @@ const ProfileCard = () => {
                             </Pane>
                         </Pane>
                     </Pane>
-            )
-        })}
+                )
+            })}
         </Pane>
     )
 }

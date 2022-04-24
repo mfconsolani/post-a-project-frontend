@@ -163,7 +163,7 @@ const ProjectForm = (props) => {
     }
     return (
 
-        <Pane elevation={4} float="left" borderRadius="5px" padding="1rem" margin="1rem" minWidth="50vw">
+        <Pane elevation={4} float="left" borderRadius="5px" padding="1rem" marginY="4em" minWidth="50vw">
             <Form
                 onSubmit={onSubmit}
                 initialValues={{ owner: props.user.userEmail }}

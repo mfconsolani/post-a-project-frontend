@@ -32,8 +32,14 @@ const SignIn = (props) => {
             .then(res => {
                 if (res.data?.success) {
                     props.setStatus({ status: true, userEmail: res.data?.userEmail, userId: res.data?.userId, profileType: res.data?.profile })
-                    console.log(props, props.status)
-                    toaster.success('Welcome! You\'ve been successfully logged in')
+                    // console.log(props, props.status)
+                    // console.log(res.data.profileData)
+                    res.data?.profileData 
+                    && Object.keys(res.data?.profileData).length !== 0
+                    && props.setProfile({profileExists: true, ...res.data?.profileData})
+                    toaster.success('Welcome! You\'ve been successfully logged in', {
+                        duration: 2
+                    })
                     form.reset()
                     navigate('/projects')
                     return {success: true}

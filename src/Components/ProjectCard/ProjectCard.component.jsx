@@ -53,8 +53,8 @@ const ProjectCard = (props) => {
   }
 
   return (
-    <Pane margin="0.1em" >
-      <Pane border="1px solida #FFF" borderRadius="5px" padding="1rem" margin="1rem" elevation={3} float="left" display="flex" flexDirection="column" width="70vw">
+    <Pane margin="0.1em">
+      <Pane border="1px solid #FFF" borderRadius="5px" padding="1rem" margin="1rem" elevation={3} float="left" display="flex" flexDirection="column" width="70vw">
         <Pane display="flex" flexDirection="row" justifyContent="space-between">
           <Heading> {props.title} </Heading>
           <Pane display="flex" flexDirection="column" alignContent="center">

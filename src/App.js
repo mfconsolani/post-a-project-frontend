@@ -15,10 +15,9 @@ import axios from 'axios'
 //Profile form
 
 const ProjectCardHolder = (props) => {
-  
-  return (
 
-    <Pane marginTop="3em">
+  return (
+    <Pane marginTop="3em" >
       {props.projects && props.projects?.data.map(element => {
         return (
           <ProjectCard userLogged={props.isLoggedIn} {...element} key={element.id} />
@@ -32,16 +31,18 @@ const App = () => {
 
   const [isLoggedIn, setIsLoggedIn] = useState({ status: false, userEmail: '', userId: '', profileType: '' })
   const [projects, setProjects] = useState('')
+  const [profileInfo, setProfileInfo] = useState({profileExists: false})
 
   useEffect(() => {
     console.log(isLoggedIn)
-  }, [isLoggedIn])
+    console.log(profileInfo)
+  }, [isLoggedIn, profileInfo])
 
   useEffect(() => {
     const projectsPublished = async () => {
       return await axios.get('http://localhost:8080/api/projects')
         .then(res => {
-          console.log(res.data)
+          // console.log(res.data)
           setProjects(res.data)
         })
         .catch(err => console.log(err))
@@ -52,16 +53,16 @@ const App = () => {
 
   return (
     <div className="App">
-      <Pane display="flex" flexDirection="row" justifyContent="flex-end" width="100vw"
+      <Pane display="flex" flexDirection="row" justifyContent="flex-end" width="100vw" zIndex="2"
         marginBottom={16} position="fixed" top="0" left="0" right="0" backgroundColor="white" paddingBottom="1em" >
         {isLoggedIn.status &&
-          <Link to="/postproject" style={{ textDecoration: 'none', marginRight:"16px", marginTop:"8px" }}>
+          <Link to="/postproject" style={{ textDecoration: 'none', marginRight: "16px", marginTop: "8px" }}>
             <Button appearance="minimal" >Post project</Button>
           </Link>}
-        <Link to="/projects" style={{ textDecoration: 'none', marginRight:"16px", marginTop:"8px" }}>
+        <Link to="/projects" style={{ textDecoration: 'none', marginRight: "16px", marginTop: "8px" }}>
           <Button appearance="minimal" >Projects</Button>
         </Link>
-        <Link to="/candidates" style={{ textDecoration: 'none', marginRight:"16px", marginTop:"8px" }}>
+        <Link to="/candidates" style={{ textDecoration: 'none', marginRight: "16px", marginTop: "8px" }}>
           <Button appearance="minimal" >Candidates</Button>
         </Link>
         {isLoggedIn.status ?
@@ -91,10 +92,10 @@ const App = () => {
             <Avatar cursor="pointer" name={isLoggedIn.userEmail} size={40} marginRight={16} marginTop={8} />
           </Popover>
           : <React.Fragment>
-            <Link to="/signin" style={{ textDecoration: 'none', marginRight:"16px", marginTop:"8px" }}>
+            <Link to="/signin" style={{ textDecoration: 'none', marginRight: "16px", marginTop: "8px" }}>
               <Button color="#3366FF" border="1px solid #3366FF" >Sign In</Button>
             </Link>
-            <Link to="/signup" style={{ textDecoration: 'none', marginRight:"16px", marginTop:"8px" }}>
+            <Link to="/signup" style={{ textDecoration: 'none', marginRight: "16px", marginTop: "8px" }}>
               <Button appearance="primary" >Sign Up</Button>
             </Link>
           </React.Fragment>
@@ -103,7 +104,10 @@ const App = () => {
       <Pane display="flex" flexDirection="column" alignItems="center">
         <Routes>
           <Route path="/" element='' />
-          <Route path="/signin" element={<SignIn status={isLoggedIn} setStatus={setIsLoggedIn} />} />
+          <Route path="/signin" element={<SignIn 
+          status={isLoggedIn} 
+          setStatus={setIsLoggedIn} 
+          setProfile={setProfileInfo} />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/candidates" element={<ProfileCard />} />
           <Route path="/postproject" element={isLoggedIn.profileType
@@ -111,17 +115,17 @@ const App = () => {
             : <Alert intent="danger" title="Unauthorized route" margin={16}>
               Sorry! This option is only available for certain type of users 😔
             </Alert>} />
-          <Route path="/projects" element={<ProjectCardHolder 
-          projects={projects} 
-          isLoggedIn={isLoggedIn}
+          <Route path="/projects" element={<ProjectCardHolder
+            projects={projects}
+            isLoggedIn={isLoggedIn}
           />} />
-          <Route path="/profile" element={<ProfileForm user={isLoggedIn} />} />
+          <Route path="/profile" element={<ProfileForm user={isLoggedIn} profile={profileInfo} />} />
         </Routes>
 
 
       </Pane>
 
-          {}
+      { }
 
 
     </div>
