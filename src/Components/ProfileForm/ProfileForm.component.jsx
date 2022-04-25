@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Pane, Button, Spinner, Textarea, InlineAlert, TextInputField, Label, Alert } from 'evergreen-ui';
-import { Field, Form } from 'react-final-form'
+import { Field, Form, FormSpy } from 'react-final-form'
 import './ProfileForm.styles.css'
 import axios from 'axios'
 import { MultiSelect } from "react-multi-select-component";
@@ -38,7 +38,7 @@ const TextAreaAdapter = ({ input, ...rest }) => {
 const SkillsMultiSelect = ({ input, ...rest }) => {
     const [selected, setSelected] = useState(rest.meta.initial || []);
     const [skills, setSkills] = useState([])
-    console.log("rest.meta", rest.meta, "rest.input", rest.input)
+    // console.log("rest.meta", rest.meta, "rest.input", rest.input)
     console.log(input.value)
     useEffect(() => {
         const getSkills = async () => {
@@ -170,9 +170,9 @@ const ProfileForm = (props) => {
             city: props.profile.city,
             birthday: props.profile.birthday,
             description: props.profile.description,
-            // skills: props.profile.skills.map(element => {
-            //     return { label: element.skill, value: element.skill }
-            // }),
+            skills: props.profile.skills.map(element => {
+                return { label: element.skill, value: element.skill }
+            }),
             phone: props.profile.phoneNumber
         }
         : undefined
@@ -211,10 +211,12 @@ const ProfileForm = (props) => {
 
                     <Form
                         onSubmit={onSubmit}
+                        subscription={props.subscription}
                         initialValues={{
                             email: props.user.userEmail,
                             ...profileInitialValues
                         }}
+                        keepDirtyOnReinitialize
                         render={({ handleSubmit, values, submitting, pristine }) => (
                             <form onSubmit={handleSubmit}>
                                 <Field
@@ -294,6 +296,14 @@ const ProfileForm = (props) => {
                             label="Company name"
                             disabled
                         /> */}
+                        <FormSpy subscription={{ values: true }}>
+            {({ values }) => (
+              <pre>
+                {console.log("hola")}
+                {JSON.stringify(values, 0, 2)}
+              </pre>
+            )}
+          </FormSpy>
                                 <Field
                                     component={TextInputAdapter}
                                     name="email"
