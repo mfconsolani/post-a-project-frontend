@@ -16,8 +16,7 @@ const ProfileCard = () => {
             return await axios.get('http://localhost:8080/api/users/candidates/extended')
                 .then(res => {
                     console.log(res.data.payload)
-
-                    setUserProfiles(res.data.payload)
+                    setUserProfiles(res.data.payload.filter( elem => elem.profile))
                 })
                 .catch(err => console.log(err))
         }

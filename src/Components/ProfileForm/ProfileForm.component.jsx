@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Pane, Button, Spinner, Textarea, InlineAlert, TextInputField, Label, Alert } from 'evergreen-ui';
-import { Field, Form, FormSpy } from 'react-final-form'
+import { Field, Form } from 'react-final-form'
 import './ProfileForm.styles.css'
 import axios from 'axios'
 import { MultiSelect } from "react-multi-select-component";
@@ -39,7 +39,7 @@ const SkillsMultiSelect = ({ input, ...rest }) => {
     const [selected, setSelected] = useState(rest.meta.initial || []);
     const [skills, setSkills] = useState([])
     // console.log("rest.meta", rest.meta, "rest.input", rest.input)
-    console.log(input.value)
+    // console.log(input.value)
     useEffect(() => {
         const getSkills = async () => {
             return await axios.get('http://localhost:8080/api/skills/')
@@ -162,6 +162,7 @@ const DatePickerCustom = ({ input, ...rest }) => {
 
 const ProfileForm = (props) => {
     const [errors, setErrors] = useState({})
+    const [isProfileComplete, setIsProfileComplete] = useState() 
     const profileInitialValues = props.profile?.profileExists
         ? {
             firstName: props.profile.firstName,
@@ -181,8 +182,11 @@ const ProfileForm = (props) => {
         try {
             // console.log(event)
             const createProfile = axios.post(`http://localhost:8080/api/profile/user/${props.user.userId}`, event)
-            // const createProfileResponse = await createProfile
-            // console.log(createProfileResponse)
+            const createProfileResponse = await createProfile
+            if (createProfileResponse.data.message === "Profile created"){
+                setIsProfileComplete(true)
+            }
+            // console.log(createProfileResponse, createProfileResponse.message === "Profile created")
         } catch (err) {
             console.log(err)
         }
@@ -195,7 +199,7 @@ const ProfileForm = (props) => {
                     Sorry! This option is only available for certain type of users 😔
                 </Alert>
                 : <Pane elevation={4} float="left" borderRadius="5px" padding="1rem" marginX="1rem" marginTop="5em" marginBottom="2em" minWidth="50vw">
-                    {profileInitialValues && Object.keys(profileInitialValues).length !== 0
+                    {(profileInitialValues  && Object.keys(profileInitialValues).length !== 0) | isProfileComplete
                         ? <Alert zIndex="0"
                             intent="success"
                             title="Your profile is up to date! 😁"
@@ -211,7 +215,6 @@ const ProfileForm = (props) => {
 
                     <Form
                         onSubmit={onSubmit}
-                        subscription={props.subscription}
                         initialValues={{
                             email: props.user.userEmail,
                             ...profileInitialValues
@@ -296,14 +299,6 @@ const ProfileForm = (props) => {
                             label="Company name"
                             disabled
                         /> */}
-                        <FormSpy subscription={{ values: true }}>
-            {({ values }) => (
-              <pre>
-                {console.log("hola")}
-                {JSON.stringify(values, 0, 2)}
-              </pre>
-            )}
-          </FormSpy>
                                 <Field
                                     component={TextInputAdapter}
                                     name="email"

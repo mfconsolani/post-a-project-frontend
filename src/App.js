@@ -119,7 +119,7 @@ const App = () => {
             projects={projects}
             isLoggedIn={isLoggedIn}
           />} />
-          <Route path="/profile" element={<ProfileForm subscription={{ submitting: true, pristine: true }} user={isLoggedIn} profile={profileInfo} />} />
+          <Route path="/profile" element={<ProfileForm user={isLoggedIn} profile={profileInfo} />} />
         </Routes>
 
 
