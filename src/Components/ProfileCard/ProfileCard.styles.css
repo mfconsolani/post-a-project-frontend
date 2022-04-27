@@ -97,3 +97,6 @@ button.primary.ghost {
 	padding: 7px;
 }
 
+/* #dialog::before {
+	background-color: rgba(67, 90, 111, 0.1);
+} */

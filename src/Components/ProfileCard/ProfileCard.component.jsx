@@ -1,4 +1,4 @@
-import { Paragraph, Pane, Avatar, Text, Badge } from "evergreen-ui";
+import { Paragraph, Pane, Avatar, Text, Badge, Button, Dialog } from "evergreen-ui";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import capitalizeFirstLetter from '../../helpers/capitalizeFirstLetter'
@@ -10,13 +10,14 @@ import './ProfileCard.styles.css'
 
 const ProfileCard = () => {
     const [userProfiles, setUserProfiles] = useState([])
+    const [isShown, setIsShown] = React.useState(false)
 
     useEffect(() => {
         const fetchUserProfiles = async () => {
             return await axios.get('http://localhost:8080/api/users/candidates/extended')
                 .then(res => {
                     console.log(res.data.payload)
-                    setUserProfiles(res.data.payload.filter( elem => elem.profile))
+                    setUserProfiles(res.data.payload.filter(elem => elem.profile))
                 })
                 .catch(err => console.log(err))
         }
@@ -71,8 +72,19 @@ const ProfileCard = () => {
 
                             </Pane>
                         </Pane>
+                        <Pane>
+                            <Dialog
+                                id="dialog"
+                                isShown={isShown}
+                                title="Dialog title"
+                                onCloseComplete={() => setIsShown(false)}
+                                confirmLabel="Custom Label"
+                            >
+                                Dialog content
+                            </Dialog>
+                        </Pane>
                         <Pane borderTop="1px solid #444" marginY="1em" paddingX="0.5em">
-                            <Paragraph size={300}>
+                            <Paragraph size={300} marginTop={8}>
                                 SKILLS
                             </Paragraph>
                             <Pane>
@@ -82,6 +94,29 @@ const ProfileCard = () => {
                                             {elem.skill}
                                         </Badge>)
                                 })}
+                            </Pane>
+                            <Pane
+                                display="flex"
+                                justifyContent="center"
+                                marginTop={24}
+                                // borderTop="1px solid #888"
+                                marginY="1em"
+                                paddingY="0.5em"
+                                paddingX="0.5em"
+                            >
+                                <Button
+                                    marginX={8}
+                                    color="#3366FF"
+                                    border="1px solid #3366FF"
+                                    backgroundColor="none"
+                                    onClick={() => setIsShown(true)}
+                                > Message
+                                </Button>
+                                <Button
+                                    marginX={8}
+                                    appearance="primary">
+                                    View Profile
+                                </Button>
                             </Pane>
                         </Pane>
                     </Pane>
