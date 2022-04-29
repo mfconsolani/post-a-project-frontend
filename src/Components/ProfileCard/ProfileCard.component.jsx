@@ -7,6 +7,29 @@ import './ProfileCard.styles.css'
 //TODO
 //Build it in such a way that only users with profile completed will be shown
 
+const CandidateProfileDialog = ({ title, customLabel, body, buttonName, ...rest }) => {
+    const [isShown, setIsShown] = React.useState(false)
+
+    return (
+        <Pane>
+            <Dialog
+                isShown={isShown}
+                title={title}
+                onCloseComplete={() => setIsShown(false)}
+                confirmLabel={customLabel || "Label"}
+            >
+                {body}
+            </Dialog>
+
+            <Button
+                {...rest}
+                onClick={() => setIsShown(true)}>
+                {buttonName}
+            </Button>
+        </Pane>
+    )
+}
+
 
 const ProfileCard = () => {
     const [userProfiles, setUserProfiles] = useState([])
@@ -104,19 +127,24 @@ const ProfileCard = () => {
                                 paddingY="0.5em"
                                 paddingX="0.5em"
                             >
-                                <Button
+                                <CandidateProfileDialog
+                                    body="Some content goes here"
+                                    title="Title goes here"
+                                    buttonName="Message"
+                                    customLabel=""
                                     marginX={8}
                                     color="#3366FF"
                                     border="1px solid #3366FF"
                                     backgroundColor="none"
-                                    onClick={() => setIsShown(true)}
-                                > Message
-                                </Button>
-                                <Button
+                                />
+                                <CandidateProfileDialog
+                                    body="Some content goes here"
+                                    title="Title goes here"
+                                    buttonName="View Profile"
+                                    customLabel=""
+                                    appearance="primary"
                                     marginX={8}
-                                    appearance="primary">
-                                    View Profile
-                                </Button>
+                                />
                             </Pane>
                         </Pane>
                     </Pane>
