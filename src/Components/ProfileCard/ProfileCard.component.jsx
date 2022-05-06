@@ -7,7 +7,7 @@ import './ProfileCard.styles.css'
 //TODO
 //Build it in such a way that only users with profile completed will be shown
 
-const CandidateProfileDialog = ({ title, customLabel, body, buttonName, ...rest }) => {
+const CandidateProfileDialog = ({ title, customLabel, body, buttonName, profileData, ...rest }) => {
     const [isShown, setIsShown] = React.useState(false)
 
     return (
@@ -18,7 +18,34 @@ const CandidateProfileDialog = ({ title, customLabel, body, buttonName, ...rest 
                 onCloseComplete={() => setIsShown(false)}
                 confirmLabel={customLabel || "Label"}
             >
-                {body}
+                <Pane>
+                    <Pane display="flex" flexDirection="column" alignItems="center">
+                        <Avatar
+                            src={`https://randomuser.me/api/portraits/women/${Math.floor(Math.random() * 100)}.jpg`}
+                            name="Alan Turing"
+                            size={300}
+                            border="3px solid white"
+
+                        />
+                        <Text size={600}>{profileData.username ? capitalizeFirstLetter(profileData.username) : profileData.email.split('@')[0]}</Text>
+                    </Pane>
+                    <Pane display="flex" flexDirection="column" alignItems="center">
+                        <Paragraph>
+                            {profileData.profile && profileData.profile.country}
+                        </Paragraph>
+                        <Paragraph size={300}>
+                            {profileData.profile && profileData.profile.description}
+                        </Paragraph>
+                        <Pane>
+                            {profileData.profile && profileData.profile.skills.map(elem => {
+                                return (
+                                    <Badge color="blue" marginRight={8}>
+                                        {elem.skill}
+                                    </Badge>)
+                            })}
+                        </Pane>
+                    </Pane>
+                </Pane>
             </Dialog>
 
             <Button
@@ -61,7 +88,7 @@ const ProfileCard = () => {
             {userProfiles && userProfiles.map(elem => {
                 return (
                     <Pane
-                        key={elem.id + "d" + (elem.profile && elem.profile.id)}
+                        key={elem.id}
                         elevation={3}
                         float="left"
                         display="flex"
@@ -118,6 +145,17 @@ const ProfileCard = () => {
                                         </Badge>)
                                 })}
                             </Pane>
+                            <Paragraph size={300} marginTop={8}>
+                                ROLES
+                            </Paragraph>
+                            <Pane>
+                                {elem.profile && elem.profile.roles.map(elem => {
+                                    return (
+                                        <Badge color="purple" marginRight={8}>
+                                            {elem.role}
+                                        </Badge>)
+                                })}
+                            </Pane>
                             <Pane
                                 display="flex"
                                 justifyContent="center"
@@ -128,6 +166,7 @@ const ProfileCard = () => {
                                 paddingX="0.5em"
                             >
                                 <CandidateProfileDialog
+                                    profileData={elem}
                                     body="Some content goes here"
                                     title="Title goes here"
                                     buttonName="Message"
@@ -138,6 +177,7 @@ const ProfileCard = () => {
                                     backgroundColor="none"
                                 />
                                 <CandidateProfileDialog
+                                    profileData={elem}
                                     body="Some content goes here"
                                     title="Title goes here"
                                     buttonName="View Profile"

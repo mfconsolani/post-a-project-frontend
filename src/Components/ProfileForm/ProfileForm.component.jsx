@@ -199,7 +199,7 @@ const ProfileForm = (props) => {
                     Sorry! This option is only available for certain type of users 😔
                 </Alert>
                 : <Pane elevation={4} float="left" borderRadius="5px" padding="1rem" marginX="1rem" marginTop="5em" marginBottom="2em" minWidth="50vw">
-                    {(profileInitialValues  && Object.keys(profileInitialValues).length !== 0) | isProfileComplete
+                    {(profileInitialValues && Object.keys(profileInitialValues).length !== 0) | isProfileComplete
                         ? <Alert zIndex="0"
                             intent="success"
                             title="Your profile is up to date! 😁"
