@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Pane, Button, Spinner, Textarea, InlineAlert, TextInputField, Label, Alert } from 'evergreen-ui';
+import { Pane, Button, Spinner, Textarea, InlineAlert, TextInputField, Label, Alert, toaster } from 'evergreen-ui';
 import { Field, Form } from 'react-final-form'
 import './ProfileForm.styles.css'
 import axios from 'axios'
@@ -7,9 +7,9 @@ import { MultiSelect } from "react-multi-select-component";
 import DatePicker from 'react-date-picker';
 
 //TODO
-//When profile already exists, the form initializes with current values
-//but when trying to edit a field, forms re renders, and re-initialize with old fields,
-//and new values are never taken in, and its a full loop that never ends. Fix that
+//When I modify the profile info, on submit, the updated values should update as well, but they dont
+//So if you change of view and go back to profile, you get the old initial values, not the updated ones
+//until you login again
 
 const TextInputAdapter = ({ input, ...rest }) => (
     <TextInputField display="flex" flexDirection="column" marginY="1em"
@@ -38,13 +38,11 @@ const TextAreaAdapter = ({ input, ...rest }) => {
 const SkillsMultiSelect = ({ input, ...rest }) => {
     const [selected, setSelected] = useState(rest.meta.initial || []);
     const [skills, setSkills] = useState([])
-    // console.log("rest.meta", rest.meta, "rest.input", rest.input)
-    // console.log(input.value)
+
     useEffect(() => {
         const getSkills = async () => {
             return await axios.get('http://localhost:8080/api/skills/')
                 .then(res => {
-                    // console.log(res)
                     const existingSkills = res.data.map(element => {
                         return { label: element.skill, value: element.skill }
                     })
@@ -85,25 +83,26 @@ const SkillsMultiSelect = ({ input, ...rest }) => {
     );
 };
 
-const RolesMultiSelect = ({ input, meta, ...rest }) => {
-    const [selected, setSelected] = useState([]);
+const RolesMultiSelect = ({ input, ...rest }) => {
+    const [selected, setSelected] = useState(rest.meta.initial || []);
     const [roles, setRoles] = useState([])
 
     useEffect(() => {
         const getRoles = async () => {
             return await axios.get('http://localhost:8080/api/roles/')
                 .then(res => {
-                    // console.log(res)
-                    const existingSkills = res.data.map(element => {
+                    console.log(res.data)
+                    const existingRoles = res.data.map(element => {
                         return { label: element.role, value: element.role }
                     })
-                    setRoles(existingSkills)
+                    setRoles(existingRoles)
                 })
                 .catch(err => console.log(err))
         }
         getRoles()
         return
     }, [])
+
 
     return (
         <Pane marginY="1em" >
@@ -162,7 +161,7 @@ const DatePickerCustom = ({ input, ...rest }) => {
 
 const ProfileForm = (props) => {
     const [errors, setErrors] = useState({})
-    const [isProfileComplete, setIsProfileComplete] = useState() 
+    const [isProfileComplete, setIsProfileComplete] = useState()
     const profileInitialValues = props.profile?.profileExists
         ? {
             firstName: props.profile.firstName,
@@ -174,6 +173,9 @@ const ProfileForm = (props) => {
             skills: props.profile.skills.map(element => {
                 return { label: element.skill, value: element.skill }
             }),
+            roles: props.profile.roles.map(element => {
+                return { label: element.role, value: element.role }
+            }),
             phone: props.profile.phoneNumber
         }
         : undefined
@@ -183,12 +185,24 @@ const ProfileForm = (props) => {
             // console.log(event)
             const createProfile = axios.post(`http://localhost:8080/api/profile/user/${props.user.userId}`, event)
             const createProfileResponse = await createProfile
-            if (createProfileResponse.data.message === "Profile created"){
+            if (createProfileResponse.data.message === "Profile created") {
                 setIsProfileComplete(true)
+                toaster.success('Profile completed', {
+                    duration: 3,
+                    id: 'forbidden-action'
+                  })
+            } else if(createProfileResponse.data.message === "Profile updated"){
+                toaster.success('Profile successfully updated', {
+                    duration: 3,
+                    id: 'forbidden-action'
+                  })
             }
             // console.log(createProfileResponse, createProfileResponse.message === "Profile created")
         } catch (err) {
             console.log(err)
+            toaster.danger('Error occurred when creating or updating profile', {
+                duration: 3
+              })
         }
     }
 

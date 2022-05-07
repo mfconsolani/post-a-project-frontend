@@ -1,53 +1,56 @@
 import React from "react";
 import { Field, Form } from 'react-final-form'
 import axios from 'axios'
-import { TextInputField, Button, toaster, Spinner } from 'evergreen-ui'
+import { TextInputField, Button, toaster, Spinner, InlineAlert } from 'evergreen-ui'
 import './SignIn.styles.css'
 import { useNavigate } from "react-router-dom";
 
-const strongRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{10,})');
-
-const validatePassword = (value) => {
-    if (!strongRegex.test(value)) {
-        const message = "Password must include: at least one capital letter, one lowercase letter, one number and one symbol and have at least 8 characters"
-        return { isInvalid: true, message }
-    }
-    return { isInvalid: false }
-}
+const required = value => (value ? undefined : 'Required')
 
 
 const TextInputAdapter = ({ input, ...rest }) => (
-    <TextInputField {...input} {...rest}
-        label={rest.label}
-        placeholder={rest.placeholder}
-        onChange={(event) => input.onChange(event)}
-    />
+    <React.Fragment>
+        <TextInputField {...input} {...rest}
+            marginBottom={8}
+            label={rest.label}
+            placeholder={rest.placeholder}
+            onChange={(event) => input.onChange(event)}
+        />
+        {rest.meta.error && rest.meta.touched && (
+            <InlineAlert
+                intent="danger"
+                id="inline-alert-icon"
+                marginBottom={24}
+                size={300}
+            >
+                {rest.meta.error}
+            </InlineAlert>
+        )}
+    </React.Fragment>
 )
 
 
 const SignIn = (props) => {
     let navigate = useNavigate()
     const onSubmit = async (values, form) => {
-        !validatePassword(values.password).isInvalid && await axios.post('http://localhost:8080/api/auth/local/login', values)
+        await axios.post('http://localhost:8080/api/auth/local/login', values)
             .then(res => {
                 if (res.data?.success) {
                     props.setStatus({ status: true, userEmail: res.data?.userEmail, userId: res.data?.userId, profileType: res.data?.profile })
-                    // console.log(props, props.status)
-                    // console.log(res.data.profileData)
-                    res.data?.profileData 
-                    && Object.keys(res.data?.profileData).length !== 0
-                    && props.setProfile({profileExists: true, ...res.data?.profileData})
+                    res.data?.profileData
+                        && Object.keys(res.data?.profileData).length !== 0
+                        && props.setProfile({ profileExists: true, ...res.data?.profileData })
                     toaster.success('Welcome! You\'ve been successfully logged in', {
                         duration: 2
                     })
                     form.reset()
                     navigate('/projects')
-                    return {success: true}
+                    return { success: true }
                 }
             })
             .catch(err => {
                 toaster.danger(err?.response.status === 401 && "Wrong email or password")
-                return {success: false, message: err}
+                return { success: false, message: err }
             })
     }
 
@@ -57,7 +60,7 @@ const SignIn = (props) => {
                 onSubmit={onSubmit}
                 render={({ handleSubmit, values, form, submitSucceeded, submitting }) => (
                     <form onSubmit={async event => {
-                            await handleSubmit(event, form)
+                        await handleSubmit(event, form)
                     }} className="form-container">
                         <div>
                             <h3 className="signin-title">SIGN IN</h3>
@@ -68,6 +71,8 @@ const SignIn = (props) => {
                                 placeholder="youremail@emailprovider.com"
                                 type="email"
                                 required
+                                validate={required}
+
                             />
                             <Field
                                 component={TextInputAdapter}
@@ -75,8 +80,7 @@ const SignIn = (props) => {
                                 label="Password"
                                 type="password"
                                 required
-                                validationMessage={values.password && validatePassword(values.password).message}
-                                isInvalid={values.password && validatePassword(values.password).isInvalid}
+                                validate={required}
                             />
                         </div>
                         <div className="button-container">
@@ -86,7 +90,6 @@ const SignIn = (props) => {
                                     marginRight={16}
                                     color="#3366FF"
                                     border="1px solid #3366FF"
-                                // onClick={form.restart}
                                 > Sign In
                                 </Button>
                                 : <Spinner size={32} />}
