@@ -1,15 +1,18 @@
 import React from "react";
 import { Field, Form } from 'react-final-form'
 import axios from 'axios'
-import { TextInputField, Button, toaster, Spinner, Text, Paragraph, InlineAlert } from 'evergreen-ui'
+import {
+    TextInputField, Button, toaster, Spinner, Switch,
+    Text, Paragraph,
+    InlineAlert, Pane, Small, Nudge
+} from 'evergreen-ui'
 import './SignUp.styles.css'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+
 
 //TODO
-//Implement second password check
-//Prevent isInvalid from popping at the very first time: use onBlur
-
-
+//Add view password button
+//Add input to assign username
 let strongRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{10,})');
 
 const checkPass = value => strongRegex.test(value) ? undefined : 'Password must include: at least one uppercase letter, one lowercase letter, one number and one symbol and have at least 8 characters'
@@ -28,8 +31,47 @@ const validatePassword = (password, passwordRepeat = null) => {
     return { isInvalid: false }
 }
 
+
+const ControlledSwitchInput = ({ input, ...rest }) => {
+    const [checked, setChecked] = React.useState(false)
+    // console.log("input", input, "rest", rest)
+    // React.useEffect(() => {
+    //     console.log(checked)
+    // }, [checked])
+
+    return (
+        <Pane display="flex" flexDirection="column" alignItems="end" marginBottom="18px">
+            <Nudge isShown={true} 
+            tooltipContent='Pick "yes" if you want to register your company, 
+                start-up or NGO. For those registering just as a candidate, no need to switch anything'>
+            <Text>
+                <Small>
+                <b>{rest.text}</b>
+                </Small>
+            </Text>
+            </Nudge>
+            <Pane display="flex" alignItems="center">
+                <Text>
+                    <Small marginRight="0.5em">{rest.falsetext}</Small>
+                </Text>
+                <Switch {...input} {...rest}
+                    hasCheckIcon
+                    checked={checked}
+                    onChange={(e) => {
+                        setChecked(e.target.checked)
+                        input.onChange(e.target.checked ? "COMPANY" : "USER")
+                    }}
+                    display="inline-block"
+                />
+                <Text>
+                    <Small marginLeft="0.5em">{rest.truetext}</Small>
+                </Text>
+            </Pane>
+        </Pane>
+    )
+}
+
 const TextInputAdapter = ({ input, ...rest }) => {
-    // console.log(input, rest.meta.error, rest.meta.touched)
 
     return (
         <React.Fragment>
@@ -55,7 +97,9 @@ const TextInputAdapter = ({ input, ...rest }) => {
 
 
 const SignUp = () => {
+    let navigate = useNavigate()
     const onSubmit = async (values, form) => {
+        console.log(values)
         !validatePassword(values.password, values.passwordRepeat).isInvalid
             && await axios.post('http://localhost:8080/api/auth/local/signup', values)
                 .then(res => {
@@ -63,12 +107,15 @@ const SignUp = () => {
                         toaster.success('Welcome! You\'ve been successfully signed up')
                         console.log(res.data)
                         form.reset()
+                        navigate('/candidates')
                     } else {
                         toaster.warning(res.data.message)
                     }
                 })
                 .catch(err => {
-                    toaster.danger(err?.response.status === 409 && "Email might already be in use")
+                    toaster.danger(err?.response.status === 409
+                        ? "Email might already be in use"
+                        : "Unexpected error when trying to sign up")
                 })
     }
 
@@ -84,9 +131,8 @@ const SignUp = () => {
                     return errors;
                 }}
                 render={({ handleSubmit, values, submitting, form, pristine }) => (
-                    <form onSubmit={async event => {
-                        await handleSubmit(event, form)
-                    }} className="form-container">
+                    <form onSubmit={async event => await handleSubmit(event, form)}
+                        className="form-container">
                         <div>
                             <h3 className="signup-title">SIGN UP</h3>
                             <Field
@@ -117,7 +163,15 @@ const SignUp = () => {
                                 required
                                 validate={composeValidators(required, checkPass)}
                             />
-                            <Paragraph marginBottom="24px" size={300}>Already signed? <Link to="/signin">Log in</Link></Paragraph>
+                            <Paragraph marginBottom="18px" size={300}>Already signed? <Link to="/signin">Log in</Link></Paragraph>
+                            <Field
+                                component={ControlledSwitchInput}
+                                truetext="Yes"
+                                falsetext="No"
+                                text="Signing up as a company?"
+                                name="profileType"
+                                defaultValue="USER"
+                            />
                         </div>
                         <div className="button-container">
                             {!submitting
