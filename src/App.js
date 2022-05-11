@@ -31,11 +31,12 @@ const App = () => {
 
   const [isLoggedIn, setIsLoggedIn] = useState({ status: false, userEmail: '', userId: '', profileType: '' })
   const [projects, setProjects] = useState('')
-  const [profileInfo, setProfileInfo] = useState({profileExists: false})
+  const [profileInfo, setProfileInfo] = useState({ profileExists: false })
 
   useEffect(() => {
     console.log(isLoggedIn)
     console.log(profileInfo)
+    // console.log()
   }, [isLoggedIn, profileInfo])
 
   useEffect(() => {
@@ -104,11 +105,14 @@ const App = () => {
       <Pane display="flex" flexDirection="column" alignItems="center">
         <Routes>
           <Route path="/" element='' />
-          <Route path="/signin" element={<SignIn 
-          status={isLoggedIn} 
-          setStatus={setIsLoggedIn} 
-          setProfile={setProfileInfo} />} />
-          <Route path="/signup" element={<SignUp />} />
+          <Route path="/signin" element={<SignIn
+            status={isLoggedIn}
+            setStatus={setIsLoggedIn}
+            setProfile={setProfileInfo} />} />
+          <Route path="/signup" element={<SignUp
+            setStatus={setIsLoggedIn}
+            // setProfile={setProfileInfo}
+          />} />
           <Route path="/candidates" element={<ProfileCard />} />
           <Route path="/postproject" element={isLoggedIn.profileType
             ? <ProjectForm user={isLoggedIn} />

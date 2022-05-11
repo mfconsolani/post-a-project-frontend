@@ -4,7 +4,7 @@ import axios from 'axios'
 import {
     TextInputField, Button, toaster, Spinner, Switch,
     Text, Paragraph,
-    InlineAlert, Pane, Small, Nudge
+    InlineAlert, Pane, Small, Nudge, Pulsar
 } from 'evergreen-ui'
 import './SignUp.styles.css'
 import { Link, useNavigate } from 'react-router-dom'
@@ -41,14 +41,14 @@ const ControlledSwitchInput = ({ input, ...rest }) => {
 
     return (
         <Pane display="flex" flexDirection="column" alignItems="end" marginBottom="18px">
-            <Nudge isShown={true} 
-            tooltipContent='Pick "yes" if you want to register your company, 
+            <Nudge isShown={true}
+                tooltipContent='Pick "yes" if you want to register your company, 
                 start-up or NGO. For those registering just as a candidate, no need to switch anything'>
-            <Text>
-                <Small>
-                <b>{rest.text}</b>
-                </Small>
-            </Text>
+                <Text>
+                    <Small>
+                        <b>{rest.text}</b>
+                    </Small>
+                </Text>
             </Nudge>
             <Pane display="flex" alignItems="center">
                 <Text>
@@ -96,7 +96,7 @@ const TextInputAdapter = ({ input, ...rest }) => {
 }
 
 
-const SignUp = () => {
+const SignUp = (props) => {
     let navigate = useNavigate()
     const onSubmit = async (values, form) => {
         console.log(values)
@@ -104,6 +104,8 @@ const SignUp = () => {
             && await axios.post('http://localhost:8080/api/auth/local/signup', values)
                 .then(res => {
                     if (res.data?.success) {
+                        props.setStatus({ status: true, userEmail: res.data?.payload.email, userId: res.data?.payload.id, profileType: res.data?.payload.profileType })
+
                         toaster.success('Welcome! You\'ve been successfully signed up')
                         console.log(res.data)
                         form.reset()
@@ -144,6 +146,13 @@ const SignUp = () => {
                                 required
                                 errormessage="This field is required"
                                 validate={required}
+                            />
+                            <Field
+                                component={TextInputAdapter}
+                                name="username"
+                                label="Username"
+                                placeholder="i.e.: pepitopepe89 (optional field)"
+                                type="text"
                             />
 
                             <Field

@@ -9,9 +9,10 @@ import './ProfileCard.styles.css'
 
 const CandidateProfileDialog = ({ title, customLabel, body, buttonName, profileData, ...rest }) => {
     const [isShown, setIsShown] = React.useState(false)
+    // console.log(profileData)
 
     return (
-        <Pane>
+        <Pane key={profileData.profile.id}>
             <Dialog
                 isShown={isShown}
                 title={title}
@@ -39,7 +40,7 @@ const CandidateProfileDialog = ({ title, customLabel, body, buttonName, profileD
                         <Pane>
                             {profileData.profile && profileData.profile.skills.map(elem => {
                                 return (
-                                    <Badge color="blue" marginRight={8}>
+                                    <Badge key={elem.id} color="blue" marginRight={8}>
                                         {elem.skill}
                                     </Badge>)
                             })}
@@ -66,7 +67,7 @@ const ProfileCard = () => {
         const fetchUserProfiles = async () => {
             return await axios.get('http://localhost:8080/api/users/candidates/extended')
                 .then(res => {
-                    console.log(res.data.payload)
+                    // console.log(res.data.payload)
                     setUserProfiles(res.data.payload.filter(elem => elem.profile))
                 })
                 .catch(err => console.log(err))
@@ -86,6 +87,7 @@ const ProfileCard = () => {
             padding="1em"
         >
             {userProfiles && userProfiles.map(elem => {
+                // console.log("elem.id", elem.id)
                 return (
                     <Pane
                         key={elem.id}
@@ -140,7 +142,7 @@ const ProfileCard = () => {
                             <Pane>
                                 {elem.profile && elem.profile.skills.map(elem => {
                                     return (
-                                        <Badge color="blue" marginRight={8}>
+                                        <Badge key={elem.id} color="blue" marginRight={8}>
                                             {elem.skill}
                                         </Badge>)
                                 })}
@@ -151,7 +153,7 @@ const ProfileCard = () => {
                             <Pane>
                                 {elem.profile && elem.profile.roles.map(elem => {
                                     return (
-                                        <Badge color="purple" marginRight={8}>
+                                        <Badge key={elem.id} color="purple" marginRight={8}>
                                             {elem.role}
                                         </Badge>)
                                 })}
@@ -165,7 +167,7 @@ const ProfileCard = () => {
                                 paddingY="0.5em"
                                 paddingX="0.5em"
                             >
-                                <CandidateProfileDialog
+                                {/* <CandidateProfileDialog
                                     profileData={elem}
                                     body="Some content goes here"
                                     title="Title goes here"
@@ -175,7 +177,9 @@ const ProfileCard = () => {
                                     color="#3366FF"
                                     border="1px solid #3366FF"
                                     backgroundColor="none"
-                                />
+                                    key={elem.id}
+
+                                /> */}
                                 <CandidateProfileDialog
                                     profileData={elem}
                                     body="Some content goes here"
@@ -184,6 +188,7 @@ const ProfileCard = () => {
                                     customLabel=""
                                     appearance="primary"
                                     marginX={8}
+                                    // key={elem.id}
                                 />
                             </Pane>
                         </Pane>
