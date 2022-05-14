@@ -89,7 +89,7 @@ const App = () => {
                     setIsLoggedIn({ status: false, userEmail: '', userId: '', profileType: '' })
                     setProfileInfo({profileExists: false})
                     localStorage.clear()
-                    window.location.reload()
+                    window.location.reload()  
                   }}>
                     Logout
                   </Menu.Item>
