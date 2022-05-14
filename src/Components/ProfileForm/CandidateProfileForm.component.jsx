@@ -159,7 +159,7 @@ const DatePickerCustom = ({ input, ...rest }) => {
 //implement axios.post on form submission
 //isolate components
 
-const ProfileForm = (props) => {
+const CandidateProfileForm = (props) => {
     const [errors, setErrors] = useState({})
     const [isProfileComplete, setIsProfileComplete] = useState()
     const profileInitialValues = props.profile?.profileExists
@@ -307,12 +307,6 @@ const ProfileForm = (props) => {
                                     placeholder="Please add the country code"
                                     required
                                 />
-                                {/* <Field
-                            component={TextInputAdapter}
-                            name="company"
-                            label="Company name"
-                            disabled
-                        /> */}
                                 <Field
                                     component={TextInputAdapter}
                                     name="email"
@@ -336,4 +330,4 @@ const ProfileForm = (props) => {
     )
 }
 
-export default ProfileForm;
+export default CandidateProfileForm;

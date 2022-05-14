@@ -69,9 +69,9 @@ const ProjectCard = (props) => {
         </Pane>
         <Heading> {props.company} </Heading>
         <Paragraph color="black" maxWidth="80%">{props.body}</Paragraph>
-        <Paragraph color="black"><u>Role required:</u> {props.role.map(elem => elem.role)}</Paragraph>
+        <Paragraph color="black"><u>Role required:</u> {props.role.map(elem => <span key={elem.id}> <Badge color="blue">{elem.role}</Badge> </span>)}</Paragraph>
         <Paragraph color="black"><u>Skills required:</u> {props.skill.map(elem => {
-          return <span key={elem.id}  > <Badge>{elem.skill}</Badge> </span>
+          return <span key={elem.id}> <Badge>{elem.skill}</Badge> </span>
         })}</Paragraph>
         <Paragraph color="black"><u>Duration:</u> {props.duration}</Paragraph>
         <Pane display="flex" flexDirection="row" justifyContent="space-between">

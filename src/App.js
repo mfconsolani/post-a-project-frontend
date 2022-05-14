@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { ProjectCard, SignUp, SignIn, ProjectForm, ProfileForm, ProfileCard } from './Components'
+import { ProjectCard, SignUp, SignIn, ProjectForm, CandidateProfileForm, CompanyProfileForm, ProfileCard } from './Components'
 import {
   Pane,
   Button, Alert, Avatar,
@@ -29,18 +29,19 @@ const ProjectCardHolder = (props) => {
 
 const App = () => {
 
-  const [isLoggedIn, setIsLoggedIn] = useState({ status: false, userEmail: '', userId: '', profileType: '' })
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    JSON.parse(localStorage.getItem('userStatus')) || { status: false, userEmail: '', userId: '', profileType: '' }
+    )
   const [projects, setProjects] = useState('')
   const [profileInfo, setProfileInfo] = useState({ profileExists: false })
 
   useEffect(() => {
     console.log(isLoggedIn)
     console.log(profileInfo)
-    // console.log()
   }, [isLoggedIn, profileInfo])
 
   useEffect(() => {
-    const projectsPublished = async () => {
+    const fetchProjects = async () => {
       return await axios.get('http://localhost:8080/api/projects')
         .then(res => {
           // console.log(res.data)
@@ -48,7 +49,7 @@ const App = () => {
         })
         .catch(err => console.log(err))
     }
-    projectsPublished()
+    fetchProjects()
     return
   }, [])
 
@@ -56,7 +57,7 @@ const App = () => {
     <div className="App">
       <Pane display="flex" flexDirection="row" justifyContent="flex-end" width="100vw" zIndex="2"
         marginBottom={16} position="fixed" top="0" left="0" right="0" backgroundColor="white" paddingBottom="1em" >
-        {isLoggedIn.status &&
+        {isLoggedIn.profileType === "COMPANY" &&
           <Link to="/postproject" style={{ textDecoration: 'none', marginRight: "16px", marginTop: "8px" }}>
             <Button appearance="minimal" >Post project</Button>
           </Link>}
@@ -83,9 +84,16 @@ const App = () => {
                 </Menu.Group>
                 <Menu.Divider />
                 <Menu.Group>
-                  <Menu.Item icon={LogOutIcon} intent="danger">
+                <Link to="/projects" style={{ textDecoration: 'none' }}>
+                  <Menu.Item icon={LogOutIcon} intent="danger" onClick={ () => {
+                    setIsLoggedIn({ status: false, userEmail: '', userId: '', profileType: '' })
+                    setProfileInfo({profileExists: false})
+                    localStorage.clear()
+                    window.location.reload()
+                  }}>
                     Logout
                   </Menu.Item>
+                  </Link>
                 </Menu.Group>
               </Menu>
             }
@@ -111,11 +119,10 @@ const App = () => {
             setProfile={setProfileInfo} />} />
           <Route path="/signup" element={<SignUp
             setStatus={setIsLoggedIn}
-            // setProfile={setProfileInfo}
           />} />
           <Route path="/candidates" element={<ProfileCard />} />
-          <Route path="/postproject" element={isLoggedIn.profileType
-            ? <ProjectForm user={isLoggedIn} />
+          <Route path="/postproject" element={isLoggedIn.profileType === "COMPANY"
+            ? <ProjectForm user={isLoggedIn} setProjects={setProjects} />
             : <Alert intent="danger" title="Unauthorized route" margin={16}>
               Sorry! This option is only available for certain type of users 😔
             </Alert>} />
@@ -123,7 +130,10 @@ const App = () => {
             projects={projects}
             isLoggedIn={isLoggedIn}
           />} />
-          <Route path="/profile" element={<ProfileForm user={isLoggedIn} profile={profileInfo} />} />
+          <Route path="/profile" element={
+            isLoggedIn.profileType === "USER" 
+            ? <CandidateProfileForm user={isLoggedIn} profile={profileInfo} />
+            : <CompanyProfileForm user={isLoggedIn} profile={profileInfo} /> } />
         </Routes>
 
 

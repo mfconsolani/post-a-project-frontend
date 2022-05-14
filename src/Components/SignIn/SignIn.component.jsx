@@ -37,6 +37,11 @@ const SignIn = (props) => {
             .then(res => {
                 if (res.data?.success) {
                     props.setStatus({ status: true, userEmail: res.data?.userEmail, userId: res.data?.userId, profileType: res.data?.profile })
+                    const userStatus = JSON.stringify({ status: true, userEmail: res.data?.userEmail, userId: res.data?.userId, profileType: res.data?.profile })
+                    localStorage.setItem('userStatus', userStatus)
+                    const userProfile = res.data?.profileData
+                    && Object.keys(res.data?.profileData).length !== 0 && JSON.stringify({ profileExists: true, ...res.data?.profileData })
+                    userProfile.length > 0 && localStorage.setItem('userProfile', userProfile)
                     res.data?.profileData
                         && Object.keys(res.data?.profileData).length !== 0
                         && props.setProfile({ profileExists: true, ...res.data?.profileData })

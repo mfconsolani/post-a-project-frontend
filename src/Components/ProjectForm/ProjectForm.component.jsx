@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Pane, Button, Spinner, Textarea, InlineAlert, TextInputField, Label } from 'evergreen-ui';
+import { Pane, Button, Spinner, Textarea, InlineAlert, TextInputField, Label, toaster } from 'evergreen-ui';
 import { Field, Form } from 'react-final-form'
 import './ProjectForm.styles.css'
 import axios from 'axios'
@@ -158,8 +158,34 @@ const DatePicker = ({ input, ...rest }) => {
 const ProjectForm = (props) => {
     const [errors, setErrors] = useState({})
 
-    const onSubmit = (event) => {
+    const onSubmit = async (event) => {
         console.log(event)
+        // console.log(values)
+        await axios.post('http://localhost:8080/api/projects', event)
+            .then(res => {
+                if (res.data?.success) {
+                    toaster.success('Your project has been posted posted!')
+                    console.log(res.data)
+                    // form.reset()
+                } else {
+                    toaster.warning(res.data.message || "There's been an error")
+                }
+            })
+            .catch(err => {
+                toaster.danger(err?.response.status === 404
+                    && "Unexpected error project creation")
+            })
+
+        await axios.get('http://localhost:8080/api/projects')
+            .then(res => {
+                console.log(res.data)
+                props.setProjects(res.data)
+            })
+            .catch(err => {
+                toaster.danger(err?.response.status === 404
+                    && "Unexpected error project creation")
+            })
+
     }
     return (
 
