@@ -33,7 +33,7 @@ const App = () => {
     JSON.parse(localStorage.getItem('userStatus')) || { status: false, userEmail: '', userId: '', profileType: '' }
     )
   const [projects, setProjects] = useState('')
-  const [profileInfo, setProfileInfo] = useState({ profileExists: false })
+  const [profileInfo, setProfileInfo] = useState(JSON.parse(localStorage.getItem('userProfile')) || { profileExists: false })
 
   useEffect(() => {
     console.log(isLoggedIn)
@@ -44,7 +44,6 @@ const App = () => {
     const fetchProjects = async () => {
       return await axios.get('http://localhost:8080/api/projects')
         .then(res => {
-          // console.log(res.data)
           setProjects(res.data)
         })
         .catch(err => console.log(err))
@@ -89,7 +88,7 @@ const App = () => {
                     setIsLoggedIn({ status: false, userEmail: '', userId: '', profileType: '' })
                     setProfileInfo({profileExists: false})
                     localStorage.clear()
-                    window.location.reload()  
+                    // window.location.reload()  
                   }}>
                     Logout
                   </Menu.Item>
@@ -132,8 +131,8 @@ const App = () => {
           />} />
           <Route path="/profile" element={
             isLoggedIn.profileType === "USER" 
-            ? <CandidateProfileForm user={isLoggedIn} profile={profileInfo} />
-            : <CompanyProfileForm user={isLoggedIn} profile={profileInfo} /> } />
+            ? <CandidateProfileForm user={isLoggedIn} profile={profileInfo} setProfile={setProfileInfo} />
+            : <CompanyProfileForm user={isLoggedIn} profile={profileInfo} setProfile={setProfileInfo} /> } />
         </Routes>
 
 

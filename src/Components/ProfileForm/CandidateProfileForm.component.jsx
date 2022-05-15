@@ -162,47 +162,34 @@ const DatePickerCustom = ({ input, ...rest }) => {
 const CandidateProfileForm = (props) => {
     const [errors, setErrors] = useState({})
     const [isProfileComplete, setIsProfileComplete] = useState()
-    const profileInitialValues = props.profile?.profileExists
-        ? {
-            firstName: props.profile.firstName,
-            lastName: props.profile.lastName,
-            country: props.profile.country,
-            city: props.profile.city,
-            birthday: props.profile.birthday,
-            description: props.profile.description,
-            skills: props.profile.skills.map(element => {
-                return { label: element.skill, value: element.skill }
-            }),
-            roles: props.profile.roles.map(element => {
-                return { label: element.role, value: element.role }
-            }),
-            phone: props.profile.phoneNumber
-        }
-        : undefined
 
     const onSubmit = async (event) => {
         try {
-            // console.log(event)
             const createProfile = axios.post(`http://localhost:8080/api/profile/user/${props.user.userId}`, event)
             const createProfileResponse = await createProfile
             if (createProfileResponse.data.message === "Profile created") {
                 setIsProfileComplete(true)
+                console.log(createProfileResponse)
+                props.setProfile({ profileExists: true, ...createProfileResponse.data.payload })
+                localStorage.setItem('userProfile', JSON.stringify({ profileExists: true, ...createProfileResponse.data.payload }))
+                console.log(JSON.parse(localStorage.getItem('userProfile')))
                 toaster.success('Profile completed', {
                     duration: 3,
                     id: 'forbidden-action'
-                  })
-            } else if(createProfileResponse.data.message === "Profile updated"){
+                })
+            } else if (createProfileResponse.data.message === "Profile updated") {
+                props.setProfile({ profileExists: true, ...createProfileResponse.data.payload })
+                localStorage.setItem('userProfile', JSON.stringify({ profileExists: true, ...createProfileResponse.data.payload }))
                 toaster.success('Profile successfully updated', {
                     duration: 3,
                     id: 'forbidden-action'
-                  })
+                })
             }
-            // console.log(createProfileResponse, createProfileResponse.message === "Profile created")
         } catch (err) {
             console.log(err)
             toaster.danger('Error occurred when creating or updating profile', {
                 duration: 3
-              })
+            })
         }
     }
 
@@ -213,7 +200,7 @@ const CandidateProfileForm = (props) => {
                     Sorry! This option is only available for certain type of users 😔
                 </Alert>
                 : <Pane elevation={4} float="left" borderRadius="5px" padding="1rem" marginX="1rem" marginTop="5em" marginBottom="2em" minWidth="50vw">
-                    {(profileInitialValues && Object.keys(profileInitialValues).length !== 0) | isProfileComplete
+                    {(props.profile && Object.keys(props.profile).length > 1) | isProfileComplete
                         ? <Alert zIndex="0"
                             intent="success"
                             title="Your profile is up to date! 😁"
@@ -231,7 +218,19 @@ const CandidateProfileForm = (props) => {
                         onSubmit={onSubmit}
                         initialValues={{
                             email: props.user.userEmail,
-                            ...profileInitialValues
+                            firstName: props.profile.firstName,
+                            lastName: props.profile.lastName,
+                            country: props.profile.country,
+                            city: props.profile.city,
+                            birthday: props.profile.birthday,
+                            description: props.profile.description,
+                            skills: props.profile.skills && props.profile.skills.map(element => {
+                                return { label: element.skill, value: element.skill }
+                            }),
+                            roles: props.profile.roles && props.profile.roles.map(element => {
+                                return { label: element.role, value: element.role }
+                            }),
+                            phone: props.profile.phoneNumber
                         }}
                         keepDirtyOnReinitialize
                         render={({ handleSubmit, values, submitting, pristine }) => (

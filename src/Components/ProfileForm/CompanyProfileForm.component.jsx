@@ -37,8 +37,16 @@ const TextAreaAdapter = ({ input, ...rest }) => {
 //implement axios.post on form submission
 //isolate components
 
-const CandidateProfileForm = (props) => {
+const CompanyProfileForm = (props) => {
     const [isProfileComplete, setIsProfileComplete] = useState()
+    // const [initialValues, setInitialValues] = useState(JSON.parse(localStorage.getItem('userProfile')) || {})
+    const [initialValues, setInitalValues] = useState(props.profile?.profileExists ? {
+        industry: props.profile.industry,
+        employees: props.profile.employees,
+        country: props.profile.country,
+        description: props.profile.description,
+        phone: props.profile.phoneNumber
+    } : '' )
     const profileInitialValues = props.profile?.profileExists
         ? {
             industry: props.profile.industry,
@@ -55,11 +63,15 @@ const CandidateProfileForm = (props) => {
             const createProfileResponse = await createProfile
             if (createProfileResponse.data.message === "Profile created") {
                 setIsProfileComplete(true)
+                props.setProfile({profileExists: true, ...createProfileResponse.data.payload})
+                localStorage.setItem('userProfile',JSON.stringify({profileExists: true, ...createProfileResponse.data.payload}))
                 toaster.success('Profile completed', {
                     duration: 3,
                     id: 'forbidden-action'
                 })
             } else if (createProfileResponse.data.message === "Profile updated") {
+                props.setProfile({profileExists: true, ...createProfileResponse.data.payload})
+                localStorage.setItem('userProfile',JSON.stringify({profileExists: true, ...createProfileResponse.data.payload}))
                 toaster.success('Profile successfully updated', {
                     duration: 3,
                     id: 'forbidden-action'
@@ -80,7 +92,7 @@ const CandidateProfileForm = (props) => {
                     Sorry! This option is only available for certain type of users 😔
                 </Alert>
                 : <Pane elevation={4} float="left" borderRadius="5px" padding="1rem" marginX="1rem" marginTop="5em" marginBottom="2em" minWidth="50vw">
-                    {(profileInitialValues && Object.keys(profileInitialValues).length !== 0) | isProfileComplete
+                    {(props.profile && Object.keys(props.profile).length > 1) | isProfileComplete
                         ? <Alert zIndex="0"
                             intent="success"
                             title="Your profile is up to date! 😁"
@@ -98,7 +110,7 @@ const CandidateProfileForm = (props) => {
                         onSubmit={onSubmit}
                         initialValues={{
                             email: props.user.userEmail,
-                            ...profileInitialValues
+                            ...props.profile
                         }}
                         keepDirtyOnReinitialize
                         render={({ handleSubmit, values, submitting, pristine }) => (
@@ -130,7 +142,7 @@ const CandidateProfileForm = (props) => {
                                 />
                                 <Field
                                     component={TextInputAdapter}
-                                    name="phone"
+                                    name="phoneNumber"
                                     label="Phone number"
                                     placeholder="Please add the country code"
                                     required
@@ -158,4 +170,4 @@ const CandidateProfileForm = (props) => {
     )
 }
 
-export default CandidateProfileForm;
+export default CompanyProfileForm;
