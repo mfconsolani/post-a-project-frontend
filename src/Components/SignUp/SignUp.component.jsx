@@ -4,7 +4,7 @@ import axios from 'axios'
 import {
     TextInputField, Button, toaster, Spinner, Switch,
     Text, Paragraph,
-    InlineAlert, Pane, Small, Nudge, Pulsar
+    InlineAlert, Pane, Small, Nudge as Pulsar
 } from 'evergreen-ui'
 import './SignUp.styles.css'
 import { Link, useNavigate } from 'react-router-dom'
@@ -41,7 +41,7 @@ const ControlledSwitchInput = ({ input, ...rest }) => {
 
     return (
         <Pane display="flex" flexDirection="column" alignItems="end" marginBottom="18px">
-            <Nudge isShown={true}
+            <Pulsar isShown={true}
                 tooltipContent='Pick "yes" if you want to register your company, 
                 start-up or NGO. For those registering just as a candidate, no need to switch anything'>
                 <Text>
@@ -49,7 +49,7 @@ const ControlledSwitchInput = ({ input, ...rest }) => {
                         <b>{rest.text}</b>
                     </Small>
                 </Text>
-            </Nudge>
+            </Pulsar>
             <Pane display="flex" alignItems="center">
                 <Text>
                     <Small marginRight="0.5em">{rest.falsetext}</Small>

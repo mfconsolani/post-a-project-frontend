@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Pane, Button, Spinner, Textarea, InlineAlert, TextInputField, Label, Alert, toaster } from 'evergreen-ui';
+import React, { useState } from "react";
+import { Pane, Button, Textarea, TextInputField, Label, Alert, toaster } from 'evergreen-ui';
 import { Field, Form } from 'react-final-form'
 import './ProfileForm.styles.css'
 import axios from 'axios'
@@ -39,23 +39,6 @@ const TextAreaAdapter = ({ input, ...rest }) => {
 
 const CompanyProfileForm = (props) => {
     const [isProfileComplete, setIsProfileComplete] = useState()
-    // const [initialValues, setInitialValues] = useState(JSON.parse(localStorage.getItem('userProfile')) || {})
-    const [initialValues, setInitalValues] = useState(props.profile?.profileExists ? {
-        industry: props.profile.industry,
-        employees: props.profile.employees,
-        country: props.profile.country,
-        description: props.profile.description,
-        phone: props.profile.phoneNumber
-    } : '' )
-    const profileInitialValues = props.profile?.profileExists
-        ? {
-            industry: props.profile.industry,
-            employees: props.profile.employees,
-            country: props.profile.country,
-            description: props.profile.description,
-            phone: props.profile.phoneNumber
-        }
-        : undefined
 
     const onSubmit = async (event) => {
         try {
