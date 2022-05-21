@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { ProjectCard, SignUp, SignIn, ProjectForm, CandidateProfileForm, CompanyProfileForm, ProfileCard } from './Components'
+import { ProjectCard, SignUp, SignIn, ProjectForm, CandidateProfileForm, CompanyProfileForm } from './Components'
+import ProfileCard from './Components/ProfileCard/ProfileCard.component'
 import {
   Pane,
   Button, Alert, Avatar,
@@ -165,9 +166,6 @@ const App = () => {
 
 
       </Pane>
-
-      { }
-
 
     </div>
   );
