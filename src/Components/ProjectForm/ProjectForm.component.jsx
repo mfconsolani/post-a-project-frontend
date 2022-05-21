@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Pane, Button, Spinner, Textarea, InlineAlert, TextInputField, Label } from 'evergreen-ui';
+import { Pane, Button, Spinner, Textarea, InlineAlert, TextInputField, Label, toaster } from 'evergreen-ui';
 import { Field, Form } from 'react-final-form'
 import './ProjectForm.styles.css'
 import axios from 'axios'
@@ -37,7 +37,7 @@ const SkillsMultiSelect = ({ input, ...rest }) => {
 
     useEffect(() => {
         const getSkills = async () => {
-            return await axios.get('http://localhost:8080/api/skills/')
+            return await axios.get(`${process.env.REACT_APP_API_URL}api/skills/`)
                 .then(res => {
                     console.log(res)
                     const existingSkills = res.data.map(element => {
@@ -86,7 +86,7 @@ const RolesMultiSelect = ({ input, meta, ...rest }) => {
 
     useEffect(() => {
         const getRoles = async () => {
-            return await axios.get('http://localhost:8080/api/roles/')
+            return await axios.get(`${process.env.REACT_APP_API_URL}api/roles/`)
                 .then(res => {
                     console.log(res)
                     const existingSkills = res.data.map(element => {
@@ -158,12 +158,38 @@ const DatePicker = ({ input, ...rest }) => {
 const ProjectForm = (props) => {
     const [errors, setErrors] = useState({})
 
-    const onSubmit = (event) => {
+    const onSubmit = async (event) => {
         console.log(event)
+        // console.log(values)
+        await axios.post(`${process.env.REACT_APP_API_URL}api/projects`, event)
+            .then(res => {
+                if (res.data?.success) {
+                    toaster.success('Your project has been posted posted!')
+                    console.log(res.data)
+                    // form.reset()
+                } else {
+                    toaster.warning(res.data.message || "There's been an error")
+                }
+            })
+            .catch(err => {
+                toaster.danger(err?.response.status === 404
+                    && "Unexpected error project creation")
+            })
+
+        await axios.get(`${process.env.REACT_APP_API_URL}api/projects`)
+            .then(res => {
+                console.log(res.data)
+                props.setProjects(res.data)
+            })
+            .catch(err => {
+                toaster.danger(err?.response.status === 404
+                    && "Unexpected error project creation")
+            })
+
     }
     return (
 
-        <Pane elevation={4} float="left" borderRadius="5px" padding="1rem" margin="1rem" minWidth="50vw">
+        <Pane elevation={4} float="left" borderRadius="5px" padding="1rem" marginY="4em" minWidth="50vw">
             <Form
                 onSubmit={onSubmit}
                 initialValues={{ owner: props.user.userEmail }}
