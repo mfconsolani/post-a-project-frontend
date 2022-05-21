@@ -37,7 +37,7 @@ const SkillsMultiSelect = ({ input, ...rest }) => {
 
     useEffect(() => {
         const getSkills = async () => {
-            return await axios.get('http://localhost:8080/api/skills/')
+            return await axios.get(`${process.env.REACT_APP_API_URL}api/skills/`)
                 .then(res => {
                     console.log(res)
                     const existingSkills = res.data.map(element => {
@@ -86,7 +86,7 @@ const RolesMultiSelect = ({ input, meta, ...rest }) => {
 
     useEffect(() => {
         const getRoles = async () => {
-            return await axios.get('http://localhost:8080/api/roles/')
+            return await axios.get(`${process.env.REACT_APP_API_URL}api/roles/`)
                 .then(res => {
                     console.log(res)
                     const existingSkills = res.data.map(element => {
@@ -161,7 +161,7 @@ const ProjectForm = (props) => {
     const onSubmit = async (event) => {
         console.log(event)
         // console.log(values)
-        await axios.post('http://localhost:8080/api/projects', event)
+        await axios.post(`${process.env.REACT_APP_API_URL}api/projects`, event)
             .then(res => {
                 if (res.data?.success) {
                     toaster.success('Your project has been posted posted!')
@@ -176,7 +176,7 @@ const ProjectForm = (props) => {
                     && "Unexpected error project creation")
             })
 
-        await axios.get('http://localhost:8080/api/projects')
+        await axios.get(`${process.env.REACT_APP_API_URL}api/projects`)
             .then(res => {
                 console.log(res.data)
                 props.setProjects(res.data)

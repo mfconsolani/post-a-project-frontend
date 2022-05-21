@@ -65,7 +65,7 @@ const ProfileCard = () => {
 
     useEffect(() => {
         const fetchUserProfiles = async () => {
-            return await axios.get('http://localhost:8080/api/users/candidates/extended')
+            return await axios.get(`${process.env.REACT_APP_API_URL}api/users/candidates/extended`)
                 .then(res => {
                     // console.log(res.data.payload)
                     setUserProfiles(res.data.payload.filter(elem => elem.profile))

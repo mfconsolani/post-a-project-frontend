@@ -15,10 +15,33 @@ import axios from 'axios'
 //Profile form
 
 const ProjectCardHolder = (props) => {
+  // const [projects, setProjects] = useState(props.projects)
+  // const [isUpdateRequired, setIsUpdateRequired] = useState(false)
+  // const [isLoading, setIsLoading] = useState(false)
+  // const {updateProjects} = props
+  // console.log(props)
+  // useEffect(() => {
+  //   // const fetchProjects = async () => {
+  //   //   return await axios.get(`${process.env.REACT_APP_API_URL}api/projects`)
+  //   //     .then(res => {
+  //   //       console.log(res.data)
+  //   //       props.fetchProjects(res.data)
+  //   //     })
+  //   //     .catch(err => console.log(err))
+  //   // }
+  //   console.log(isUpdateRequired)
+  //   if (isUpdateRequired) {
+  //     // fetchProjects()
+  //     updateProjects(true)
+  //     setIsUpdateRequired(false)
+  //   }
+  //   return
+  // }, [isUpdateRequired])
 
   return (
     <Pane marginTop="3em" >
       {props.projects && props.projects?.data.map(element => {
+        console.log(props.projects.data)
         return (
           <ProjectCard userLogged={props.isLoggedIn} {...element} key={element.id} />
         )
@@ -41,15 +64,20 @@ const App = () => {
   }, [isLoggedIn, profileInfo])
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      return await axios.get('http://localhost:8080/api/projects')
-        .then(res => {
-          setProjects(res.data)
-        })
-        .catch(err => console.log(err))
-    }
-    fetchProjects()
-    return
+    // console.log(projectUpdateRequested)
+    // if (projectUpdateRequested){
+      const fetchProjects = async () => {
+        return await axios.get(`${process.env.REACT_APP_API_URL}api/projects`)
+          .then(res => {
+            // console.log(res.data.data)
+            setProjects(res.data)
+          })
+          .catch(err => console.log(err))
+      }
+      fetchProjects()
+      // setProjectUpdateRequest(false)
+      return
+    // }
   }, [])
 
   return (

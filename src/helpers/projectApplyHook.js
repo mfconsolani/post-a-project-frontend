@@ -9,7 +9,7 @@ export const useFetchProjectApplication = (projectId, userId, applied) => {
 
     const fetchApplication = async (projectId, userId, applied) => {
         setIsLoading(true)
-        axios.post(`http://localhost:8080/api/projects/apply/${projectId}/?apply=${applied}`, { userId: userId })
+        axios.post(`${process.env.REACT_APP_API_URL}api/projects/apply/${projectId}/?apply=${applied}`, { userId: userId })
             .then(res => {
                 if (res.data?.success) {
                     setAccumulatedApplications(res.data?.payload.applicationsCount)

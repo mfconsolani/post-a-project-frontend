@@ -101,7 +101,7 @@ const SignUp = (props) => {
     const onSubmit = async (values, form) => {
         console.log(values)
         !validatePassword(values.password, values.passwordRepeat).isInvalid
-            && await axios.post('http://localhost:8080/api/auth/local/signup', values)
+            && await axios.post(`${process.env.REACT_APP_API_URL}api/auth/local/signup`, values)
                 .then(res => {
                     if (res.data?.success) {
                         props.setStatus({ status: true, userEmail: res.data?.payload.email, userId: res.data?.payload.id, profileType: res.data?.payload.profileType })
