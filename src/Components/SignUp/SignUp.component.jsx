@@ -99,7 +99,7 @@ const TextInputAdapter = ({ input, ...rest }) => {
 const SignUp = (props) => {
     let navigate = useNavigate()
     const onSubmit = async (values, form) => {
-        console.log(values)
+        // console.log(values)
         !validatePassword(values.password, values.passwordRepeat).isInvalid
             && await axios.post(`${process.env.REACT_APP_API_URL}api/auth/local/signup`, values)
                 .then(res => {
@@ -107,7 +107,7 @@ const SignUp = (props) => {
                         props.setStatus({ status: true, userEmail: res.data?.payload.email, userId: res.data?.payload.id, profileType: res.data?.payload.profileType })
 
                         toaster.success('Welcome! You\'ve been successfully signed up')
-                        console.log(res.data)
+                        // console.log(res.data)
                         form.reset()
                         navigate('/candidates')
                     } else {
