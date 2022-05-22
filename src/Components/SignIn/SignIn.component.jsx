@@ -42,7 +42,6 @@ const SignIn = (props) => {
                     const userProfile = res.data?.profileData
                         && Object.keys(res.data?.profileData).length !== 0 && JSON.stringify({ profileExists: true, ...res.data?.profileData }) 
                     
-                    console.log(userProfile)
                         userProfile && userProfile.length > 0 && localStorage.setItem('userProfile', userProfile)
                     res.data?.profileData
                         && Object.keys(res.data?.profileData).length !== 0

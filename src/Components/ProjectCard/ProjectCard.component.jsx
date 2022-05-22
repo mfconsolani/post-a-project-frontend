@@ -18,13 +18,13 @@ const ProjectCard = (props) => {
 
   useEffect(() => {
     if (userId && props.likesRegistered.some(elem => elem.id === userId)) {
-      console.log("user has liked the project")
+      // console.log("user has liked the project")
       setIsLiked(true)
     } else {
       setIsLiked(false)
     }
     if (userId && props.applicationsRegistered.some(elem => elem.id === userId)) {
-      console.log("user has applied to the project")
+      // console.log("user has applied to the project")
       setApplied(true)
     } else {
       setApplied(false)

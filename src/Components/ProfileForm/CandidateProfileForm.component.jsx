@@ -91,7 +91,7 @@ const RolesMultiSelect = ({ input, ...rest }) => {
         const getRoles = async () => {
             return await axios.get(`${process.env.REACT_APP_API_URL}api/roles/`)
                 .then(res => {
-                    console.log(res.data)
+                    // console.log(res.data)
                     const existingRoles = res.data.map(element => {
                         return { label: element.role, value: element.role }
                     })
@@ -169,10 +169,10 @@ const CandidateProfileForm = (props) => {
             const createProfileResponse = await createProfile
             if (createProfileResponse.data.message === "Profile created") {
                 setIsProfileComplete(true)
-                console.log(createProfileResponse)
+                // console.log(createProfileResponse)
                 props.setProfile({ profileExists: true, ...createProfileResponse.data.payload })
                 localStorage.setItem('userProfile', JSON.stringify({ profileExists: true, ...createProfileResponse.data.payload }))
-                console.log(JSON.parse(localStorage.getItem('userProfile')))
+                // console.log(JSON.parse(localStorage.getItem('userProfile')))
                 toaster.success('Profile completed', {
                     duration: 3,
                     id: 'forbidden-action'

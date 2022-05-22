@@ -42,7 +42,7 @@ const ProjectCardHolder = (props) => {
   return (
     <Pane marginTop="3em" >
       {props.projects && props.projects?.data.map(element => {
-        console.log(props.projects.data)
+        // console.log(props.projects.data)
         return (
           <ProjectCard userLogged={props.isLoggedIn} {...element} key={element.id} />
         )
@@ -60,8 +60,8 @@ const App = () => {
   const [profileInfo, setProfileInfo] = useState(JSON.parse(localStorage.getItem('userProfile')) || { profileExists: false })
 
   useEffect(() => {
-    console.log(isLoggedIn)
-    console.log(profileInfo)
+    // console.log(isLoggedIn)
+    // console.log(profileInfo)
   }, [isLoggedIn, profileInfo])
 
   useEffect(() => {
