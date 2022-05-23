@@ -53,7 +53,7 @@ const CompanyProfileForm = (props) => {
                     id: 'forbidden-action'
                 })
             } else if (createProfileResponse.data.message === "Profile updated") {
-                console.log("profile upadted", createProfileResponse.data)
+                // console.log("profile upadted", createProfileResponse.data)
                 props.setProfile({profileExists: true, ...createProfileResponse.data.payload})
                 localStorage.setItem('userProfile',JSON.stringify({profileExists: true, ...createProfileResponse.data.payload}))
                 toaster.success('Profile successfully updated', {

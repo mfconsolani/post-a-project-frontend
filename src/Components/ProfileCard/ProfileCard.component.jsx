@@ -91,8 +91,6 @@ const ProfileCard = () => {
 
     return (
         <React.Fragment>
-            {
-                userProfiles.length < 1 ? <Spinner size={100} /> :
 
             <Pane
                 display="flex"
@@ -102,7 +100,7 @@ const ProfileCard = () => {
                 justifyContent="space-between"
                 padding="1em"
             >
-                {userProfiles && userProfiles.map(elem => {
+                {userProfiles.length < 1 ? <Spinner size={100} /> : userProfiles.map(elem => {
                     // console.log("elem.id", elem.id)
                     return (
                         <Pane
@@ -212,7 +210,6 @@ const ProfileCard = () => {
                     )
                 })}
             </Pane>
-            }
         </React.Fragment>
     )
 }

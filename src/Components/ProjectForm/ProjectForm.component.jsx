@@ -39,7 +39,7 @@ const SkillsMultiSelect = ({ input, ...rest }) => {
         const getSkills = async () => {
             return await axios.get(`${process.env.REACT_APP_API_URL}api/skills/`)
                 .then(res => {
-                    console.log(res)
+                    // console.log(res)
                     const existingSkills = res.data.map(element => {
                         return { label: element.skill, value: element.skill }
                     })
@@ -88,7 +88,7 @@ const RolesMultiSelect = ({ input, meta, ...rest }) => {
         const getRoles = async () => {
             return await axios.get(`${process.env.REACT_APP_API_URL}api/roles/`)
                 .then(res => {
-                    console.log(res)
+                    // console.log(res)
                     const existingSkills = res.data.map(element => {
                         return { label: element.role, value: element.role }
                     })
@@ -159,13 +159,13 @@ const ProjectForm = (props) => {
     const [errors, setErrors] = useState({})
 
     const onSubmit = async (event) => {
-        console.log(event)
+        // console.log(event)
         // console.log(values)
         await axios.post(`${process.env.REACT_APP_API_URL}api/projects`, event)
             .then(res => {
                 if (res.data?.success) {
                     toaster.success('Your project has been posted posted!')
-                    console.log(res.data)
+                    // console.log(res.data)
                     // form.reset()
                 } else {
                     toaster.warning(res.data.message || "There's been an error")
@@ -178,7 +178,7 @@ const ProjectForm = (props) => {
 
         await axios.get(`${process.env.REACT_APP_API_URL}api/projects`)
             .then(res => {
-                console.log(res.data)
+                // console.log(res.data)
                 props.setProjects(res.data)
             })
             .catch(err => {
