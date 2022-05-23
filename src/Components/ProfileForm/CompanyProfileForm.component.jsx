@@ -42,7 +42,7 @@ const CompanyProfileForm = (props) => {
 
     const onSubmit = async (event) => {
         try {
-            const createProfile = axios.post(`${process.env.REACT_APP_API_URL}/api/profile/company/${props.user.userId}`, event)
+            const createProfile = axios.post(`${process.env.REACT_APP_API_URL}api/profile/company/${props.user.userId}`, event)
             const createProfileResponse = await createProfile
             if (createProfileResponse.data.message === "Profile created") {
                 setIsProfileComplete(true)
