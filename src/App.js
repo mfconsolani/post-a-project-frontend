@@ -44,7 +44,10 @@ const ProjectCardHolder = (props) => {
       {props.projects && props.projects?.data.map(element => {
         // console.log(props.projects.data)
         return (
-          <ProjectCard userLogged={props.isLoggedIn} {...element} key={element.id} />
+          <ProjectCard 
+          // updateProjects={props.updateProjects} 
+          userLogged={props.isLoggedIn} 
+          {...element} key={element.id} />
         )
       })}
     </Pane>
@@ -63,6 +66,15 @@ const App = () => {
     // console.log(isLoggedIn)
     // console.log(profileInfo)
   }, [isLoggedIn, profileInfo])
+
+  // const updateProjects = async () => {
+  //   return await axios.get(`${process.env.REACT_APP_API_URL}api/projects`)
+  //     .then(res => {
+  //       // console.log(res.data.data)
+  //       setProjects(res.data)
+  //     })
+  //     .catch(err => console.log(err))
+  // }
 
   useEffect(() => {
     // console.log(projectUpdateRequested)
@@ -105,8 +117,8 @@ const App = () => {
                     <Menu.Item icon={PeopleIcon}>My Profile</Menu.Item>
                   </Link>
 
-                  <Menu.Item icon={HeartIcon}>Favs</Menu.Item>
-                  <Menu.Item icon={EditIcon} secondaryText="⌘R">
+                  <Menu.Item icon={HeartIcon} disabled >Favs</Menu.Item>
+                  <Menu.Item icon={EditIcon} disabled>
                     Rename...
                   </Menu.Item>
                 </Menu.Group>
@@ -157,6 +169,7 @@ const App = () => {
           <Route path="/projects" element={<ProjectCardHolder
             projects={projects}
             isLoggedIn={isLoggedIn}
+            // updateProjects={updateProjects}
           />} />
           <Route path="/profile" element={
             isLoggedIn.profileType === "USER" 

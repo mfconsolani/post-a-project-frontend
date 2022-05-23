@@ -51,6 +51,7 @@ const ProjectCard = (props) => {
       if (userId) {
         await fetchApplication(projectId, userId, !applied)
         setApplied(prevState => !prevState)
+        // props.updateProjects()
         // props.requireUpdate(true)
       } else {
         return toaster.notify("Please login to apply!", { id: 'forbidden-action' })
