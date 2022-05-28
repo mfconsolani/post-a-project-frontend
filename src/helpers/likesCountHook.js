@@ -9,7 +9,7 @@ export const useFetchLikes = (projectId, userId, like) => {
 
     const fetchLikes = async (projectId, userId, like) => {
             setIsLoading(true)
-            axios.post(`${process.env.REACT_APP_API_URL}api/projects/like/${projectId}/?like=${like}`, { userId: userId })
+            await axios.post(`${process.env.REACT_APP_API_URL}api/projects/like/${projectId}/?like=${like}`, { userId: userId })
                 .then(res => {
                     if (res.data?.success) {
                         setAccumulatedLikes(res.data?.payload.likesCount)

@@ -45,7 +45,9 @@ const ProjectCardHolder = (props) => {
         // console.log(props.projects.data)
         return (
           <ProjectCard 
-          // updateProjects={props.updateProjects} 
+          updateProjects={props.updateProjects} 
+          isUpdating={props.isUpdating}
+          setIsUpdating={props.setIsUpdating}
           userLogged={props.isLoggedIn} 
           {...element} key={element.id} />
         )
@@ -61,19 +63,25 @@ const App = () => {
     )
   const [projects, setProjects] = useState('')
   const [profileInfo, setProfileInfo] = useState(JSON.parse(localStorage.getItem('userProfile')) || { profileExists: false })
+  const [isUpdating, setIsUpdating] = useState(false)
 
   useEffect(() => {
-    // console.log(isLoggedIn)
+    console.log(isUpdating)
     // console.log(profileInfo)
-  }, [isLoggedIn, profileInfo])
+  }, [isUpdating])
 
-  // const updateProjects = async () => {
-  //   return await axios.get(`${process.env.REACT_APP_API_URL}api/projects`)
-  //     .then(res => {
-  //       // console.log(res.data.data)
-  //       setProjects(res.data)
-  //     })
-  //     .catch(err => console.log(err))
+  const updateProjects = async () => {
+      // console.log("project needs update")
+      // const fetchProjects = async () => {
+        return await axios.get(`${process.env.REACT_APP_API_URL}api/projects`)
+          .then(res => {
+            console.log('axios request from app.js', res.data.data[0].applicationsRegistered)
+            // setProjects(res.data)
+          })
+          .catch(err => console.log(err))
+      }
+      // return fetchProjects()
+
   // }
 
   useEffect(() => {
@@ -156,7 +164,8 @@ const App = () => {
           <Route path="/signin" element={<SignIn
             status={isLoggedIn}
             setStatus={setIsLoggedIn}
-            setProfile={setProfileInfo} />} />
+            setProfile={setProfileInfo} />} 
+            />
           <Route path="/signup" element={<SignUp
             setStatus={setIsLoggedIn}
           />} />
@@ -169,7 +178,9 @@ const App = () => {
           <Route path="/projects" element={<ProjectCardHolder
             projects={projects}
             isLoggedIn={isLoggedIn}
-            // updateProjects={updateProjects}
+            updateProjects={updateProjects}
+            isUpdating={isUpdating}
+            setIsUpdating={setIsUpdating}
           />} />
           <Route path="/profile" element={
             isLoggedIn.profileType === "USER" 

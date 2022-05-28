@@ -5,7 +5,7 @@ import { HeartIcon } from 'evergreen-ui'
 import { TrashIcon, TickCircleIcon } from 'evergreen-ui'
 import { useFetchLikes } from "../../helpers/likesCountHook";
 import { useFetchProjectApplication } from "../../helpers/projectApplyHook";
-// import axios from "axios";
+import axios from "axios";
 
 const ProjectCard = (props) => {
   const projectId = props.id
@@ -13,7 +13,7 @@ const ProjectCard = (props) => {
   const [isLiked, setIsLiked] = useState('')
   const [applied, setApplied] = useState('')
   const { fetchLikes, accumualatedLikes: accumLikes, isLoading: isLikeLoading } = useFetchLikes()
-  const { isLoading: isApplicationLoading, fetchApplication } = useFetchProjectApplication()
+  const { isLoading: isApplicationLoading, fetchApplication, userHasApplied } = useFetchProjectApplication()
   // console.log(props)
 
   useEffect(() => {
@@ -49,9 +49,21 @@ const ProjectCard = (props) => {
   const onProjectApply = async () => {
     try {
       if (userId) {
-        await fetchApplication(projectId, userId, !applied)
+        const fetchProjects = async () => {
+          return await axios.get(`${process.env.REACT_APP_API_URL}api/projects`)
+            .then(res => {
+              console.log('axios request from ProjectCard', res.data.data[0].applicationsRegistered)
+              // setProjects(res.data)
+            })
+            .catch(err => console.log(err))
+        }
+        const responseFromFunction = await fetchApplication(projectId, userId, !applied)
+        console.log('Response from function',responseFromFunction)
+        props.setIsUpdating(prevState => !prevState)
         setApplied(prevState => !prevState)
-        // props.updateProjects()
+        fetchProjects()
+        props.updateProjects()
+        console.log('userHasApplied', userHasApplied)
         // props.requireUpdate(true)
       } else {
         return toaster.notify("Please login to apply!", { id: 'forbidden-action' })
