@@ -7,7 +7,7 @@ import {
   Button, Alert, Avatar,
   Menu, Popover, Position,
   PeopleIcon, LogOutIcon, EditIcon,
-  HeartIcon
+  HeartIcon, Spinner
 } from 'evergreen-ui'
 import { Route, Routes, Link } from 'react-router-dom';
 import axios from 'axios'
@@ -16,40 +16,17 @@ import axios from 'axios'
 //Profile form
 
 const ProjectCardHolder = (props) => {
-  // const [projects, setProjects] = useState(props.projects)
-  // const [isUpdateRequired, setIsUpdateRequired] = useState(false)
-  // const [isLoading, setIsLoading] = useState(false)
-  // const {updateProjects} = props
-  // console.log(props)
-  // useEffect(() => {
-  //   // const fetchProjects = async () => {
-  //   //   return await axios.get(`${process.env.REACT_APP_API_URL}api/projects`)
-  //   //     .then(res => {
-  //   //       console.log(res.data)
-  //   //       props.fetchProjects(res.data)
-  //   //     })
-  //   //     .catch(err => console.log(err))
-  //   // }
-  //   console.log(isUpdateRequired)
-  //   if (isUpdateRequired) {
-  //     // fetchProjects()
-  //     updateProjects(true)
-  //     setIsUpdateRequired(false)
-  //   }
-  //   return
-  // }, [isUpdateRequired])
 
   return (
     <Pane marginTop="3em" >
       {props.projects && props.projects?.data.map(element => {
-        // console.log(props.projects.data)
         return (
-          <ProjectCard 
-          updateProjects={props.updateProjects} 
-          isUpdating={props.isUpdating}
-          setIsUpdating={props.setIsUpdating}
-          userLogged={props.isLoggedIn} 
-          {...element} key={element.id} />
+          <ProjectCard
+            updateProjects={props.updateProjects}
+            // isUpdating={props.isUpdating}
+            // setIsUpdating={props.setIsUpdating}
+            userLogged={props.isLoggedIn}
+            {...element} key={element.id} />
         )
       })}
     </Pane>
@@ -60,45 +37,22 @@ const App = () => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(
     JSON.parse(localStorage.getItem('userStatus')) || { status: false, userEmail: '', userId: '', profileType: '' }
-    )
+  )
   const [projects, setProjects] = useState('')
   const [profileInfo, setProfileInfo] = useState(JSON.parse(localStorage.getItem('userProfile')) || { profileExists: false })
-  const [isUpdating, setIsUpdating] = useState(false)
+  // const [isUpdating, setIsUpdating] = useState(false)
+
+  const fetchProjects = async () => {
+    return await axios.get(`${process.env.REACT_APP_API_URL}api/projects`)
+      .then(res => {
+        setProjects(res.data)
+      })
+      .catch(err => console.log(err))
+  }
 
   useEffect(() => {
-    console.log(isUpdating)
-    // console.log(profileInfo)
-  }, [isUpdating])
-
-  const updateProjects = async () => {
-      // console.log("project needs update")
-      // const fetchProjects = async () => {
-        return await axios.get(`${process.env.REACT_APP_API_URL}api/projects`)
-          .then(res => {
-            console.log('axios request from app.js', res.data.data[0].applicationsRegistered)
-            // setProjects(res.data)
-          })
-          .catch(err => console.log(err))
-      }
-      // return fetchProjects()
-
-  // }
-
-  useEffect(() => {
-    // console.log(projectUpdateRequested)
-    // if (projectUpdateRequested){
-      const fetchProjects = async () => {
-        return await axios.get(`${process.env.REACT_APP_API_URL}api/projects`)
-          .then(res => {
-            // console.log(res.data.data)
-            setProjects(res.data)
-          })
-          .catch(err => console.log(err))
-      }
-      fetchProjects()
-      // setProjectUpdateRequest(false)
-      return
-    // }
+    fetchProjects()
+    return
   }, [])
 
   return (
@@ -132,15 +86,15 @@ const App = () => {
                 </Menu.Group>
                 <Menu.Divider />
                 <Menu.Group>
-                <Link to="/projects" style={{ textDecoration: 'none' }}>
-                  <Menu.Item icon={LogOutIcon} intent="danger" onClick={ () => {
-                    setIsLoggedIn({ status: false, userEmail: '', userId: '', profileType: '' })
-                    setProfileInfo({profileExists: false})
-                    localStorage.clear()
-                    // window.location.reload()  
-                  }}>
-                    Logout
-                  </Menu.Item>
+                  <Link to="/projects" style={{ textDecoration: 'none' }}>
+                    <Menu.Item icon={LogOutIcon} intent="danger" onClick={() => {
+                      setIsLoggedIn({ status: false, userEmail: '', userId: '', profileType: '' })
+                      setProfileInfo({ profileExists: false })
+                      localStorage.clear()
+                      // window.location.reload()  
+                    }}>
+                      Logout
+                    </Menu.Item>
                   </Link>
                 </Menu.Group>
               </Menu>
@@ -164,8 +118,8 @@ const App = () => {
           <Route path="/signin" element={<SignIn
             status={isLoggedIn}
             setStatus={setIsLoggedIn}
-            setProfile={setProfileInfo} />} 
-            />
+            setProfile={setProfileInfo} />}
+          />
           <Route path="/signup" element={<SignUp
             setStatus={setIsLoggedIn}
           />} />
@@ -175,17 +129,18 @@ const App = () => {
             : <Alert intent="danger" title="Unauthorized route" margin={16}>
               Sorry! This option is only available for certain type of users 😔
             </Alert>} />
-          <Route path="/projects" element={<ProjectCardHolder
-            projects={projects}
-            isLoggedIn={isLoggedIn}
-            updateProjects={updateProjects}
-            isUpdating={isUpdating}
-            setIsUpdating={setIsUpdating}
-          />} />
+          <Route path="/projects" element={ projects ?
+            <ProjectCardHolder
+              projects={projects}
+              isLoggedIn={isLoggedIn}
+              updateProjects={fetchProjects}
+            // isUpdating={isUpdating}
+            // setIsUpdating={setIsUpdating}
+            /> : <Spinner marginRight="2rem" size={54} />} />
           <Route path="/profile" element={
-            isLoggedIn.profileType === "USER" 
-            ? <CandidateProfileForm user={isLoggedIn} profile={profileInfo} setProfile={setProfileInfo} />
-            : <CompanyProfileForm user={isLoggedIn} profile={profileInfo} setProfile={setProfileInfo} /> } />
+            isLoggedIn.profileType === "USER"
+              ? <CandidateProfileForm user={isLoggedIn} profile={profileInfo} setProfile={setProfileInfo} />
+              : <CompanyProfileForm user={isLoggedIn} profile={profileInfo} setProfile={setProfileInfo} />} />
         </Routes>
 
 
