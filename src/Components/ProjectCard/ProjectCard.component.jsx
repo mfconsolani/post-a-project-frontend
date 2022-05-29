@@ -9,28 +9,28 @@ import { useFetchProjectApplication } from "../../helpers/projectApplyHook";
 
 const ProjectCard = (props) => {
   const projectId = props.id
-  const userId = props.userLogged.userId
+  const { userId, profileType } = props.userLogged
   const { fetchLikes, accumualatedLikes: accumLikes, isLoading: isLikeLoading, isLikedByUser, setIsLikedByUser } = useFetchLikes()
   const { isLoading: isApplicationLoading, fetchApplication, userHasApplied, setUserHasApplied } = useFetchProjectApplication()
 
   useEffect(() => {
-    if (userId && props.likesRegistered.some(elem => elem.id === userId)) {
+    if (userId && props.likesRegistered.some(elem => elem.id === userId && profileType === "USER")) {
       setIsLikedByUser(true)
     } else {
       setIsLikedByUser(false)
     }
-    if (userId && props.applicationsRegistered.some(elem => elem.id === userId)) {
+    if (userId && props.applicationsRegistered.some(elem => elem.id === userId && profileType === "USER")) {
       setUserHasApplied(true)
     } else {
       setUserHasApplied(false)
     }
     return
-  }, [props.likesRegistered, props.applicationsRegistered, userId, setUserHasApplied, setIsLikedByUser])
+  }, [props.likesRegistered, props.applicationsRegistered, userId, setUserHasApplied, setIsLikedByUser, profileType])
 
   const onLikeButtonClick = async () => {
     try {
       if (userId) {
-        await fetchLikes(projectId, userId, !isLikedByUser)
+        await fetchLikes(projectId, props.userLogged, !isLikedByUser)
         props.updateProjects()
       } else {
         return toaster.notify("Please login to save projects!", { id: 'forbidden-action' })
@@ -44,7 +44,7 @@ const ProjectCard = (props) => {
   const onProjectApply = async () => {
     try {
       if (userId) {
-        await fetchApplication(projectId, userId, !userHasApplied)
+        await fetchApplication(projectId, props.userLogged, !userHasApplied)
         props.updateProjects()
       } else {
         return toaster.notify("Please login to apply!", { id: 'forbidden-action' })
