@@ -76,6 +76,7 @@ const SignIn = (props) => {
                                 label="Email"
                                 placeholder="youremail@emailprovider.com"
                                 type="email"
+                                autoComplete="off"
                                 required
                                 validate={required}
 

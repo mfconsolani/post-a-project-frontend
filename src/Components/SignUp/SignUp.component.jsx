@@ -140,6 +140,7 @@ const SignUp = (props) => {
                             <Field
                                 component={TextInputAdapter}
                                 name="email"
+                                autoComplete="off"
                                 label="Email"
                                 placeholder="youremail@emailprovider.com"
                                 type="email"
@@ -150,6 +151,7 @@ const SignUp = (props) => {
                             <Field
                                 component={TextInputAdapter}
                                 name="username"
+                                autoComplete="off"
                                 label="Username"
                                 placeholder="i.e.: pepitopepe89 (optional field)"
                                 type="text"
