@@ -5,7 +5,7 @@ import './ProfileForm.styles.css'
 import axios from 'axios'
 import { MultiSelect } from "react-multi-select-component";
 import DatePicker from 'react-date-picker';
-
+import CONSTANTS from "../../config";
 //TODO
 //When I modify the profile info, on submit, the updated values should update as well, but they dont
 //So if you change of view and go back to profile, you get the old initial values, not the updated ones
@@ -41,7 +41,7 @@ const SkillsMultiSelect = ({ input, ...rest }) => {
 
     useEffect(() => {
         const getSkills = async () => {
-            return await axios.get(`${process.env.REACT_APP_API_URL}api/skills/`)
+            return await axios.get(`${CONSTANTS.API_URL}api/skills/`)
                 .then(res => {
                     const existingSkills = res.data.map(element => {
                         return { label: element.skill, value: element.skill }
@@ -89,7 +89,7 @@ const RolesMultiSelect = ({ input, ...rest }) => {
 
     useEffect(() => {
         const getRoles = async () => {
-            return await axios.get(`${process.env.REACT_APP_API_URL}api/roles/`)
+            return await axios.get(`${CONSTANTS.API_URL}api/roles/`)
                 .then(res => {
                     // console.log(res.data)
                     const existingRoles = res.data.map(element => {
@@ -165,7 +165,7 @@ const CandidateProfileForm = (props) => {
 
     const onSubmit = async (event) => {
         try {
-            const createProfile = axios.post(`${process.env.REACT_APP_API_URL}api/profile/user/${props.user.userId}`, event)
+            const createProfile = axios.post(`${CONSTANTS.API_URL}api/profile/user/${props.user.userId}`, event)
             const createProfileResponse = await createProfile
             if (createProfileResponse.data.message === "Profile created") {
                 setIsProfileComplete(true)

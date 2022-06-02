@@ -4,7 +4,7 @@ import axios from 'axios'
 import { TextInputField, Button, toaster, Spinner, InlineAlert } from 'evergreen-ui'
 import './SignIn.styles.css'
 import { useNavigate } from "react-router-dom";
-
+import CONSTANTS from "../../config";
 const required = value => (value ? undefined : 'Required')
 
 
@@ -33,16 +33,17 @@ const TextInputAdapter = ({ input, ...rest }) => (
 const SignIn = (props) => {
     let navigate = useNavigate()
     const onSubmit = async (values, form) => {
-        await axios.post(`${process.env.REACT_APP_API_URL}api/auth/local/login`, values)
+        await axios.post(`${CONSTANTS.API_URL}api/auth/local/login`, values)
             .then(res => {
                 if (res.data?.success) {
                     props.setStatus({ status: true, userEmail: res.data?.userEmail, userId: res.data?.userId, profileType: res.data?.profile })
                     const userStatus = JSON.stringify({ status: true, userEmail: res.data?.userEmail, userId: res.data?.userId, profileType: res.data?.profile })
                     localStorage.setItem('userStatus', userStatus)
+                    // console.log(res.data)
                     const userProfile = res.data?.profileData
-                        && Object.keys(res.data?.profileData).length !== 0 && JSON.stringify({ profileExists: true, ...res.data?.profileData }) 
-                    
-                        userProfile && userProfile.length > 0 && localStorage.setItem('userProfile', userProfile)
+                        && Object.keys(res.data?.profileData).length !== 0 && JSON.stringify({ profileExists: true, ...res.data?.profileData })
+
+                    userProfile && userProfile.length > 0 && localStorage.setItem('userProfile', userProfile)
                     res.data?.profileData
                         && Object.keys(res.data?.profileData).length !== 0
                         && props.setProfile({ profileExists: true, ...res.data?.profileData })

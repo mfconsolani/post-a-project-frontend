@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import capitalizeFirstLetter from '../../helpers/capitalizeFirstLetter'
 import './ProfileCard.styles.css'
+import CONSTANTS from "../../config";
 
 //TODO
 //Build it in such a way that only users with profile completed will be shown
@@ -69,7 +70,7 @@ const ProfileCard = () => {
         const fetchUserProfiles = async () => {
             setIsLoading(true)
 
-            return await axios.get(`${process.env.REACT_APP_API_URL}api/users/candidates/extended`)
+            return await axios.get(`${CONSTANTS.API_URL}api/users/candidates/extended`)
                 .then(res => {
                     // setIsLoading(true)
                     // console.log(res.data.payload)

@@ -5,6 +5,7 @@ import './ProjectForm.styles.css'
 import axios from 'axios'
 import { MultiSelect } from "react-multi-select-component";
 import DateTimePicker from 'react-datetime-picker';
+import CONSTANTS from "../../config";
 
 const TextInputAdapter = ({ input, ...rest }) => (
     <TextInputField display="flex" flexDirection="column" marginY="1em"
@@ -37,7 +38,7 @@ const SkillsMultiSelect = ({ input, ...rest }) => {
 
     useEffect(() => {
         const getSkills = async () => {
-            return await axios.get(`${process.env.REACT_APP_API_URL}api/skills/`)
+            return await axios.get(`${CONSTANTS.API_URL}api/skills/`)
                 .then(res => {
                     const existingSkills = res.data.map(element => {
                         return { label: element.skill, value: element.skill }
@@ -85,7 +86,7 @@ const RolesMultiSelect = ({ input, meta, ...rest }) => {
 
     useEffect(() => {
         const getRoles = async () => {
-            return await axios.get(`${process.env.REACT_APP_API_URL}api/roles/`)
+            return await axios.get(`${CONSTANTS.API_URL}api/roles/`)
                 .then(res => {
                     const existingSkills = res.data.map(element => {
                         return { label: element.role, value: element.role }
@@ -157,7 +158,7 @@ const ProjectForm = (props) => {
     const [errors, setErrors] = useState({})
 
     const onSubmit = async (event) => {
-        await axios.post(`${process.env.REACT_APP_API_URL}api/projects`, event)
+        await axios.post(`${CONSTANTS.API_URL}api/projects`, event)
             .then(res => {
                 if (res.data?.success) {
                     toaster.success('Your project has been posted posted!')
@@ -170,7 +171,7 @@ const ProjectForm = (props) => {
                     && "Unexpected error project creation")
             })
 
-        await axios.get(`${process.env.REACT_APP_API_URL}api/projects`)
+        await axios.get(`${CONSTANTS.API_URL}api/projects`)
             .then(res => {
                 props.setProjects(res.data)
             })

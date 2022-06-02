@@ -8,6 +8,7 @@ import {
 } from 'evergreen-ui'
 import './SignUp.styles.css'
 import { Link, useNavigate } from 'react-router-dom'
+import CONSTANTS from '../../config.js'
 
 
 //TODO
@@ -101,7 +102,7 @@ const SignUp = (props) => {
     const onSubmit = async (values, form) => {
         // console.log(values)
         !validatePassword(values.password, values.passwordRepeat).isInvalid
-            && await axios.post(`${process.env.REACT_APP_API_URL}api/auth/local/signup`, values)
+            && await axios.post(`${CONSTANTS.API_URL}api/auth/local/signup`, values)
                 .then(res => {
                     if (res.data?.success) {
                         props.setStatus({ status: true, userEmail: res.data?.payload.email, userId: res.data?.payload.id, profileType: res.data?.payload.profileType })

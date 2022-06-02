@@ -3,7 +3,7 @@ import { Pane, Button, Textarea, TextInputField, Label, Alert, toaster } from 'e
 import { Field, Form } from 'react-final-form'
 import './ProfileForm.styles.css'
 import axios from 'axios'
-
+import CONSTANTS from "../../config";
 //TODO
 //When I modify the profile info, on submit, the updated values should update as well, but they dont
 //So if you change of view and go back to profile, you get the old initial values, not the updated ones
@@ -42,7 +42,7 @@ const CompanyProfileForm = (props) => {
 
     const onSubmit = async (event) => {
         try {
-            const createProfile = axios.post(`${process.env.REACT_APP_API_URL}api/profile/company/${props.user.userId}`, event)
+            const createProfile = axios.post(`${CONSTANTS.API_URL}api/profile/company/${props.user.userId}`, event)
             const createProfileResponse = await createProfile
             if (createProfileResponse.data.message === "Profile created") {
                 setIsProfileComplete(true)
