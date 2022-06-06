@@ -1,4 +1,4 @@
-import { Paragraph, Pane, Avatar, Text, Badge, Button, Dialog, Spinner } from "evergreen-ui";
+import { Paragraph, Pane, Avatar, Text, Badge, Button, Dialog, Spinner, toaster } from "evergreen-ui";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import capitalizeFirstLetter from '../../helpers/capitalizeFirstLetter'
@@ -63,32 +63,24 @@ const CandidateProfileDialog = ({ title, customLabel, body, buttonName, profileD
 const ProfileCard = () => {
     const [userProfiles, setUserProfiles] = useState([])
     const [isShown, setIsShown] = useState(false)
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
-        setIsLoading(true)
         const fetchUserProfiles = async () => {
-            setIsLoading(true)
-
+            // setIsLoading(true)
             return await axios.get(`${CONSTANTS.API_URL}api/users/candidates/extended`)
                 .then(res => {
-                    // setIsLoading(true)
-                    // console.log(res.data.payload)
                     setUserProfiles(res.data.payload.filter(elem => elem.profile))
                 })
-                .catch(err => console.log(err))
+                .catch(err => {
+                    console.error(err)
+                    return toaster.warning("An error has occurred when loading candidates info", { id: 'forbidden-action' })
+                })
+                // .finally(setIsLoading(false))
         }
         fetchUserProfiles()
-        setIsLoading(false)
         return
     }, [])
-
-
-    useEffect(() => {
-        if (isLoading) {
-            console.log("Loading true!!!!")
-        }
-    }, [isLoading])
 
     return (
         <React.Fragment>
@@ -101,7 +93,8 @@ const ProfileCard = () => {
                 justifyContent="space-between"
                 padding="1em"
             >
-                {userProfiles.length < 1 ? <Spinner size={100} /> : userProfiles.map(elem => {
+                {/* userProfiles.length < 1 */}
+                { userProfiles.length < 1 ? <Spinner size={100} /> : userProfiles.map(elem => {
                     // console.log("elem.id", elem.id)
                     return (
                         <Pane

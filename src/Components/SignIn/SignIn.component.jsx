@@ -33,6 +33,7 @@ const TextInputAdapter = ({ input, ...rest }) => (
 const SignIn = (props) => {
     let navigate = useNavigate()
     const onSubmit = async (values, form) => {
+        // console.log(values)
         await axios.post(`${CONSTANTS.API_URL}api/auth/local/login`, values)
             .then(res => {
                 if (res.data?.success) {

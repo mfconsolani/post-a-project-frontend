@@ -41,8 +41,7 @@ const App = () => {
   )
   const [projects, setProjects] = useState('')
   const [profileInfo, setProfileInfo] = useState(JSON.parse(localStorage.getItem('userProfile')) || { profileExists: false })
-  // const [isUpdating, setIsUpdating] = useState(false)
-  // console.log(CONSTANTS.API_URL)
+
   const fetchProjects = async () => {
     return await axios.get(`${CONSTANTS.API_URL}api/projects`)
       .then(res => {
