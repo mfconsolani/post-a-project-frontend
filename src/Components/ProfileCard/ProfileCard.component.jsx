@@ -76,7 +76,7 @@ const ProfileCard = () => {
                     console.error(err)
                     return toaster.warning("An error has occurred when loading candidates info", { id: 'forbidden-action' })
                 })
-                // .finally(setIsLoading(false))
+                // .finally(setIsLoading(false))    
         }
         fetchUserProfiles()
         return
