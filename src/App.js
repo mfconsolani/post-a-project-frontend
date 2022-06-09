@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './App.css';
-import { ProjectCard, SignUp, SignIn, ProjectForm, CandidateProfileForm, CompanyProfileForm } from './Components'
+import { ProjectCardHolder, SignUp, SignIn, ProjectForm, CandidateProfileForm, CompanyProfileForm } from './Components'
 import ProfileCard from './Components/ProfileCard/ProfileCard.component'
 import {
   Pane,
@@ -10,53 +10,51 @@ import {
   HeartIcon, Spinner
 } from 'evergreen-ui'
 import { Route, Routes, Link } from 'react-router-dom';
-import axios from 'axios'
-import CONSTANTS from './config';
+// import axios from 'axios'
+// import CONSTANTS from './config';
+import DataContext, { DataProvider } from './DataContext';
 
-//TODO
-//Profile form
 
-const ProjectCardHolder = (props) => {
+// const ProjectCardHolder = (props) => {
 
-  return (
-    <Pane marginTop="3em" >
-      {props.projects && props.projects?.data.map(element => {
-        return (
-          <ProjectCard
-            updateProjects={props.updateProjects}
-            // isUpdating={props.isUpdating}
-            // setIsUpdating={props.setIsUpdating}
-            userLogged={props.isLoggedIn}
-            {...element} key={element.id} />
-        )
-      })}
-    </Pane>
-  )
-}
+//   return (
+//     <Pane marginTop="3em" >
+//       {props.projects && props.projects?.data.map(element => {
+//         return (
+//           <ProjectCard
+//             updateProjects={props.updateProjects}
+//             userLogged={props.isLoggedIn}
+//             {...element} key={element.id} />
+//         )
+//       })}
+//     </Pane>
+//   )
+// }
 
 const App = () => {
-
+  const {projects, fetchProjects} = useContext(DataContext)
   const [isLoggedIn, setIsLoggedIn] = useState(
     JSON.parse(localStorage.getItem('userStatus')) || { status: false, userEmail: '', userId: '', profileType: '' }
   )
-  const [projects, setProjects] = useState('')
+  // const [projects, setProjects] = useState('')
   const [profileInfo, setProfileInfo] = useState(JSON.parse(localStorage.getItem('userProfile')) || { profileExists: false })
+    
+  // const fetchProjects = async () => {
+  //   return await axios.get(`${CONSTANTS.API_URL}api/projects`)
+  //     .then(res => {
+  //       setProjects(res.data)
+  //     })
+  //     .catch(err => console.log(err))
+  // }
 
-  const fetchProjects = async () => {
-    return await axios.get(`${CONSTANTS.API_URL}api/projects`)
-      .then(res => {
-        setProjects(res.data)
-      })
-      .catch(err => console.log(err))
-  }
-
-  useEffect(() => {
-    fetchProjects()
-    return
-  }, [])
+  // useEffect(() => {
+  //   fetchProjects()
+  //   return
+  // }, [])
 
   return (
     <div className="App">
+      <DataProvider>
       <Pane display="flex" flexDirection="row" justifyContent="flex-end" width="100vw" zIndex="2"
         marginBottom={16} position="fixed" top="0" left="0" right="0" backgroundColor="white" paddingBottom="1em" >
         {isLoggedIn.profileType === "COMPANY" &&
@@ -125,15 +123,15 @@ const App = () => {
           />} />
           <Route path="/candidates" element={<ProfileCard />} />
           <Route path="/postproject" element={isLoggedIn.profileType === "COMPANY"
-            ? <ProjectForm user={isLoggedIn} setProjects={setProjects} />
+            ? <ProjectForm user={isLoggedIn} />
             : <Alert intent="danger" title="Unauthorized route" margin={16}>
               Sorry! This option is only available for certain type of users 😔
             </Alert>} />
           <Route path="/projects" element={ projects ?
             <ProjectCardHolder
-              projects={projects}
+              // projects={projects}
               isLoggedIn={isLoggedIn}
-              updateProjects={fetchProjects}
+              // updateProjects={fetchProjects}
             // isUpdating={isUpdating}
             // setIsUpdating={setIsUpdating}
             /> : <Spinner marginRight="2rem" size={54} />} />
@@ -145,7 +143,7 @@ const App = () => {
 
 
       </Pane>
-
+      </DataProvider>
     </div>
   );
 }

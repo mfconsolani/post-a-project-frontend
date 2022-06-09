@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Pane, Button, Spinner, Textarea, InlineAlert, TextInputField, Label, toaster } from 'evergreen-ui';
 import { Field, Form } from 'react-final-form'
 import './ProjectForm.styles.css'
@@ -6,6 +6,8 @@ import axios from 'axios'
 import { MultiSelect } from "react-multi-select-component";
 import DateTimePicker from 'react-datetime-picker';
 import CONSTANTS from "../../config";
+import DataContext from "../../DataContext"
+
 
 const TextInputAdapter = ({ input, ...rest }) => (
     <TextInputField display="flex" flexDirection="column" marginY="1em"
@@ -156,6 +158,7 @@ const DatePicker = ({ input, ...rest }) => {
 
 const ProjectForm = (props) => {
     const [errors, setErrors] = useState({})
+    const {setProjects} = useContext(DataContext)
 
     const onSubmit = async (event) => {
         await axios.post(`${CONSTANTS.API_URL}api/projects`, event)
@@ -173,7 +176,7 @@ const ProjectForm = (props) => {
 
         await axios.get(`${CONSTANTS.API_URL}api/projects`)
             .then(res => {
-                props.setProjects(res.data)
+                setProjects(res.data)
             })
             .catch(err => {
                 toaster.danger(err?.response.status === 404
