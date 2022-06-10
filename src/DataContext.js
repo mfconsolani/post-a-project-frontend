@@ -11,6 +11,7 @@ export const DataProvider = ({ children }) => {
         return await axios.get(`${CONSTANTS.API_URL}api/projects`)
             .then(res => {
                 setProjects(res.data)
+                console.log(res.data)
             })
             .catch(err => console.log(err))
     }
@@ -19,6 +20,11 @@ export const DataProvider = ({ children }) => {
         fetchProjects()
         return
     }, [])
+
+    useEffect(() => {
+        console.log(projects)
+        return
+    }, [projects])
 
     return (
         <DataContext.Provider value={{ projects, setProjects, fetchProjects }}>

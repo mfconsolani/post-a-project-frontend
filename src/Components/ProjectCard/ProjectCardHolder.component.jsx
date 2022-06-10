@@ -5,7 +5,6 @@ import DataContext from "../../DataContext"
 
 const ProjectCardHolder = (props) => {
     const {projects, fetchProjects} = useContext(DataContext)
-    console.log(projects)
 
     return (
       <Pane marginTop="3em" >
