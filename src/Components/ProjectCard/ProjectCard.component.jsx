@@ -3,8 +3,8 @@ import './ProjectCard.styles.css'
 import { Button, Pane, Heading, Paragraph, Spinner, toaster, Badge } from 'evergreen-ui'
 import { HeartIcon } from 'evergreen-ui'
 import { TrashIcon, TickCircleIcon } from 'evergreen-ui'
-import { useFetchLikes } from "../../helpers/likesCountHook";
-import { useFetchProjectApplication } from "../../helpers/projectApplyHook";
+import { useFetchLikes } from "../../hooks/likesCountHook";
+import { useFetchProjectApplication } from "../../hooks/projectApplyHook";
 // import axios from "axios";
 
 const ProjectCard = (props) => {

@@ -1,5 +1,5 @@
 import { Paragraph, Pane, Avatar, Text, Badge, Button, Dialog, Spinner, toaster } from "evergreen-ui";
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import capitalizeFirstLetter from '../../helpers/capitalizeFirstLetter'
 import './ProfileCard.styles.css'
@@ -63,7 +63,8 @@ const CandidateProfileDialog = ({ title, customLabel, body, buttonName, profileD
 const ProfileCard = () => {
     const [userProfiles, setUserProfiles] = useState([])
     const [isShown, setIsShown] = useState(false)
-    const [isLoading, setIsLoading] = useState(true)
+    // const [isLoading, setIsLoading] = useState(true)
+
     useEffect(() => {
         const fetchUserProfiles = async () => {
             // setIsLoading(true)

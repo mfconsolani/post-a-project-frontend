@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import './App.css';
-import { ProjectCardHolder, SignUp, SignIn, ProjectForm, CandidateProfileForm, CompanyProfileForm } from './Components'
-import ProfileCard from './Components/ProfileCard/ProfileCard.component'
+import { ProjectCardHolder, SignUp, SignIn, ProjectForm, CandidateProfileForm, CompanyProfileForm } from './components'
+import ProfileCard from './components/ProfileCard/ProfileCard.component'
 import {
   Pane,
   Button, Alert, Avatar,

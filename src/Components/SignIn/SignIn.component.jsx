@@ -5,8 +5,9 @@ import { TextInputField, Button, toaster, Spinner, InlineAlert } from 'evergreen
 import './SignIn.styles.css'
 import { useNavigate } from "react-router-dom";
 import CONSTANTS from "../../config";
-const required = value => (value ? undefined : 'Required')
+// import DataContext from "../../DataContext";
 
+const required = value => (value ? undefined : 'Required')
 
 const TextInputAdapter = ({ input, ...rest }) => (
     <React.Fragment>
@@ -31,6 +32,7 @@ const TextInputAdapter = ({ input, ...rest }) => (
 
 
 const SignIn = (props) => {
+    // const {isLoggedIn, setIsLoggedIn, profileInfo, setProfileInfo} = useContext(DataContext)
     let navigate = useNavigate()
     const onSubmit = async (values, form) => {
         // console.log(values)
