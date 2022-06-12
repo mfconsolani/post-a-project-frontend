@@ -5,6 +5,7 @@ import { TextInputField, Button, toaster, Spinner, InlineAlert } from 'evergreen
 import './SignIn.styles.css'
 import { useNavigate } from "react-router-dom";
 import CONSTANTS from "../../config";
+import useAuth from "../../hooks/useAuth";
 // import DataContext from "../../DataContext";
 
 const required = value => (value ? undefined : 'Required')
@@ -32,6 +33,7 @@ const TextInputAdapter = ({ input, ...rest }) => (
 
 
 const SignIn = (props) => {
+    const { setAuth } = useAuth()
     // const {isLoggedIn, setIsLoggedIn, profileInfo, setProfileInfo} = useContext(DataContext)
     let navigate = useNavigate()
     const onSubmit = async (values, form) => {
@@ -40,6 +42,7 @@ const SignIn = (props) => {
             .then(res => {
                 if (res.data?.success) {
                     props.setStatus({ status: true, userEmail: res.data?.userEmail, userId: res.data?.userId, profileType: res.data?.profile })
+                    setAuth({ status: true, userEmail: res.data?.userEmail, userId: res.data?.userId, profileType: res.data?.profile, accessToken: res.data?.accessToken })
                     const userStatus = JSON.stringify({ status: true, userEmail: res.data?.userEmail, userId: res.data?.userId, profileType: res.data?.profile })
                     localStorage.setItem('userStatus', userStatus)
                     // console.log(res.data)

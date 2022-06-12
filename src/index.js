@@ -6,14 +6,17 @@ import reportWebVitals from './reportWebVitals';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { BrowserRouter } from "react-router-dom";
 import { DataProvider } from './DataContext'
+import { AuthProvider } from './AuthContext';
 
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <DataProvider>
-        <App />
-      </DataProvider>
+      <AuthProvider>
+        <DataProvider>
+          <App />
+        </DataProvider>
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')

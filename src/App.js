@@ -11,8 +11,10 @@ import {
 } from 'evergreen-ui'
 import { Route, Routes, Link } from 'react-router-dom';
 import DataContext from './DataContext';
+import useRefreshToken from './hooks/useRefreshToken';
 
 const App = () => {
+  const refresh = useRefreshToken()
   const { projects } = useContext(DataContext)
 
   const [isLoggedIn, setIsLoggedIn] = useState(
@@ -75,6 +77,7 @@ const App = () => {
               </Link>
             </React.Fragment>
           }
+          <Button onClick={() => refresh()} >Refresh</Button>
         </Pane>
         <Pane display="flex" flexDirection="column" alignItems="center">
           <Routes>
