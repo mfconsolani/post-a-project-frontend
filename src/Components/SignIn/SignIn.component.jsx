@@ -37,8 +37,10 @@ const SignIn = (props) => {
     // const {isLoggedIn, setIsLoggedIn, profileInfo, setProfileInfo} = useContext(DataContext)
     let navigate = useNavigate()
     const onSubmit = async (values, form) => {
-        // console.log(values)
-        await axios.post(`${CONSTANTS.API_URL}api/auth/local/login`, values)
+        await axios.post(`${CONSTANTS.API_URL}api/auth/local/login`, values, {
+            headers: { 'Content-Type': 'application/json' },
+            withCredentials: true
+        })
             .then(res => {
                 if (res.data?.success) {
                     props.setStatus({ status: true, userEmail: res.data?.userEmail, userId: res.data?.userId, profileType: res.data?.profile })

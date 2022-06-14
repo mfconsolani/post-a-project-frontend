@@ -10,9 +10,14 @@ const useRefreshToken = () => {
         try {
             const response = await axios.get(`${CONSTANTS.API_URL}api/token/refresh`, 
             {
-                withCredentials: true,
-                
+                headers: { 'Content-Type': 'application/json' },
+                withCredentials: true
             })
+            // const response = await fetch(`${CONSTANTS.API_URL}api/token/refresh`, 
+            // {   method: 'GET',
+            //     credentials: 'include',
+                
+            // })
             console.log(response)
             setAuth(prevState => {
                 console.log({ ...prevState, accessToken: response.data.accessToken })

@@ -100,9 +100,11 @@ const TextInputAdapter = ({ input, ...rest }) => {
 const SignUp = (props) => {
     let navigate = useNavigate()
     const onSubmit = async (values, form) => {
-        // console.log(values)
         !validatePassword(values.password, values.passwordRepeat).isInvalid
-            && await axios.post(`${CONSTANTS.API_URL}api/auth/local/signup`, values)
+            && await axios.post(`${CONSTANTS.API_URL}api/auth/local/signup`, values,{
+                headers: { 'Content-Type': 'application/json' },
+                withCredentials: true
+            })
                 .then(res => {
                     if (res.data?.success) {
                         props.setStatus({ status: true, userEmail: res.data?.payload.email, userId: res.data?.payload.id, profileType: res.data?.payload.profileType })
