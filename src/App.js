@@ -11,10 +11,8 @@ import {
 } from 'evergreen-ui'
 import { Route, Routes, Link } from 'react-router-dom';
 import DataContext from './DataContext';
-import useRefreshToken from './hooks/useRefreshToken';
 
 const App = () => {
-  const refresh = useRefreshToken()
   const { projects } = useContext(DataContext)
 
   const [isLoggedIn, setIsLoggedIn] = useState(

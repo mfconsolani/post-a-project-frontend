@@ -24,10 +24,6 @@ const validatePassword = (password, passwordRepeat = null) => {
     if (!strongRegex.test(password)) {
         const message = "Password must include: at least one capital letter, one lowercase letter, one number and one symbol and have at least 8 characters"
         return { isInvalid: true, message }
-        // } else if (strongRegex.test(password) && passwordRepeat !== password){
-        //     // console.log(password, passwordRepeat, passwordRepeat === password)
-        //     const message = "Passwords are different"
-        //     return { isInvalid: true, message }
     }
     return { isInvalid: false }
 }
@@ -108,9 +104,7 @@ const SignUp = (props) => {
                 .then(res => {
                     if (res.data?.success) {
                         props.setStatus({ status: true, userEmail: res.data?.payload.email, userId: res.data?.payload.id, profileType: res.data?.payload.profileType })
-
                         toaster.success('Welcome! You\'ve been successfully signed up')
-                        // console.log(res.data)
                         form.reset()
                         navigate('/candidates')
                     } else {
