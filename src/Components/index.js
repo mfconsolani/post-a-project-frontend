@@ -6,3 +6,5 @@ export {default as ProjectForm } from './ProjectForm/ProjectForm.component'
 export {default as CandidateProfileForm } from './ProfileForm/CandidateProfileForm.component'
 export {default as CompanyProfileForm } from './ProfileForm/CompanyProfileForm.component'
 // export {default as ProfileCard } from './ProfileCard/ProfileCard.component'
+export {default as RequireAuth } from './RequireAuth/RequireAuth.component';
+
