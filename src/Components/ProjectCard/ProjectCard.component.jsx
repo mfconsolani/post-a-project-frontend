@@ -5,32 +5,32 @@ import { HeartIcon } from 'evergreen-ui'
 import { TrashIcon, TickCircleIcon } from 'evergreen-ui'
 import { useFetchLikes } from "../../hooks/likesCountHook";
 import { useFetchProjectApplication } from "../../hooks/projectApplyHook";
-// import axios from "axios";
+import useAuth from "../../hooks/useAuth";
 
 const ProjectCard = (props) => {
   const projectId = props.id
-  const { userId, profileType } = props.userLogged
+  const { auth } = useAuth()
   const { fetchLikes, accumualatedLikes: accumLikes, isLoading: isLikeLoading, isLikedByUser, setIsLikedByUser } = useFetchLikes()
   const { isLoading: isApplicationLoading, fetchApplication, userHasApplied, setUserHasApplied } = useFetchProjectApplication()
 
   useEffect(() => {
-    if (userId && props.likesRegistered.some(elem => elem.id === userId && profileType === "USER")) {
+    if (auth.userId && props.likesRegistered.some(elem => elem.id === auth.userId && auth.profileType === "USER")) {
       setIsLikedByUser(true)
     } else {
       setIsLikedByUser(false)
     }
-    if (userId && props.applicationsRegistered.some(elem => elem.id === userId && profileType === "USER")) {
+    if (auth.userId && props.applicationsRegistered.some(elem => elem.id === auth.userId && auth.profileType === "USER")) {
       setUserHasApplied(true)
     } else {
       setUserHasApplied(false)
     }
     return
-  }, [props.likesRegistered, props.applicationsRegistered, userId, setUserHasApplied, setIsLikedByUser, profileType])
+  }, [props.likesRegistered, props.applicationsRegistered, auth.userId, setUserHasApplied, setIsLikedByUser, auth.profileType])
 
   const onLikeButtonClick = async () => {
     try {
-      if (userId) {
-        await fetchLikes(projectId, props.userLogged, !isLikedByUser)
+      if (auth.userId) {
+        await fetchLikes(projectId, auth, !isLikedByUser)
         props.updateProjects()
       } else {
         return toaster.notify("Please login to save projects!", { id: 'forbidden-action' })
@@ -43,8 +43,8 @@ const ProjectCard = (props) => {
 
   const onProjectApply = async () => {
     try {
-      if (userId) {
-        await fetchApplication(projectId, props.userLogged, !userHasApplied)
+      if (auth.userId) {
+        await fetchApplication(projectId, auth, !userHasApplied)
         props.updateProjects()
       } else {
         return toaster.notify("Please login to apply!", { id: 'forbidden-action' })

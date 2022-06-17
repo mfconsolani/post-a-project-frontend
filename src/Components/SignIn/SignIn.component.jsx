@@ -3,10 +3,9 @@ import { Field, Form } from 'react-final-form'
 import axios from 'axios'
 import { TextInputField, Button, toaster, Spinner, InlineAlert } from 'evergreen-ui'
 import './SignIn.styles.css'
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import CONSTANTS from "../../config";
 import useAuth from "../../hooks/useAuth";
-// import DataContext from "../../DataContext";
 
 const required = value => (value ? undefined : 'Required')
 
@@ -34,8 +33,10 @@ const TextInputAdapter = ({ input, ...rest }) => (
 
 const SignIn = (props) => {
     const { setAuth } = useAuth()
-    // const {isLoggedIn, setIsLoggedIn, profileInfo, setProfileInfo} = useContext(DataContext)
-    let navigate = useNavigate()
+    const navigate = useNavigate()
+    const location = useLocation()
+    const from = location.state?.from?.pathname || "/projects" 
+
     const onSubmit = async (values, form) => {
         await axios.post(`${CONSTANTS.API_URL}api/auth/local/login`, values, {
             headers: { 'Content-Type': 'application/json' },
@@ -43,11 +44,7 @@ const SignIn = (props) => {
         })
             .then(res => {
                 if (res.data?.success) {
-                    props.setStatus({ status: true, userEmail: res.data?.userEmail, userId: res.data?.userId, profileType: res.data?.profile })
                     setAuth({ status: true, userEmail: res.data?.userEmail, userId: res.data?.userId, profileType: res.data?.profile, accessToken: res.data?.accessToken })
-                    const userStatus = JSON.stringify({ status: true, userEmail: res.data?.userEmail, userId: res.data?.userId, profileType: res.data?.profile })
-                    localStorage.setItem('userStatus', userStatus)
-                    // console.log(res.data)
                     const userProfile = res.data?.profileData
                         && Object.keys(res.data?.profileData).length !== 0 && JSON.stringify({ profileExists: true, ...res.data?.profileData })
 
@@ -59,7 +56,7 @@ const SignIn = (props) => {
                         duration: 2
                     })
                     form.reset()
-                    navigate('/projects')
+                    navigate(from, {replace: true});
                     return { success: true }
                 }
             })

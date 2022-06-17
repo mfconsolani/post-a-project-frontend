@@ -7,6 +7,7 @@ import { MultiSelect } from "react-multi-select-component";
 import DateTimePicker from 'react-datetime-picker';
 import CONSTANTS from "../../config";
 import DataContext from "../../DataContext"
+import useAuth from "../../hooks/useAuth";
 
 
 const TextInputAdapter = ({ input, ...rest }) => (
@@ -156,9 +157,11 @@ const DatePicker = ({ input, ...rest }) => {
 //implement axios.post on form submission
 //isolate components
 
-const ProjectForm = (props) => {
+const ProjectForm = () => {
     const [errors, setErrors] = useState({})
-    const {setProjects} = useContext(DataContext)
+    const { setProjects } = useContext(DataContext)
+    const { auth } = useAuth()
+
 
     const onSubmit = async (event) => {
         await axios.post(`${CONSTANTS.API_URL}api/projects`, event)
@@ -189,7 +192,7 @@ const ProjectForm = (props) => {
         <Pane elevation={4} float="left" borderRadius="5px" padding="1rem" marginY="4em" minWidth="50vw">
             <Form
                 onSubmit={onSubmit}
-                initialValues={{ owner: props.user.userEmail }}
+                initialValues={{ owner: auth.userEmail }}
                 render={({ handleSubmit, values, submitting, pristine }) => (
                     <form onSubmit={handleSubmit}>
                         <Field
