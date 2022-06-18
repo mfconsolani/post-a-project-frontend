@@ -6,6 +6,7 @@ import axios from 'axios'
 import { MultiSelect } from "react-multi-select-component";
 import DatePicker from 'react-date-picker';
 import CONSTANTS from "../../config";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 //TODO
 //When I modify the profile info, on submit, the updated values should update as well, but they dont
 //So if you change of view and go back to profile, you get the old initial values, not the updated ones
@@ -156,16 +157,16 @@ const DatePickerCustom = ({ input, ...rest }) => {
 }
 //TODO
 //complete company field when I have the proper props
-//implement axios.post on form submission
 //isolate components
 
 const CandidateProfileForm = (props) => {
+    const axiosPrivate = useAxiosPrivate()
     const [errors, setErrors] = useState({})
     const [isProfileComplete, setIsProfileComplete] = useState()
 
     const onSubmit = async (event) => {
         try {
-            const createProfile = axios.post(`${CONSTANTS.API_URL}api/profile/user/${props.user.userId}`, event)
+            const createProfile = axiosPrivate.post(`${CONSTANTS.API_URL}api/profile/user/${props.user.userId}`, event)
             const createProfileResponse = await createProfile
             if (createProfileResponse.data.message === "Profile created") {
                 setIsProfileComplete(true)

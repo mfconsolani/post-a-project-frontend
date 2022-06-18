@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Pane, Button, Textarea, TextInputField, Label, Alert, toaster } from 'evergreen-ui';
 import { Field, Form } from 'react-final-form'
 import './ProfileForm.styles.css'
-import axios from 'axios'
 import CONSTANTS from "../../config";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 //TODO
 //When I modify the profile info, on submit, the updated values should update as well, but they dont
 //So if you change of view and go back to profile, you get the old initial values, not the updated ones
@@ -38,11 +38,12 @@ const TextAreaAdapter = ({ input, ...rest }) => {
 //isolate components
 
 const CompanyProfileForm = (props) => {
+    const axiosPrivate = useAxiosPrivate()
     const [isProfileComplete, setIsProfileComplete] = useState()
 
     const onSubmit = async (event) => {
         try {
-            const createProfile = axios.post(`${CONSTANTS.API_URL}api/profile/company/${props.user.userId}`, event)
+            const createProfile = axiosPrivate.post(`${CONSTANTS.API_URL}api/profile/company/${props.user.userId}`, event)
             const createProfileResponse = await createProfile
             if (createProfileResponse.data.message === "Profile created") {
                 setIsProfileComplete(true)

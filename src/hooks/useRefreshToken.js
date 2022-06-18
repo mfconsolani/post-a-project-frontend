@@ -12,7 +12,6 @@ const useRefreshToken = () => {
                 headers: { 'Content-Type': 'application/json' },
                 withCredentials: true
             })
-            console.log(response)
             setAuth(prevState => {
                 console.log({ ...prevState, accessToken: response.data.accessToken })
                 return {
@@ -23,7 +22,7 @@ const useRefreshToken = () => {
             })
             return response.data.accessToken
         } catch (err) {
-            console.log(err)
+            console.error(err)
         }
     }
     return refresh

@@ -8,6 +8,7 @@ import DateTimePicker from 'react-datetime-picker';
 import CONSTANTS from "../../config";
 import DataContext from "../../DataContext"
 import useAuth from "../../hooks/useAuth";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 
 const TextInputAdapter = ({ input, ...rest }) => (
@@ -161,10 +162,11 @@ const ProjectForm = () => {
     const [errors, setErrors] = useState({})
     const { setProjects } = useContext(DataContext)
     const { auth } = useAuth()
+    const axiosPrivate = useAxiosPrivate()
 
 
     const onSubmit = async (event) => {
-        await axios.post(`${CONSTANTS.API_URL}api/projects`, event)
+        await axiosPrivate.post(`${CONSTANTS.API_URL}api/projects`, event)
             .then(res => {
                 if (res.data?.success) {
                     toaster.success('Your project has been posted posted!')

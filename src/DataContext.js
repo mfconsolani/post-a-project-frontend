@@ -11,7 +11,7 @@ export const DataProvider = ({ children }) => {
     const fetchProjects = async () => {
         return await axios.get(`${CONSTANTS.API_URL}api/projects`)
             .then(res => setProjects(res.data))
-            .catch(err => console.log(err))
+            .catch(err => console.error(err))
     }
 
     useEffect(() => fetchProjects(), [])
