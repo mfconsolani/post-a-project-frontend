@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Field, Form } from 'react-final-form'
 import axios from 'axios'
 import { TextInputField, Button, toaster, Spinner, InlineAlert } from 'evergreen-ui'
 import './SignIn.styles.css'
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import CONSTANTS from "../../config";
 import useAuth from "../../hooks/useAuth";
+import DataContext from "../../DataContext";
 
 const required = value => (value ? undefined : 'Required')
 
@@ -33,6 +34,7 @@ const TextInputAdapter = ({ input, ...rest }) => (
 
 const SignIn = (props) => {
     const { setAuth } = useAuth()
+    const { setProfileInfo } = useContext(DataContext)
     const navigate = useNavigate()
     const location = useLocation()
     const from = location.state?.from?.pathname || "/projects" 
@@ -51,7 +53,7 @@ const SignIn = (props) => {
                     userProfile && userProfile.length > 0 && localStorage.setItem('userProfile', userProfile)
                     res.data?.profileData
                         && Object.keys(res.data?.profileData).length !== 0
-                        && props.setProfile({ profileExists: true, ...res.data?.profileData })
+                        && setProfileInfo({ profileExists: true, ...res.data?.profileData })
                     toaster.success('Welcome! You\'ve been successfully logged in', {
                         duration: 2
                     })

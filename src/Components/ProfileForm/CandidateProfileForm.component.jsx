@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Pane, Button, Spinner, Textarea, InlineAlert, TextInputField, Label, Alert, toaster } from 'evergreen-ui';
 import { Field, Form } from 'react-final-form'
 import './ProfileForm.styles.css'
@@ -7,6 +7,8 @@ import { MultiSelect } from "react-multi-select-component";
 import DatePicker from 'react-date-picker';
 import CONSTANTS from "../../config";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useAuth from "../../hooks/useAuth";
+import DataContext from "../../DataContext";
 //TODO
 //When I modify the profile info, on submit, the updated values should update as well, but they dont
 //So if you change of view and go back to profile, you get the old initial values, not the updated ones
@@ -161,17 +163,20 @@ const DatePickerCustom = ({ input, ...rest }) => {
 
 const CandidateProfileForm = (props) => {
     const axiosPrivate = useAxiosPrivate()
+    const {auth} = useAuth()
+    const { setProfileInfo, profileInfo } = useContext(DataContext)
     const [errors, setErrors] = useState({})
     const [isProfileComplete, setIsProfileComplete] = useState()
-
+    
     const onSubmit = async (event) => {
         try {
-            const createProfile = axiosPrivate.post(`${CONSTANTS.API_URL}api/profile/user/${props.user.userId}`, event)
+            const createProfile = axiosPrivate.post(`${CONSTANTS.API_URL}api/profile/user/${auth.userId}`, event)
             const createProfileResponse = await createProfile
             if (createProfileResponse.data.message === "Profile created") {
                 setIsProfileComplete(true)
                 // console.log(createProfileResponse)
-                props.setProfile({ profileExists: true, ...createProfileResponse.data.payload })
+                // props.setProfile({ profileExists: true, ...createProfileResponse.data.payload })
+                setProfileInfo({ profileExists: true, ...createProfileResponse.data.payload })
                 localStorage.setItem('userProfile', JSON.stringify({ profileExists: true, ...createProfileResponse.data.payload }))
                 // console.log(JSON.parse(localStorage.getItem('userProfile')))
                 toaster.success('Profile completed', {
@@ -179,7 +184,8 @@ const CandidateProfileForm = (props) => {
                     id: 'forbidden-action'
                 })
             } else if (createProfileResponse.data.message === "Profile updated") {
-                props.setProfile({ profileExists: true, ...createProfileResponse.data.payload })
+                // props.setProfile({ profileExists: true, ...createProfileResponse.data.payload })
+                setProfileInfo({ profileExists: true, ...createProfileResponse.data.payload })
                 localStorage.setItem('userProfile', JSON.stringify({ profileExists: true, ...createProfileResponse.data.payload }))
                 toaster.success('Profile successfully updated', {
                     duration: 3,
@@ -196,12 +202,12 @@ const CandidateProfileForm = (props) => {
 
     return (
         <React.Fragment>
-            {props.user && !props.user.status ?
+            {auth && !auth.status ?
                 <Alert intent="danger" title="Unauthorized route" margin={16}>
                     Sorry! This option is only available for certain type of users 😔
                 </Alert>
                 : <Pane elevation={4} float="left" borderRadius="5px" padding="1rem" marginX="1rem" marginTop="5em" marginBottom="2em" minWidth="50vw">
-                    {(props.profile && Object.keys(props.profile).length > 1) | isProfileComplete
+                    {(profileInfo && Object.keys(profileInfo).length > 1) | isProfileComplete
                         ? <Alert zIndex="0"
                             intent="success"
                             title="Your profile is up to date! 😁"
@@ -218,20 +224,20 @@ const CandidateProfileForm = (props) => {
                     <Form
                         onSubmit={onSubmit}
                         initialValues={{
-                            email: props.user.userEmail,
-                            firstName: props.profile.firstName,
-                            lastName: props.profile.lastName,
-                            country: props.profile.country,
-                            city: props.profile.city,
-                            birthday: props.profile.birthday,
-                            description: props.profile.description,
-                            skills: props.profile.skills && props.profile.skills.map(element => {
+                            email: auth.userEmail,
+                            firstName: profileInfo.firstName,
+                            lastName: profileInfo.lastName,
+                            country: profileInfo.country,
+                            city: profileInfo.city,
+                            birthday: profileInfo.birthday,
+                            description: profileInfo.description,
+                            skills: profileInfo.skills && profileInfo.skills.map(element => {
                                 return { label: element.skill, value: element.skill }
                             }),
-                            roles: props.profile.roles && props.profile.roles.map(element => {
+                            roles: profileInfo.roles && profileInfo.roles.map(element => {
                                 return { label: element.role, value: element.role }
                             }),
-                            phone: props.profile.phoneNumber
+                            phone: profileInfo.phoneNumber
                         }}
                         keepDirtyOnReinitialize
                         render={({ handleSubmit, values, submitting, pristine }) => (

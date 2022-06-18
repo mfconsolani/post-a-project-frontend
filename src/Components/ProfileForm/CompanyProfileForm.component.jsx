@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Pane, Button, Textarea, TextInputField, Label, Alert, toaster } from 'evergreen-ui';
 import { Field, Form } from 'react-final-form'
 import './ProfileForm.styles.css'
 import CONSTANTS from "../../config";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useAuth from "../../hooks/useAuth";
+import DataContext from "../../DataContext";
 //TODO
 //When I modify the profile info, on submit, the updated values should update as well, but they dont
 //So if you change of view and go back to profile, you get the old initial values, not the updated ones
@@ -39,15 +41,18 @@ const TextAreaAdapter = ({ input, ...rest }) => {
 
 const CompanyProfileForm = (props) => {
     const axiosPrivate = useAxiosPrivate()
+    const {auth} = useAuth()
+    const {setProfileInfo, profileInfo} = useContext(DataContext)
     const [isProfileComplete, setIsProfileComplete] = useState()
 
     const onSubmit = async (event) => {
         try {
-            const createProfile = axiosPrivate.post(`${CONSTANTS.API_URL}api/profile/company/${props.user.userId}`, event)
+            const createProfile = axiosPrivate.post(`${CONSTANTS.API_URL}api/profile/company/${auth.userId}`, event)
             const createProfileResponse = await createProfile
             if (createProfileResponse.data.message === "Profile created") {
                 setIsProfileComplete(true)
-                props.setProfile({profileExists: true, ...createProfileResponse.data.payload})
+                // props.setProfile({profileExists: true, ...createProfileResponse.data.payload})
+                setProfileInfo({profileExists: true, ...createProfileResponse.data.payload})
                 localStorage.setItem('userProfile',JSON.stringify({profileExists: true, ...createProfileResponse.data.payload}))
                 toaster.success('Profile completed', {
                     duration: 3,
@@ -55,7 +60,8 @@ const CompanyProfileForm = (props) => {
                 })
             } else if (createProfileResponse.data.message === "Profile updated") {
                 // console.log("profile upadted", createProfileResponse.data)
-                props.setProfile({profileExists: true, ...createProfileResponse.data.payload})
+                // props.setProfile({profileExists: true, ...createProfileResponse.data.payload})
+                setProfileInfo({profileExists: true, ...createProfileResponse.data.payload})
                 localStorage.setItem('userProfile',JSON.stringify({profileExists: true, ...createProfileResponse.data.payload}))
                 toaster.success('Profile successfully updated', {
                     duration: 3,
@@ -72,12 +78,12 @@ const CompanyProfileForm = (props) => {
 
     return (
         <React.Fragment>
-            {props.user && !props.user.status ?
+            {auth && !auth.status ?
                 <Alert intent="danger" title="Unauthorized route" margin={16}>
                     Sorry! This option is only available for certain type of users 😔
                 </Alert>
                 : <Pane elevation={4} float="left" borderRadius="5px" padding="1rem" marginX="1rem" marginTop="5em" marginBottom="2em" minWidth="50vw">
-                    {(props.profile && Object.keys(props.profile).length > 1) | isProfileComplete
+                    {(profileInfo && Object.keys(profileInfo).length > 1) | isProfileComplete
                         ? <Alert zIndex="0"
                             intent="success"
                             title="Your profile is up to date! 😁"
@@ -94,8 +100,8 @@ const CompanyProfileForm = (props) => {
                     <Form
                         onSubmit={onSubmit}
                         initialValues={{
-                            email: props.user.userEmail,
-                            ...props.profile
+                            email: auth.userEmail,
+                            ...profileInfo
                         }}
                         keepDirtyOnReinitialize
                         render={({ handleSubmit, values, submitting, pristine }) => (

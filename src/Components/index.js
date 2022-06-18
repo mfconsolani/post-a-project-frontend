@@ -7,4 +7,5 @@ export {default as CandidateProfileForm } from './ProfileForm/CandidateProfileFo
 export {default as CompanyProfileForm } from './ProfileForm/CompanyProfileForm.component'
 // export {default as ProfileCard } from './ProfileCard/ProfileCard.component'
 export {default as RequireAuth } from './RequireAuth/RequireAuth.component';
+export {default as Header} from './Header/Header.component';
 

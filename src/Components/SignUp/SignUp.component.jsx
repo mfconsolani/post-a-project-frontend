@@ -9,6 +9,7 @@ import {
 import './SignUp.styles.css'
 import { Link, useNavigate } from 'react-router-dom'
 import CONSTANTS from '../../config.js'
+import useAuth from "../../hooks/useAuth";
 
 
 //TODO
@@ -94,6 +95,7 @@ const TextInputAdapter = ({ input, ...rest }) => {
 
 
 const SignUp = (props) => {
+    const {setAuth} = useAuth()
     let navigate = useNavigate()
     const onSubmit = async (values, form) => {
         !validatePassword(values.password, values.passwordRepeat).isInvalid
@@ -103,7 +105,7 @@ const SignUp = (props) => {
             })
                 .then(res => {
                     if (res.data?.success) {
-                        props.setStatus({ status: true, userEmail: res.data?.payload.email, userId: res.data?.payload.id, profileType: res.data?.payload.profileType })
+                        setAuth({ status: true, userEmail: res.data?.payload.email, userId: res.data?.payload.id, profileType: res.data?.payload.profileType })
                         toaster.success('Welcome! You\'ve been successfully signed up')
                         form.reset()
                         navigate('/candidates')
