@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { toaster } from "evergreen-ui";
-import axios from "axios";
 import CONSTANTS from "../config";
+import useAxiosPrivate from "./useAxiosPrivate";
 
 export const useFetchProjectApplication = () => {
+    const axiosPrivate = useAxiosPrivate()
     const [isLoading, setIsLoading] = useState(false)
     const [userHasApplied, setUserHasApplied] = useState('')
     const [accumulatedApplications, setAccumulatedApplications] = useState(false)
 
     const fetchApplication = async (projectId, user, applied) => {
         setIsLoading(true)
-        return await axios.post(`${CONSTANTS.API_URL}api/projects/apply/${projectId}/?apply=${applied}`, { user: user })
+        return await axiosPrivate.post(`${CONSTANTS.API_URL}api/projects/apply/${projectId}/?apply=${applied}`, { user: user })
             .then(res => {
                 if (res.data?.success) {
                     setAccumulatedApplications(res.data?.payload.applicationsCount)

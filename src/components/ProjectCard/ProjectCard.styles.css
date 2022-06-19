@@ -1,0 +1,71 @@
+.projects {
+    margin: 3%;
+  }
+  
+  .project-container {
+    border: 1px solid #FFF;
+    border-radius: 5px;
+    padding: 1rem;
+    box-shadow: 3px 6px 5px 5px #ddd;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Dosis', sans-serif;
+  }
+  
+  .project-header-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  
+  .project-heading {
+    margin: unset;
+    font-weight: 800;
+    font-size: large;
+  }
+  
+  .project-subheading {
+    margin: unset;
+    font-weight: 600;
+    font-size: medium;
+  }
+  
+  .interactions>i{
+    margin: 0 .4em;
+  }
+  
+  .project-body>p {
+    margin: 0.3em 0;
+    font-weight: 400;
+    font-size: small;
+  }
+  
+  .post-expiration-dates {
+    font-style: italic;
+    font-size: x-small;
+  }
+  
+  .project-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  
+  button {
+    font-size: x-small;
+    font-family: 'Dosis', sans-serif;
+  }
+
+  .heart-icon-button:active{
+    border: none;
+  }
+
+.heart-icon:active{
+    animation: scale 100ms ease-in-out forwards;
+}
+
+@keyframes scale {
+    to {
+      transform: scale(0.8);
+    }
+  }

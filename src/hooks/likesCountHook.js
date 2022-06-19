@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import { toaster } from "evergreen-ui";
-import axios from 'axios';
+import useAxiosPrivate from './useAxiosPrivate'
 import CONSTANTS from "../config";
 
 export const useFetchLikes = () => {
+    const axiosPrivate = useAxiosPrivate()
     const [isLoading, setIsLoading] = useState(false)
     const [isLikedByUser, setIsLikedByUser] = useState(false)
     const [accumualatedLikes, setAccumulatedLikes] = useState(false)
 
     const fetchLikes = async (projectId, user, like) => {
             setIsLoading(true)
-            return await axios.post(`${CONSTANTS.API_URL}api/projects/like/${projectId}/?like=${like}`, { user: user })
+            return await axiosPrivate.post(`${CONSTANTS.API_URL}api/projects/like/${projectId}/?like=${like}`, { user: user })
                 .then(res => {
                     if (res.data?.success) {
                         setAccumulatedLikes(res.data?.payload.likesCount)
