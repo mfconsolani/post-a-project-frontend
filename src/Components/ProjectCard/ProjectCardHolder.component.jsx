@@ -1,7 +1,7 @@
 import { Pane } from "evergreen-ui"
 import { useContext } from "react"
 import { ProjectCard } from ".."
-import DataContext from "../../DataContext"
+import DataContext from "../../context/DataContext"
 
 const ProjectCardHolder = () => {
   const { projects, fetchProjects } = useContext(DataContext)

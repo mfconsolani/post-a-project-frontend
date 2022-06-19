@@ -1,12 +1,12 @@
 import { useEffect, useState, createContext } from "react";
 import axios from "axios";
-import CONSTANTS from "./config";
+import CONSTANTS from "../config";
 
 const DataContext = createContext({})
 
 export const DataProvider = ({ children }) => {
     const [projects, setProjects] = useState('')
-    const [profileInfo, setProfileInfo] = useState(JSON.parse(localStorage.getItem('userProfile')) || { profileExists: false })
+    const [profileInfo, setProfileInfo] = useState({ profileExists: false })
 
     const fetchProjects = async () => {
         return await axios.get(`${CONSTANTS.API_URL}api/projects`)

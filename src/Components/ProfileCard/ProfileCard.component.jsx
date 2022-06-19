@@ -5,12 +5,8 @@ import capitalizeFirstLetter from '../../helpers/capitalizeFirstLetter'
 import './ProfileCard.styles.css'
 import CONSTANTS from "../../config";
 
-//TODO
-//Build it in such a way that only users with profile completed will be shown
-
 const CandidateProfileDialog = ({ title, customLabel, body, buttonName, profileData, ...rest }) => {
     const [isShown, setIsShown] = React.useState(false)
-    // console.log(profileData)
 
     return (
         <Pane key={profileData.profile.id}>
@@ -93,9 +89,7 @@ const ProfileCard = () => {
                 justifyContent="space-between"
                 padding="1em"
             >
-                {/* userProfiles.length < 1 */}
                 { userProfiles.length < 1 ? <Spinner size={100} /> : userProfiles.map(elem => {
-                    // console.log("elem.id", elem.id)
                     return (
                         <Pane
                             key={elem.id}

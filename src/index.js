@@ -5,8 +5,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { BrowserRouter } from "react-router-dom";
-import { DataProvider } from './DataContext'
-import { AuthProvider } from './AuthContext';
+import { DataProvider } from './context/DataContext'
+import { AuthProvider } from './context/AuthContext';
 
 
 ReactDOM.render(

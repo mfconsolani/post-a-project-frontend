@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Field, Form } from 'react-final-form'
 import axios from 'axios'
 import { TextInputField, Button, toaster, Spinner, InlineAlert } from 'evergreen-ui'
@@ -6,7 +6,8 @@ import './SignIn.styles.css'
 import { useNavigate, useLocation } from "react-router-dom";
 import CONSTANTS from "../../config";
 import useAuth from "../../hooks/useAuth";
-import DataContext from "../../DataContext";
+import DataContext from "../../context/DataContext";
+import { Checkbox } from "..";
 
 const required = value => (value ? undefined : 'Required')
 
@@ -33,11 +34,19 @@ const TextInputAdapter = ({ input, ...rest }) => (
 
 
 const SignIn = (props) => {
-    const { setAuth } = useAuth()
+    const { setAuth, setPersist, persist } = useAuth()
     const { setProfileInfo } = useContext(DataContext)
     const navigate = useNavigate()
     const location = useLocation()
-    const from = location.state?.from?.pathname || "/projects" 
+    const from = location.state?.from?.pathname || "/projects"
+
+    const togglePersist = () => {
+        setPersist(prev => !prev);
+    }
+
+    useEffect(() => {
+        localStorage.setItem("persist", persist);
+    }, [persist])
 
     const onSubmit = async (values, form) => {
         await axios.post(`${CONSTANTS.API_URL}api/auth/local/login`, values, {
@@ -47,10 +56,6 @@ const SignIn = (props) => {
             .then(res => {
                 if (res.data?.success) {
                     setAuth({ status: true, userEmail: res.data?.userEmail, userId: res.data?.userId, profileType: res.data?.profile, accessToken: res.data?.accessToken })
-                    const userProfile = res.data?.profileData
-                        && Object.keys(res.data?.profileData).length !== 0 && JSON.stringify({ profileExists: true, ...res.data?.profileData })
-
-                    userProfile && userProfile.length > 0 && localStorage.setItem('userProfile', userProfile)
                     res.data?.profileData
                         && Object.keys(res.data?.profileData).length !== 0
                         && setProfileInfo({ profileExists: true, ...res.data?.profileData })
@@ -58,7 +63,7 @@ const SignIn = (props) => {
                         duration: 2
                     })
                     form.reset()
-                    navigate(from, {replace: true});
+                    navigate(from, { replace: true });
                     return { success: true }
                 }
             })
@@ -96,6 +101,12 @@ const SignIn = (props) => {
                                 type="password"
                                 required
                                 validate={required}
+                            />
+                            <Field
+                                component={Checkbox}
+                                name="Persist"
+                                label="Persist Session"
+                                callback={togglePersist}
                             />
                         </div>
                         <div className="button-container">

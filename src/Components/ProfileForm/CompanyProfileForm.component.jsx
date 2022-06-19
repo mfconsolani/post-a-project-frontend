@@ -5,7 +5,9 @@ import './ProfileForm.styles.css'
 import CONSTANTS from "../../config";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useAuth from "../../hooks/useAuth";
-import DataContext from "../../DataContext";
+import DataContext from "../../context/DataContext";
+import useLogout from "../../hooks/useLogout";
+import { useLocation, useNavigate } from "react-router";
 //TODO
 //When I modify the profile info, on submit, the updated values should update as well, but they dont
 //So if you change of view and go back to profile, you get the old initial values, not the updated ones
@@ -44,6 +46,9 @@ const CompanyProfileForm = (props) => {
     const {auth} = useAuth()
     const {setProfileInfo, profileInfo} = useContext(DataContext)
     const [isProfileComplete, setIsProfileComplete] = useState()
+    const logout = useLogout()
+    const location = useLocation()
+    const navigate = useNavigate()
 
     const onSubmit = async (event) => {
         try {
@@ -51,18 +56,13 @@ const CompanyProfileForm = (props) => {
             const createProfileResponse = await createProfile
             if (createProfileResponse.data.message === "Profile created") {
                 setIsProfileComplete(true)
-                // props.setProfile({profileExists: true, ...createProfileResponse.data.payload})
                 setProfileInfo({profileExists: true, ...createProfileResponse.data.payload})
-                localStorage.setItem('userProfile',JSON.stringify({profileExists: true, ...createProfileResponse.data.payload}))
                 toaster.success('Profile completed', {
                     duration: 3,
                     id: 'forbidden-action'
                 })
             } else if (createProfileResponse.data.message === "Profile updated") {
-                // console.log("profile upadted", createProfileResponse.data)
-                // props.setProfile({profileExists: true, ...createProfileResponse.data.payload})
                 setProfileInfo({profileExists: true, ...createProfileResponse.data.payload})
-                localStorage.setItem('userProfile',JSON.stringify({profileExists: true, ...createProfileResponse.data.payload}))
                 toaster.success('Profile successfully updated', {
                     duration: 3,
                     id: 'forbidden-action'
@@ -70,6 +70,8 @@ const CompanyProfileForm = (props) => {
             }
         } catch (err) {
             console.log(err)
+            logout()
+            navigate('/signin', { state: { from: location }, replace: true });
             toaster.danger('Error occurred when creating or updating profile', {
                 duration: 3
             })

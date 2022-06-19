@@ -1,16 +1,18 @@
-import React, { useContext } from "react"
-import DataContext from "../../DataContext";
+import React from "react"
 import useAuth from "../../hooks/useAuth";
 import {
     Button, Avatar, Menu, Popover, Position, PeopleIcon, LogOutIcon, EditIcon,
     HeartIcon, Pane
 } from 'evergreen-ui'
 import { Link } from 'react-router-dom';
+import useLogout from "../../hooks/useLogout";
+import { useNavigate } from "react-router";
 
 
 const Header = () => {
-    const { auth, setAuth } = useAuth()
-    const { setProfileInfo } = useContext(DataContext)
+    const { auth } = useAuth()
+    const logout = useLogout()
+    const navigate = useNavigate()
 
     return (
         <React.Fragment>
@@ -43,15 +45,13 @@ const Header = () => {
                                 </Menu.Group>
                                 <Menu.Divider />
                                 <Menu.Group>
-                                    <Link to="/projects" style={{ textDecoration: 'none' }}>
-                                        <Menu.Item icon={LogOutIcon} intent="danger" onClick={() => {
-                                            setAuth({ status: false, userEmail: '', userId: '', profileType: '' })
-                                            setProfileInfo({ profileExists: false })
+                                        <Menu.Item icon={LogOutIcon} intent="danger" onClick={async() => {
+                                            await logout()
+                                            navigate('/projects')
                                             localStorage.clear()
                                         }}>
                                             Logout
                                         </Menu.Item>
-                                    </Link>
                                 </Menu.Group>
                             </Menu>
                         }

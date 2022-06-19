@@ -8,7 +8,9 @@ import DatePicker from 'react-date-picker';
 import CONSTANTS from "../../config";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useAuth from "../../hooks/useAuth";
-import DataContext from "../../DataContext";
+import DataContext from "../../context/DataContext";
+import { useLocation, useNavigate } from "react-router";
+import useLogout from "../../hooks/useLogout";
 //TODO
 //When I modify the profile info, on submit, the updated values should update as well, but they dont
 //So if you change of view and go back to profile, you get the old initial values, not the updated ones
@@ -94,7 +96,6 @@ const RolesMultiSelect = ({ input, ...rest }) => {
         const getRoles = async () => {
             return await axios.get(`${CONSTANTS.API_URL}api/roles/`)
                 .then(res => {
-                    // console.log(res.data)
                     const existingRoles = res.data.map(element => {
                         return { label: element.role, value: element.role }
                     })
@@ -165,28 +166,25 @@ const CandidateProfileForm = (props) => {
     const axiosPrivate = useAxiosPrivate()
     const {auth} = useAuth()
     const { setProfileInfo, profileInfo } = useContext(DataContext)
+    const location = useLocation()
+    const navigate = useNavigate()
+    const logout = useLogout()
     const [errors, setErrors] = useState({})
     const [isProfileComplete, setIsProfileComplete] = useState()
-    
+
     const onSubmit = async (event) => {
         try {
             const createProfile = axiosPrivate.post(`${CONSTANTS.API_URL}api/profile/user/${auth.userId}`, event)
             const createProfileResponse = await createProfile
             if (createProfileResponse.data.message === "Profile created") {
                 setIsProfileComplete(true)
-                // console.log(createProfileResponse)
-                // props.setProfile({ profileExists: true, ...createProfileResponse.data.payload })
                 setProfileInfo({ profileExists: true, ...createProfileResponse.data.payload })
-                localStorage.setItem('userProfile', JSON.stringify({ profileExists: true, ...createProfileResponse.data.payload }))
-                // console.log(JSON.parse(localStorage.getItem('userProfile')))
                 toaster.success('Profile completed', {
                     duration: 3,
                     id: 'forbidden-action'
                 })
             } else if (createProfileResponse.data.message === "Profile updated") {
-                // props.setProfile({ profileExists: true, ...createProfileResponse.data.payload })
                 setProfileInfo({ profileExists: true, ...createProfileResponse.data.payload })
-                localStorage.setItem('userProfile', JSON.stringify({ profileExists: true, ...createProfileResponse.data.payload }))
                 toaster.success('Profile successfully updated', {
                     duration: 3,
                     id: 'forbidden-action'
@@ -194,6 +192,8 @@ const CandidateProfileForm = (props) => {
             }
         } catch (err) {
             console.log(err)
+            logout()
+            navigate('/signin', { state: { from: location }, replace: true });
             toaster.danger('Error occurred when creating or updating profile', {
                 duration: 3
             })

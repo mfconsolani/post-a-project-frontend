@@ -8,4 +8,6 @@ export {default as CompanyProfileForm } from './ProfileForm/CompanyProfileForm.c
 // export {default as ProfileCard } from './ProfileCard/ProfileCard.component'
 export {default as RequireAuth } from './RequireAuth/RequireAuth.component';
 export {default as Header} from './Header/Header.component';
+export {default as PersistLogin} from './PersistLogin/PersistLogin.component';
+export {default as Checkbox} from './Checkbox/Checkbox.component'
 

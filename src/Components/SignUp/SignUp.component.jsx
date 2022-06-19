@@ -32,10 +32,6 @@ const validatePassword = (password, passwordRepeat = null) => {
 
 const ControlledSwitchInput = ({ input, ...rest }) => {
     const [checked, setChecked] = React.useState(false)
-    // console.log("input", input, "rest", rest)
-    // React.useEffect(() => {
-    //     console.log(checked)
-    // }, [checked])
 
     return (
         <Pane display="flex" flexDirection="column" alignItems="end" marginBottom="18px">
