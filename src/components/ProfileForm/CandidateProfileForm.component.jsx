@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Pane, Button, Spinner, Textarea, InlineAlert, TextInputField, Label, Alert, toaster } from 'evergreen-ui';
+import { Pane, Button, Spinner, Textarea, InlineAlert, TextInputField, Label, Alert, toaster, Avatar } from 'evergreen-ui';
 import { Field, Form } from 'react-final-form'
 import './ProfileForm.styles.css'
 import axios from 'axios'
@@ -11,6 +11,8 @@ import useAuth from "../../hooks/useAuth";
 import DataContext from "../../context/DataContext";
 import { useLocation, useNavigate } from "react-router";
 import useLogout from "../../hooks/useLogout";
+import { FileUploader } from '../UploadFile/UploadFile.component';
+
 //TODO
 //When I modify the profile info, on submit, the updated values should update as well, but they dont
 //So if you change of view and go back to profile, you get the old initial values, not the updated ones
@@ -164,7 +166,7 @@ const DatePickerCustom = ({ input, ...rest }) => {
 
 const CandidateProfileForm = (props) => {
     const axiosPrivate = useAxiosPrivate()
-    const {auth} = useAuth()
+    const { auth } = useAuth()
     const { setProfileInfo, profileInfo } = useContext(DataContext)
     const location = useLocation()
     const navigate = useNavigate()
@@ -220,7 +222,6 @@ const CandidateProfileForm = (props) => {
                         >We recommend you complete your profile for more visibility and new features!
                         </Alert>
                     }
-
                     <Form
                         onSubmit={onSubmit}
                         initialValues={{
@@ -242,6 +243,15 @@ const CandidateProfileForm = (props) => {
                         keepDirtyOnReinitialize
                         render={({ handleSubmit, values, submitting, pristine }) => (
                             <form onSubmit={handleSubmit}>
+                                <label htmlFor="avatar-input">
+                                    <Avatar cursor="pointer" name={auth.userEmail} size={100} marginRight={16} marginTop={8} />
+                                    <input id="avatar-input" onChange={(e) => {
+                                        console.log(e.target.files[0])
+                                    }} type="file" accept="image/*" style={{     
+                                        display: "none"
+                                    }}>
+                                    </input>
+                                </label>
                                 <Field
                                     component={TextInputAdapter}
                                     name="firstName"
@@ -313,6 +323,7 @@ const CandidateProfileForm = (props) => {
                                     placeholder="Please add the country code"
                                     required
                                 />
+
                                 <Field
                                     component={TextInputAdapter}
                                     name="email"
@@ -330,9 +341,10 @@ const CandidateProfileForm = (props) => {
                             </form>
                         )}
                     />
+                    <FileUploader />
                 </Pane>
             }
-        </React.Fragment>
+        </React.Fragment >
     )
 }
 
