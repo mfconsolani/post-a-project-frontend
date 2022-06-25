@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react'
-import { Pane, FileCard, FileUploader as Uploader } from 'evergreen-ui';
-// import postImage from '../../helpers/postImage';
-import usePostFile from '../../helpers/postImage';
+import { Pane, FileCard, FileUploader as Uploader, Spinner } from 'evergreen-ui';
+import usePostFile from '../../hooks/usePostFile';
 
 export const FileUploader = () => {
-    const {uploadFile, isLoading} = usePostFile()
+    const { uploadFile, isLoading } = usePostFile()
     const [files, setFiles] = React.useState([])
     const [fileRejections, setFileRejections] = React.useState([])
     const handleRejected = React.useCallback((fileRejections) => setFileRejections([fileRejections[0]]), [])
@@ -12,18 +11,23 @@ export const FileUploader = () => {
         setFiles([])
         setFileRejections([])
     }, [])
+
     const handleChange = React.useCallback(async (files) => {
-        const result = await uploadFile({ image: files[0] })
-        console.log(result)        
+        const result = await uploadFile({ file: files[0] })
+        console.log(result)
         setFiles([files[0]])
-    }, [])
+    }, [uploadFile])
 
     useEffect(() => {
         console.log(files[0])
     }, [files])
 
     return (
-        <Pane maxWidth={654} maxHeight={250} marginTop={24}>
+        isLoading ?
+            (<Pane display="flex" alignItems="center" justifyContent="center" maxWidth={654} maxHeight={250} marginTop={24}>
+                <Spinner />
+            </Pane>) :
+            <Pane maxWidth={654} maxHeight={250} marginTop={24}>
                 <Uploader
                     label="Resume"
                     acceptedMimeTypes={["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.oasis.opendocument.text"]}
@@ -37,6 +41,7 @@ export const FileUploader = () => {
                         const fileRejection = fileRejections.find((fileRejection) => fileRejection.file === file)
                         const { message } = fileRejection || {}
                         return (
+
                             <FileCard
                                 key={name}
                                 isInvalid={fileRejection != null}
@@ -50,7 +55,7 @@ export const FileUploader = () => {
                     }}
                     values={files}
                 />
-        </Pane>
+            </Pane>
     )
 }
 

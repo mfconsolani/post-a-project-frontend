@@ -12,6 +12,8 @@ import DataContext from "../../context/DataContext";
 import { useLocation, useNavigate } from "react-router";
 import useLogout from "../../hooks/useLogout";
 import { FileUploader } from '../UploadFile/UploadFile.component';
+import usePostFile from "../../hooks/usePostFile";
+import { Buffer } from 'buffer';
 
 //TODO
 //When I modify the profile info, on submit, the updated values should update as well, but they dont
@@ -160,19 +162,28 @@ const DatePickerCustom = ({ input, ...rest }) => {
         </Pane>
     )
 }
-//TODO
-//complete company field when I have the proper props
-//isolate components
 
 const CandidateProfileForm = (props) => {
     const axiosPrivate = useAxiosPrivate()
     const { auth } = useAuth()
+    const { uploadFile } = usePostFile()
     const { setProfileInfo, profileInfo } = useContext(DataContext)
     const location = useLocation()
     const navigate = useNavigate()
     const logout = useLogout()
     const [errors, setErrors] = useState({})
     const [isProfileComplete, setIsProfileComplete] = useState()
+    const [avatar, setAvatar] = useState()
+
+    useEffect(() => {
+
+        const fetchAvatar = async () => {
+            const avatarFile = await axios.get(`${CONSTANTS.API_URL}images/`, { responseType: 'arraybuffer' })
+            const base64ImageString = Buffer.from(avatarFile.data, 'binary').toString('base64')
+            setAvatar("data:image/*;base64," + base64ImageString)
+        }
+        fetchAvatar()
+    }, [])
 
     const onSubmit = async (event) => {
         try {
@@ -244,10 +255,12 @@ const CandidateProfileForm = (props) => {
                         render={({ handleSubmit, values, submitting, pristine }) => (
                             <form onSubmit={handleSubmit}>
                                 <label htmlFor="avatar-input">
-                                    <Avatar cursor="pointer" name={auth.userEmail} size={100} marginRight={16} marginTop={8} />
-                                    <input id="avatar-input" onChange={(e) => {
+                                    {avatar ? <Avatar cursor="pointer" name={auth.userEmail} size={100} marginRight={16} marginTop={8} src={avatar} borderRadius="40%"
+                                    /> : <Spinner size={50} />}
+                                    <input id="avatar-input" onChange={async (e) => {
                                         console.log(e.target.files[0])
-                                    }} type="file" accept="image/*" style={{     
+                                        return await uploadFile({ file: e.target.files[0], userEmail: auth.userEmail })
+                                    }} type="file" accept="image/*" style={{
                                         display: "none"
                                     }}>
                                     </input>
