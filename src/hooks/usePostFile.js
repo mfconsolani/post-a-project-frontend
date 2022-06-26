@@ -1,5 +1,4 @@
 import { useState } from "react";
-import axios from "../api/axios";
 import CONSTANTS from "../config";
 import useAxiosPrivate
  from "./useAxiosPrivate";
@@ -8,14 +7,13 @@ const usePostFile = () => {
 
     const [isLoading, setIsLoading] = useState(false)
 
-    const uploadFile = async ({file, userEmail}) => {
+    const uploadFile = async ({file, userEmail, fileType}) => {
         try {
             setIsLoading(true)
             const formData = new FormData();
             formData.append("file", file)
             formData.append("email", userEmail)
-            const result = await axiosPrivate.post(`${CONSTANTS.API_URL}api/profile/user/file/avatar`, formData, { headers: { 'Content-Type': 'multipart/form-data' }, withCredentials: true })
-            console.log(result)
+            const result = await axiosPrivate.post(`${CONSTANTS.API_URL}api/profile/user/file/${fileType}`, formData, { headers: { 'Content-Type': 'multipart/form-data' }, withCredentials: true })
             setIsLoading(false)
             return result.data
         } catch (err) {

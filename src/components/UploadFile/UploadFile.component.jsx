@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Pane, FileCard, FileUploader as Uploader, Spinner } from 'evergreen-ui';
 import usePostFile from '../../hooks/usePostFile';
+import useAuth from '../../hooks/useAuth';
 
 export const FileUploader = () => {
     const { uploadFile, isLoading } = usePostFile()
+    const {auth} = useAuth()
     const [files, setFiles] = React.useState([])
     const [fileRejections, setFileRejections] = React.useState([])
     const handleRejected = React.useCallback((fileRejections) => setFileRejections([fileRejections[0]]), [])
@@ -11,16 +13,11 @@ export const FileUploader = () => {
         setFiles([])
         setFileRejections([])
     }, [])
-
+    
     const handleChange = React.useCallback(async (files) => {
-        const result = await uploadFile({ file: files[0] })
-        console.log(result)
+        await uploadFile({ file: files[0], userEmail: auth.userEmail, fileType: "resume" })
         setFiles([files[0]])
-    }, [uploadFile])
-
-    useEffect(() => {
-        console.log(files[0])
-    }, [files])
+    }, [uploadFile, auth])
 
     return (
         isLoading ?

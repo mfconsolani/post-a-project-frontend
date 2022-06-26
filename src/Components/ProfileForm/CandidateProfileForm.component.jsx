@@ -176,9 +176,8 @@ const CandidateProfileForm = (props) => {
     const [avatar, setAvatar] = useState()
 
     useEffect(() => {
-
         const fetchAvatar = async () => {
-            const avatarFile = await axios.get(`${CONSTANTS.API_URL}images/`, { responseType: 'arraybuffer' })
+            const avatarFile = await axiosPrivate.get(`${CONSTANTS.API_URL}api/profile/user/file/avatar/${profileInfo.avatar}`, { responseType: 'arraybuffer' })
             const base64ImageString = Buffer.from(avatarFile.data, 'binary').toString('base64')
             setAvatar("data:image/*;base64," + base64ImageString)
         }
@@ -259,7 +258,7 @@ const CandidateProfileForm = (props) => {
                                     /> : <Spinner size={50} />}
                                     <input id="avatar-input" onChange={async (e) => {
                                         console.log(e.target.files[0])
-                                        return await uploadFile({ file: e.target.files[0], userEmail: auth.userEmail })
+                                        return await uploadFile({ file: e.target.files[0], userEmail: auth.userEmail, fileType: "avatar" })
                                     }} type="file" accept="image/*" style={{
                                         display: "none"
                                     }}>
