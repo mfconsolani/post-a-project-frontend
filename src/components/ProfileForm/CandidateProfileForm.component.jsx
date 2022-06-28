@@ -13,7 +13,7 @@ import { useLocation, useNavigate } from "react-router";
 import useLogout from "../../hooks/useLogout";
 import { FileUploader } from '../UploadFile/UploadFile.component';
 import usePostFile from "../../hooks/usePostFile";
-import { Buffer } from 'buffer';
+import useFetchFile from '../../hooks/useFetchFile'
 
 //TODO
 //When I modify the profile info, on submit, the updated values should update as well, but they dont
@@ -173,16 +173,17 @@ const CandidateProfileForm = (props) => {
     const logout = useLogout()
     const [errors, setErrors] = useState({})
     const [isProfileComplete, setIsProfileComplete] = useState()
-    const [avatar, setAvatar] = useState()
+    const {avatar, resume, fetchAvatar, fetchResume} = useFetchFile()
 
     useEffect(() => {
-        const fetchAvatar = async () => {
-            const avatarFile = await axiosPrivate.get(`${CONSTANTS.API_URL}api/profile/user/file/avatar/${profileInfo.avatar}`, { responseType: 'arraybuffer' })
-            const base64ImageString = Buffer.from(avatarFile.data, 'binary').toString('base64')
-            setAvatar("data:image/*;base64," + base64ImageString)
-        }
-        fetchAvatar()
-    }, [])
+        fetchResume(profileInfo.resume)
+        fetchAvatar(profileInfo.avatar)
+    }, [profileInfo, fetchAvatar, fetchResume])
+
+    // useEffect(() => {
+    //     console.log(resume)
+    //     console.log(avatar)
+    // }, [resume, avatar])
 
     const onSubmit = async (event) => {
         try {
