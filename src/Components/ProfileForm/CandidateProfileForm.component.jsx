@@ -1,10 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Pane, Button, Spinner, Textarea, InlineAlert, TextInputField, Label, Alert, toaster, Avatar } from 'evergreen-ui';
+import { Pane, Button, Alert, toaster } from 'evergreen-ui';
 import { Field, Form } from 'react-final-form'
 import './ProfileForm.styles.css'
-import axios from 'axios'
-import { MultiSelect } from "react-multi-select-component";
-import DatePicker from 'react-date-picker';
 import CONSTANTS from "../../config";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useAuth from "../../hooks/useAuth";
@@ -12,178 +9,29 @@ import DataContext from "../../context/DataContext";
 import { useLocation, useNavigate } from "react-router";
 import useLogout from "../../hooks/useLogout";
 import { FileUploader } from '../UploadFile/UploadFile.component';
-import usePostFile from "../../hooks/usePostFile";
 import useFetchFile from '../../hooks/useFetchFile'
-
-//TODO
-//When I modify the profile info, on submit, the updated values should update as well, but they dont
-//So if you change of view and go back to profile, you get the old initial values, not the updated ones
-//until you login again
-
-const TextInputAdapter = ({ input, ...rest }) => (
-    <TextInputField display="flex" flexDirection="column" marginY="1em"
-        {...input} {...rest}
-        label={rest.label}
-        placeholder={rest.placeholder}
-        onChange={(event) => input.onChange(event)}
-    />
-)
-
-const TextAreaAdapter = ({ input, ...rest }) => {
-    return (
-        <Pane display="flex" flexDirection="column" marginY="1em">
-            <Label htmlFor={input.name} marginY="0.5em" >
-                {rest.label}
-            </Label>
-            <Textarea {...input} {...rest}
-                id={input.name}
-                placeholder={rest.placeholder}
-                onChange={(event) => input.onChange(event)}
-            />
-        </Pane>
-    )
-}
-
-const SkillsMultiSelect = ({ input, ...rest }) => {
-    const [selected, setSelected] = useState(rest.meta.initial || []);
-    const [skills, setSkills] = useState([])
-
-    useEffect(() => {
-        const getSkills = async () => {
-            return await axios.get(`${CONSTANTS.API_URL}api/skills/`)
-                .then(res => {
-                    const existingSkills = res.data.map(element => {
-                        return { label: element.skill, value: element.skill }
-                    })
-                    setSkills(existingSkills)
-                })
-                .catch(err => console.log(err))
-        }
-        getSkills()
-        return
-    }, [])
-
-    return (
-        <Pane marginY="1em">
-            <Label htmlFor={input.name} marginY="0.5em">{rest.label}</Label>
-            {skills.length > 0
-                ? <MultiSelect
-                    fontSize="12px"
-                    {...rest}
-                    {...input}
-                    id={input.name}
-                    name={input.name}
-                    options={skills}
-                    value={selected}
-                    onChange={event => {
-                        setSelected(event)
-                        rest.setErrors({ skills: false })
-                        input.onChange(event)
-                    }}
-                    overrideStrings={{ "selectSomeItems": rest.placeholder }}
-                    labelledBy="Select"
-                />
-                : <Spinner size={24} />}
-            {(rest.validationMessage && rest.validationMessage.length) && <InlineAlert intent="danger">
-                {rest.validationMessage}
-            </InlineAlert>}
-
-        </Pane>
-    );
-};
-
-const RolesMultiSelect = ({ input, ...rest }) => {
-    const [selected, setSelected] = useState(rest.meta.initial || []);
-    const [roles, setRoles] = useState([])
-
-    useEffect(() => {
-        const getRoles = async () => {
-            return await axios.get(`${CONSTANTS.API_URL}api/roles/`)
-                .then(res => {
-                    const existingRoles = res.data.map(element => {
-                        return { label: element.role, value: element.role }
-                    })
-                    setRoles(existingRoles)
-                })
-                .catch(err => console.log(err))
-        }
-        getRoles()
-        return
-    }, [])
-
-
-    return (
-        <Pane marginY="1em" >
-            <Label htmlFor={input.name} marginY="0.5em">{rest.label}</Label>
-
-            {roles.length > 0
-                ? <MultiSelect
-                    fontSize="12px"
-                    {...rest}
-                    {...input}
-                    id={input.name}
-                    name={input.name}
-                    options={roles}
-                    value={selected}
-                    onChange={event => {
-                        setSelected(event)
-                        rest.setErrors({ roles: false })
-                        input.onChange(event)
-                    }}
-                    overrideStrings={{ "selectSomeItems": rest.placeholder }}
-                    labelledBy="Select"
-                />
-                : <Spinner size={24} />}
-            {(rest.validationMessage && rest.validationMessage.length)
-                && <InlineAlert marginY="0.5em" className="inline-alert" intent="danger">
-                    {rest.validationMessage}
-                </InlineAlert>}
-        </Pane>
-    );
-};
-
-const DatePickerCustom = ({ input, ...rest }) => {
-    // const date = new Date();
-    // const oneWeekAfter = new Date(date.getTime() + (86400000 * 7))
-
-    return (
-        <Pane>
-            <Label marginBottom="10em" >{rest.label}</Label>
-            <Pane>
-                <DatePicker
-                    // maxDate={oneWeekAfter}
-                    // minDate={date}
-                    className="custom-date-picker-style"
-                    {...rest} {...input}
-                    format="dd-MM-yy"
-                    name={input.name}
-                    onChange={(e) => input.onChange(e)} />
-            </Pane>
-        </Pane>
-    )
-}
+import TextInputAdapter from "../TextInput/TextInput.component";
+import TextAreaAdapter from "../TextArea/TextArea.component";
+import MultiSelectInput from "../MultiSelect/MultiSelect.component";
+import {DatePickerCustom as DatePicker} from "../DatePicker/DatePicker.component";
+import { Unauthorized } from "../Unauthorized/Unauthorized.component";
+import ProfileAvatar from '../Avatar/Avatar.component'
 
 const CandidateProfileForm = (props) => {
     const axiosPrivate = useAxiosPrivate()
     const { auth } = useAuth()
-    const { uploadFile } = usePostFile()
     const { setProfileInfo, profileInfo } = useContext(DataContext)
     const location = useLocation()
     const navigate = useNavigate()
     const logout = useLogout()
     const [errors, setErrors] = useState({})
     const [isProfileComplete, setIsProfileComplete] = useState()
-    const {avatar, resume, fetchAvatar, fetchResume} = useFetchFile()
+    const { avatar, resume, fetchAvatar, fetchResume } = useFetchFile()
 
     useEffect(() => {
         fetchResume(profileInfo.resume)
         fetchAvatar(profileInfo.avatar)
-    }, [profileInfo, fetchAvatar, fetchResume])
-
-    // useEffect(() => {
-    //     console.log(resume)
-    //     console.log(avatar)
-    // }, [resume, avatar])
+    }, [])
 
     const onSubmit = async (event) => {
         try {
@@ -215,10 +63,7 @@ const CandidateProfileForm = (props) => {
 
     return (
         <React.Fragment>
-            {auth && !auth.status ?
-                <Alert intent="danger" title="Unauthorized route" margin={16}>
-                    Sorry! This option is only available for certain type of users 😔
-                </Alert>
+            {auth && !auth.status ? <Unauthorized/>
                 : <Pane elevation={4} float="left" borderRadius="5px" padding="1rem" marginX="1rem" marginTop="5em" marginBottom="2em" minWidth="50vw">
                     {(profileInfo && Object.keys(profileInfo).length > 1) | isProfileComplete
                         ? <Alert zIndex="0"
@@ -254,17 +99,7 @@ const CandidateProfileForm = (props) => {
                         keepDirtyOnReinitialize
                         render={({ handleSubmit, values, submitting, pristine }) => (
                             <form onSubmit={handleSubmit}>
-                                <label htmlFor="avatar-input">
-                                    {avatar ? <Avatar cursor="pointer" name={auth.userEmail} size={100} marginRight={16} marginTop={8} src={avatar} borderRadius="40%"
-                                    /> : <Spinner size={50} />}
-                                    <input id="avatar-input" onChange={async (e) => {
-                                        console.log(e.target.files[0])
-                                        return await uploadFile({ file: e.target.files[0], userEmail: auth.userEmail, fileType: "avatar" })
-                                    }} type="file" accept="image/*" style={{
-                                        display: "none"
-                                    }}>
-                                    </input>
-                                </label>
+                                <ProfileAvatar avatar={avatar}/>
                                 <Field
                                     component={TextInputAdapter}
                                     name="firstName"
@@ -291,7 +126,7 @@ const CandidateProfileForm = (props) => {
                                     required
                                 />
                                 <Field
-                                    component={DatePickerCustom}
+                                    component={DatePicker}
                                     disableClock={true}
                                     name="birthday"
                                     label="Birthday"
@@ -305,7 +140,7 @@ const CandidateProfileForm = (props) => {
                                     required
                                 />
                                 <Field
-                                    component={SkillsMultiSelect}
+                                    component={MultiSelectInput}
                                     name="skills"
                                     label="Skills"
                                     placeholder="Skills you would be confident with"
@@ -317,7 +152,7 @@ const CandidateProfileForm = (props) => {
                                     validationMessage={(errors && errors.skills) && "Must select at least one skill"}
                                 />
                                 <Field
-                                    component={RolesMultiSelect}
+                                    component={MultiSelectInput}
                                     name="roles"
                                     label="Roles"
                                     placeholder="Roles you would be confident with"
