@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { Field, Form } from 'react-final-form'
 import axios from 'axios'
-import { TextInputField, Button, toaster, Spinner, InlineAlert } from 'evergreen-ui'
+import { TextInputField, Button, toaster, Spinner, InlineAlert, CogIcon,IconButton, majorScale, Icon } from 'evergreen-ui'
 import './SignIn.styles.css'
 import { useNavigate, useLocation } from "react-router-dom";
 import CONSTANTS from "../../config";
@@ -10,6 +10,8 @@ import DataContext from "../../context/DataContext";
 import { Checkbox } from "..";
 
 const required = value => (value ? undefined : 'Required')
+
+
 
 const TextInputAdapter = ({ input, ...rest }) => (
     <React.Fragment>

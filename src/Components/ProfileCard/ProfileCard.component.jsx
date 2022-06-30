@@ -5,7 +5,8 @@ import capitalizeFirstLetter from '../../helpers/capitalizeFirstLetter'
 import './ProfileCard.styles.css'
 import CONSTANTS from "../../config";
 
-const CandidateProfileDialog = ({ title, customLabel, body, buttonName, profileData, ...rest }) => {
+
+const CandidateProfileDialog = ({ avatar, title, customLabel, body, buttonName, profileData, ...rest }) => {
     const [isShown, setIsShown] = React.useState(false)
 
     return (
@@ -19,7 +20,7 @@ const CandidateProfileDialog = ({ title, customLabel, body, buttonName, profileD
                 <Pane>
                     <Pane display="flex" flexDirection="column" alignItems="center">
                         <Avatar
-                            src={`https://randomuser.me/api/portraits/women/${Math.floor(Math.random() * 100)}.jpg`}
+                            src={avatar}
                             name="Alan Turing"
                             size={300}
                             border="3px solid white"
@@ -190,6 +191,7 @@ const ProfileCard = () => {
                                         customLabel=""
                                         appearance="primary"
                                         marginX={8}
+                                        // avatar={avatar}
                                     // key={elem.id}
                                     />
                                 </Pane>
