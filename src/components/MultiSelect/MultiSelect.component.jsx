@@ -4,7 +4,7 @@ import axios from '../../api/axios'
 import CONSTANTS from '../../config';
 import { MultiSelect } from "react-multi-select-component";
 
-const MultiSelectInput = ({ input, ...rest }) => {
+const MultiSelectInput = ({ input,dataType, ...rest }) => {
     const [selected, setSelected] = useState(rest.meta.initial || []);
     const [data, setData] = useState([])
 
@@ -13,7 +13,7 @@ const MultiSelectInput = ({ input, ...rest }) => {
             return await axios.get(`${CONSTANTS.API_URL}api/${input.name}/`)
                 .then(res => {
                     const existingData = res.data.map(element => {
-                        return { label: element.skill, value: element.skill }
+                        return { label: element[dataType], value: element[dataType] }
                     })
                     setData(existingData)
                 })

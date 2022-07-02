@@ -14,6 +14,7 @@ const usePostFile = () => {
         try {
             setIsLoading(true)
             const resumeFile = await axiosPrivate.get(`${CONSTANTS.API_URL}api/profile/user/file/resume/${resumeKey}`, { responseType: 'arraybuffer' })
+            console.log(resumeFile)
             const base64ImageString = Buffer.from(resumeFile.data, 'binary').toString('base64')
             setResume("data:application/*;base64," + base64ImageString)
         } catch (err){

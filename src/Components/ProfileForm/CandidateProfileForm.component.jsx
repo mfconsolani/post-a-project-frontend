@@ -143,6 +143,7 @@ const CandidateProfileForm = (props) => {
                                     component={MultiSelectInput}
                                     name="skills"
                                     label="Skills"
+                                    dataType="skill"
                                     placeholder="Skills you would be confident with"
                                     setErrors={setErrors}
                                     beforeSubmit={() => {
@@ -155,6 +156,7 @@ const CandidateProfileForm = (props) => {
                                     component={MultiSelectInput}
                                     name="roles"
                                     label="Roles"
+                                    dataType="role"
                                     placeholder="Roles you would be confident with"
                                     setErrors={setErrors}
                                     beforeSubmit={() => {
