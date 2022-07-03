@@ -26,7 +26,7 @@ const CandidateProfileForm = (props) => {
     const logout = useLogout()
     const [errors, setErrors] = useState({})
     const [isProfileComplete, setIsProfileComplete] = useState()
-    const { avatar, resume, fetchAvatar, fetchResume } = useFetchFile()
+    const { avatar, fetchAvatar, fetchResume } = useFetchFile()
 
     useEffect(() => {
         fetchResume(profileInfo.resume)

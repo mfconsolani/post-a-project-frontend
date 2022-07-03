@@ -14,7 +14,6 @@ const usePostFile = () => {
         try {
             setIsLoading(true)
             const resumeFile = await axiosPrivate.get(`${CONSTANTS.API_URL}api/profile/user/file/resume/${resumeKey}`, { responseType: 'arraybuffer' })
-            console.log(resumeFile)
             const base64ImageString = Buffer.from(resumeFile.data, 'binary').toString('base64')
             setResume("data:application/*;base64," + base64ImageString)
         } catch (err){
@@ -39,7 +38,23 @@ const usePostFile = () => {
         }
     }
 
-    return { fetchResume, fetchAvatar, resume, avatar }
+    const deleteResume = async (resumeKey) => {
+        try {
+            await axiosPrivate.delete(`${CONSTANTS.API_URL}api/profile/user/file/resume/${resumeKey}`)
+        } catch (err){
+            console.error(err)
+        } 
+    }
+
+    const deleteAvatar = async (avatarKey) => {
+        try {
+            await axiosPrivate.delete(`${CONSTANTS.API_URL}api/profile/user/file/avatar/${avatarKey}`)
+        } catch (err){
+            console.error(err)
+        } 
+    }
+
+    return { fetchResume, fetchAvatar, resume, avatar, deleteAvatar, deleteResume }
 }
 
 export default usePostFile
