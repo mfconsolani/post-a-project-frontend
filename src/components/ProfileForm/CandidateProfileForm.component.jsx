@@ -13,9 +13,10 @@ import useFetchFile from '../../hooks/useFetchFile'
 import TextInputAdapter from "../TextInput/TextInput.component";
 import TextAreaAdapter from "../TextArea/TextArea.component";
 import MultiSelectInput from "../MultiSelect/MultiSelect.component";
-import {DatePickerCustom as DatePicker} from "../DatePicker/DatePicker.component";
+import { DatePickerCustom as DatePicker } from "../DatePicker/DatePicker.component";
 import { Unauthorized } from "../Unauthorized/Unauthorized.component";
 import ProfileAvatar from '../Avatar/Avatar.component'
+import DownloadButton from "../DownloadButton/DownloadButton.component";
 
 const CandidateProfileForm = (props) => {
     const axiosPrivate = useAxiosPrivate()
@@ -26,7 +27,7 @@ const CandidateProfileForm = (props) => {
     const logout = useLogout()
     const [errors, setErrors] = useState({})
     const [isProfileComplete, setIsProfileComplete] = useState()
-    const { avatar, fetchAvatar, fetchResume } = useFetchFile()
+    const { avatar, resume, fetchAvatar, fetchResume } = useFetchFile()
 
     useEffect(() => {
         fetchResume(profileInfo.resume)
@@ -63,7 +64,7 @@ const CandidateProfileForm = (props) => {
 
     return (
         <React.Fragment>
-            {auth && !auth.status ? <Unauthorized/>
+            {auth && !auth.status ? <Unauthorized />
                 : <Pane elevation={4} float="left" borderRadius="5px" padding="1rem" marginX="1rem" marginTop="5em" marginBottom="2em" minWidth="50vw">
                     {(profileInfo && Object.keys(profileInfo).length > 1) | isProfileComplete
                         ? <Alert zIndex="0"
@@ -99,7 +100,7 @@ const CandidateProfileForm = (props) => {
                         keepDirtyOnReinitialize
                         render={({ handleSubmit, values, submitting, pristine }) => (
                             <form onSubmit={handleSubmit}>
-                                <ProfileAvatar avatar={avatar}/>
+                                <ProfileAvatar avatar={avatar} />
                                 <Field
                                     component={TextInputAdapter}
                                     name="firstName"
@@ -191,7 +192,10 @@ const CandidateProfileForm = (props) => {
                             </form>
                         )}
                     />
-                    <FileUploader />
+                    <Pane display="flex" justifyContent="space-around" alignItems="center" marginY="1em" >
+                        <FileUploader file={resume} />
+                        <DownloadButton resume={resume} />
+                    </Pane>
                 </Pane>
             }
         </React.Fragment >
