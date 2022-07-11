@@ -9,7 +9,7 @@ import DataContext from "../../context/DataContext";
 import { useLocation, useNavigate } from "react-router";
 import useLogout from "../../hooks/useLogout";
 import { FileUploader } from '../UploadFile/UploadFile.component';
-import useFetchFile from '../../hooks/useFetchFile'
+import useFile from '../../hooks/useFileHook'
 import TextInputAdapter from "../TextInput/TextInput.component";
 import TextAreaAdapter from "../TextArea/TextArea.component";
 import MultiSelectInput from "../MultiSelect/MultiSelect.component";
@@ -27,7 +27,7 @@ const CandidateProfileForm = (props) => {
     const logout = useLogout()
     const [errors, setErrors] = useState({})
     const [isProfileComplete, setIsProfileComplete] = useState()
-    const { avatar, resume, fetchAvatar, fetchResume } = useFetchFile()
+    const { avatar, resume, fetchAvatar, fetchResume } = useFile()
 
     useEffect(() => {
         fetchResume(profileInfo.resume)

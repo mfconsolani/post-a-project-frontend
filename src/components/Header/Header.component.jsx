@@ -8,12 +8,12 @@ import { Link } from 'react-router-dom';
 import useLogout from "../../hooks/useLogout";
 import { useNavigate } from "react-router";
 import DataContext from "../../context/DataContext";
-import useFetchFile from '../../hooks/useFetchFile';
+import useFile from '../../hooks/useFileHook';
 
 const Header = () => {
     const { auth } = useAuth()
     const { profileInfo } = React.useContext(DataContext)
-    const { fetchAvatar, avatar } = useFetchFile()
+    const { fetchAvatar, avatar } = useFile()
     const logout = useLogout()
     const navigate = useNavigate()
 
@@ -25,7 +25,7 @@ const Header = () => {
     return (
         <React.Fragment>
             <Pane display="flex" flexDirection="row" justifyContent="flex-end" width="100vw" zIndex="2"
-                marginBottom={16} position="fixed" top="0" left="0" right="0" backgroundColor="white" paddingBottom="1em" >
+                marginBottom={16} position="fixed" top="0" left="0" right="0" backgroundColor="rgba(256,256,256,0.8)" paddingBottom="1em" >
                 {auth.profileType === "COMPANY" &&
                     <Link to="/postproject" style={{ textDecoration: 'none', marginRight: "16px", marginTop: "8px" }}>
                         <Button appearance="minimal" >Post project</Button>

@@ -109,8 +109,8 @@ const ProfileCard = () => {
                             <Pane>
                                 <Pane display="flex" flexDirection="column" alignItems="center">
                                     <Avatar
-                                        src={`https://randomuser.me/api/portraits/women/${Math.floor(Math.random() * 100)}.jpg`}
-                                        name="Alan Turing"
+                                        src={elem.profile.avatar || `https://avatars.dicebear.com/api/avataaars/${elem.username}.svg`}
+                                        name={elem.username ? capitalizeFirstLetter(elem.username) : elem.email.split('@')[0]}
                                         size={100}
                                         border="3px solid white"
 

@@ -153,10 +153,6 @@ const DatePicker = ({ input, ...rest }) => {
         </Pane>
     )
 }
-//TODO
-//complete company field when I have the proper props
-//implement axios.post on form submission
-//isolate components
 
 const ProjectForm = () => {
     const [errors, setErrors] = useState({})
