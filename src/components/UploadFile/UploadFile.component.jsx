@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Pane, FileCard, FileUploader as Uploader, Spinner, CloudUploadIcon, Button } from 'evergreen-ui';
 import usePostFile from '../../hooks/usePostFile';
 import useAuth from '../../hooks/useAuth';
+import DataContext from '../../context/DataContext';
 
 export const FileUploader = (props) => {
+    const { setProfileInfo } = useContext(DataContext)
     const { uploadFile, isLoading } = usePostFile()
     const { auth } = useAuth()
     const [enableUpload, setEnableUpload] = useState(!!props.resume)
@@ -19,10 +21,13 @@ export const FileUploader = (props) => {
         setEnableUpload(prevState => !prevState)
     }
 
-    const handleChange = React.useCallback(async (files) => {
-        await uploadFile({ file: files[0], userEmail: auth.userEmail, fileType: "resume" })
+    const handleChange = async (files) => {
+        const handleUpload = await uploadFile({ file: files[0], userEmail: auth.userEmail, fileType: "resume" })
+        setProfileInfo(prevState => {
+            return {...prevState, resume: handleUpload.payload}
+        } )
         setFiles([files[0]])
-    }, [uploadFile, auth])
+    }
 
     return (
         enableUpload

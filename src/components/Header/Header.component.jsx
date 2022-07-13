@@ -8,19 +8,12 @@ import { Link } from 'react-router-dom';
 import useLogout from "../../hooks/useLogout";
 import { useNavigate } from "react-router";
 import DataContext from "../../context/DataContext";
-import useFile from '../../hooks/useFileHook';
 
 const Header = () => {
     const { auth } = useAuth()
     const { profileInfo } = React.useContext(DataContext)
-    const { fetchAvatar, avatar } = useFile()
     const logout = useLogout()
-    const navigate = useNavigate()
-
-    React.useEffect(() => {
-        profileInfo.avatar && fetchAvatar(profileInfo.avatar)
-    }, [profileInfo])
-    
+    const navigate = useNavigate()    
 
     return (
         <React.Fragment>
@@ -64,7 +57,7 @@ const Header = () => {
                             </Menu>
                         }
                     >
-                        <Avatar cursor="pointer" name={auth.userEmail} src={avatar} size={40} marginRight={16} marginTop={8} />
+                        <Avatar cursor="pointer" name={auth.userEmail} src={profileInfo.avatar} size={40} marginRight={16} marginTop={8} />
                     </Popover>
                     : <React.Fragment>
                         <Link to="/signin" style={{ textDecoration: 'none', marginRight: "16px", marginTop: "8px" }}>

@@ -249,12 +249,6 @@ const ProjectForm = () => {
                             placeholder="i.e.: 3 months; 10 days; 1 year"
                             required
                         />
-                        {/* <Field
-                            component={TextInputAdapter}
-                            name="company"
-                            label="Company name"
-                            disabled
-                        /> */}
                         <Field
                             component={TextInputAdapter}
                             name="owner"
@@ -275,8 +269,6 @@ const ProjectForm = () => {
         </Pane>
     )
 }
-
-//company, role, skill, duration, expiresBy, likesCount, location, projectOwner
 
 
 export default ProjectForm;

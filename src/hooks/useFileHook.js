@@ -1,19 +1,15 @@
-import { useState, useContext, useEffect } from "react";
+import { useState } from "react";
 import useAxiosPrivate from "./useAxiosPrivate";
-import DataContext from "../context/DataContext"
 
 const useFile = () => {
     const axiosPrivate = useAxiosPrivate()
     const [isLoading, setIsLoading] = useState(false)
-    const [avatar, setAvatar] = useState()
-    const [resume, setResume] = useState()
-    const { profileInfo, setProfileInfo } = useContext(DataContext)
 
     const fetchResume = async (resumeKey) => {
         try {
             setIsLoading(true)
             const resumeFile = await axiosPrivate.get(`api/profile/user/file/resume/${resumeKey}`)
-            setResume(resumeFile.data.payload)
+            return resumeFile.data.payload
     } catch (err) {
         setIsLoading(false)
         console.error(err)
@@ -22,19 +18,11 @@ const useFile = () => {
     }
 }
 
-// useEffect(()=> {
-//     console.log(profileInfo)
-// }, [profileInfo])
-
 const fetchAvatar = async (avatarKey) => {
     try {
         setIsLoading(true)
         const avatarFile = await axiosPrivate.get(`api/profile/user/file/avatar/${avatarKey}`)
-        // console.log(avatarFile.data.payload)
-        setAvatar(avatarFile.data.payload)
-        // setProfileInfo(prevState => {
-        //     return {...prevState, avatar: avatarFile.data.payload}
-        // } )
+        return avatarFile.data.payload
     } catch (err) {
         setIsLoading(false)
         console.error(err)
@@ -59,7 +47,7 @@ const deleteAvatar = async (avatarKey) => {
     }
 }
 
-return { fetchResume, fetchAvatar, resume, avatar, deleteAvatar, deleteResume }
+return { fetchResume, fetchAvatar, deleteAvatar, deleteResume }
 }
 
 export default useFile

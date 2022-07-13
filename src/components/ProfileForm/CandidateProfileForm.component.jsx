@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Pane, Button, Alert, toaster } from 'evergreen-ui';
 import { Field, Form } from 'react-final-form'
 import './ProfileForm.styles.css'
@@ -9,7 +9,6 @@ import DataContext from "../../context/DataContext";
 import { useLocation, useNavigate } from "react-router";
 import useLogout from "../../hooks/useLogout";
 import { FileUploader } from '../UploadFile/UploadFile.component';
-import useFile from '../../hooks/useFileHook'
 import TextInputAdapter from "../TextInput/TextInput.component";
 import TextAreaAdapter from "../TextArea/TextArea.component";
 import MultiSelectInput from "../MultiSelect/MultiSelect.component";
@@ -27,12 +26,6 @@ const CandidateProfileForm = (props) => {
     const logout = useLogout()
     const [errors, setErrors] = useState({})
     const [isProfileComplete, setIsProfileComplete] = useState()
-    const { avatar, resume, fetchAvatar, fetchResume } = useFile()
-
-    useEffect(() => {
-        fetchResume(profileInfo.resume)
-        fetchAvatar(profileInfo.avatar)
-    }, [])
 
     const onSubmit = async (event) => {
         try {
@@ -100,7 +93,7 @@ const CandidateProfileForm = (props) => {
                         keepDirtyOnReinitialize
                         render={({ handleSubmit, values, submitting, pristine }) => (
                             <form onSubmit={handleSubmit}>
-                                <ProfileAvatar avatar={avatar} />
+                                <ProfileAvatar />
                                 <Field
                                     component={TextInputAdapter}
                                     name="firstName"
@@ -193,8 +186,8 @@ const CandidateProfileForm = (props) => {
                         )}
                     />
                     <Pane display="flex" justifyContent="space-around" alignItems="center" marginY="1em" >
-                        <FileUploader file={resume} />
-                        <DownloadButton resume={resume} />
+                        <FileUploader file={profileInfo.resume} />
+                        <DownloadButton resume={profileInfo.resume} />
                     </Pane>
                 </Pane>
             }

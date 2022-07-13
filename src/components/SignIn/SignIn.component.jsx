@@ -10,7 +10,6 @@ import DataContext from "../../context/DataContext";
 import { Checkbox } from "..";
 import PasswordInput from "../PasswordInput/PasswordInput.component";
 import TextInputAdapter from "../TextInput/TextInput.component";
-
 const required = value => (value ? undefined : 'Required')
 
 const SignIn = (props) => {
@@ -19,7 +18,7 @@ const SignIn = (props) => {
     const navigate = useNavigate()
     const location = useLocation()
     const from = location.state?.from?.pathname || "/projects"
-
+    
     const togglePersist = () => {
         setPersist(prev => !prev);
     }
@@ -33,12 +32,12 @@ const SignIn = (props) => {
             headers: { 'Content-Type': 'application/json' },
             withCredentials: true
         })
-            .then(res => {
+            .then( async (res) => {
                 if (res.data?.success) {
                     setAuth({ status: true, userEmail: res.data?.userEmail, userId: res.data?.userId, profileType: res.data?.profile, accessToken: res.data?.accessToken })
                     res.data?.profileData
                         && Object.keys(res.data?.profileData).length !== 0
-                        && setProfileInfo({ profileExists: true, ...res.data?.profileData })
+                        && setProfileInfo({ profileExists: true, ...res.data?.profileData})
                     toaster.success('Welcome! You\'ve been successfully logged in', {
                         duration: 2
                     })

@@ -60,11 +60,9 @@ const CandidateProfileDialog = ({ avatar, title, customLabel, body, buttonName, 
 const ProfileCard = () => {
     const [userProfiles, setUserProfiles] = useState([])
     const [isShown, setIsShown] = useState(false)
-    // const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         const fetchUserProfiles = async () => {
-            // setIsLoading(true)
             return await axios.get(`${CONSTANTS.API_URL}api/users/candidates/extended`)
                 .then(res => {
                     setUserProfiles(res.data.payload.filter(elem => elem.profile))
@@ -73,7 +71,6 @@ const ProfileCard = () => {
                     console.error(err)
                     return toaster.warning("An error has occurred when loading candidates info", { id: 'forbidden-action' })
                 })
-                // .finally(setIsLoading(false))    
         }
         fetchUserProfiles()
         return
