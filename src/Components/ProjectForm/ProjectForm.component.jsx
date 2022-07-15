@@ -109,7 +109,6 @@ const RolesMultiSelect = ({ input, meta, ...rest }) => {
 
             {roles.length > 0
                 ? <MultiSelect
-                    // fontFamily="ui"
                     fontSize="12px"
                     {...rest}
                     {...input}

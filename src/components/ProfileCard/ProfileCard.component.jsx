@@ -167,19 +167,6 @@ const ProfileCard = () => {
                                     paddingY="0.5em"
                                     paddingX="0.5em"
                                 >
-                                    {/* <CandidateProfileDialog
-                                    profileData={elem}
-                                    body="Some content goes here"
-                                    title="Title goes here"
-                                    buttonName="Message"
-                                    customLabel=""
-                                    marginX={8}
-                                    color="#3366FF"
-                                    border="1px solid #3366FF"
-                                    backgroundColor="none"
-                                    key={elem.id}
-
-                                /> */}
                                     <CandidateProfileDialog
                                         profileData={elem}
                                         body="Some content goes here"
