@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Pane, Button, Textarea, TextInputField, Label, Alert, toaster } from 'evergreen-ui';
+import { Pane, Button, Alert, toaster } from 'evergreen-ui';
 import { Field, Form } from 'react-final-form'
 import './ProfileForm.styles.css'
 import CONSTANTS from "../../config";
@@ -8,38 +8,10 @@ import useAuth from "../../hooks/useAuth";
 import DataContext from "../../context/DataContext";
 import useLogout from "../../hooks/useLogout";
 import { useLocation, useNavigate } from "react-router";
-//TODO
-//When I modify the profile info, on submit, the updated values should update as well, but they dont
-//So if you change of view and go back to profile, you get the old initial values, not the updated ones
-//until you login again
+import TextInputAdapter from "../TextInput/TextInput.component";
+import TextAreaAdapter from "../TextArea/TextArea.component";
+import { Unauthorized } from "../Unauthorized/Unauthorized.component";
 
-const TextInputAdapter = ({ input, ...rest }) => (
-    <TextInputField display="flex" flexDirection="column" marginY="1em"
-        {...input} {...rest}
-        label={rest.label}
-        placeholder={rest.placeholder}
-        onChange={(event) => input.onChange(event)}
-    />
-)
-
-const TextAreaAdapter = ({ input, ...rest }) => {
-    return (
-        <Pane display="flex" flexDirection="column" marginY="1em">
-            <Label htmlFor={input.name} marginY="0.5em" >
-                {rest.label}
-            </Label>
-            <Textarea {...input} {...rest}
-                id={input.name}
-                placeholder={rest.placeholder}
-                onChange={(event) => input.onChange(event)}
-            />
-        </Pane>
-    )
-}
-
-//TODO
-//implement axios.post on form submission
-//isolate components
 
 const CompanyProfileForm = (props) => {
     const axiosPrivate = useAxiosPrivate()
@@ -81,9 +53,7 @@ const CompanyProfileForm = (props) => {
     return (
         <React.Fragment>
             {auth && !auth.status ?
-                <Alert intent="danger" title="Unauthorized route" margin={16}>
-                    Sorry! This option is only available for certain type of users 😔
-                </Alert>
+                <Unauthorized/>
                 : <Pane elevation={4} float="left" borderRadius="5px" padding="1rem" marginX="1rem" marginTop="5em" marginBottom="2em" minWidth="50vw">
                     {(profileInfo && Object.keys(profileInfo).length > 1) | isProfileComplete
                         ? <Alert zIndex="0"

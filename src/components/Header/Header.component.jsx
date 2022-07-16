@@ -1,23 +1,24 @@
 import React from "react"
 import useAuth from "../../hooks/useAuth";
 import {
-    Button, Avatar, Menu, Popover, Position, PeopleIcon, LogOutIcon, EditIcon,
+    Button, Avatar, Menu, Popover, Position, UserIcon, LogOutIcon, CommentIcon,
     HeartIcon, Pane
 } from 'evergreen-ui'
 import { Link } from 'react-router-dom';
 import useLogout from "../../hooks/useLogout";
 import { useNavigate } from "react-router";
-
+import DataContext from "../../context/DataContext";
 
 const Header = () => {
     const { auth } = useAuth()
+    const { profileInfo } = React.useContext(DataContext)
     const logout = useLogout()
-    const navigate = useNavigate()
+    const navigate = useNavigate()    
 
     return (
         <React.Fragment>
             <Pane display="flex" flexDirection="row" justifyContent="flex-end" width="100vw" zIndex="2"
-                marginBottom={16} position="fixed" top="0" left="0" right="0" backgroundColor="white" paddingBottom="1em" >
+                marginBottom={16} position="fixed" top="0" left="0" right="0" backgroundColor="rgba(256,256,256,0.8)" paddingBottom="1em" >
                 {auth.profileType === "COMPANY" &&
                     <Link to="/postproject" style={{ textDecoration: 'none', marginRight: "16px", marginTop: "8px" }}>
                         <Button appearance="minimal" >Post project</Button>
@@ -35,12 +36,12 @@ const Header = () => {
                             <Menu>
                                 <Menu.Group>
                                     <Link to="/profile" style={{ textDecoration: 'none' }}>
-                                        <Menu.Item icon={PeopleIcon}>My Profile</Menu.Item>
+                                        <Menu.Item icon={UserIcon}>My Profile</Menu.Item>
                                     </Link>
 
                                     <Menu.Item icon={HeartIcon} disabled >Favs</Menu.Item>
-                                    <Menu.Item icon={EditIcon} disabled>
-                                        Rename...
+                                    <Menu.Item icon={CommentIcon} disabled>
+                                        Messages
                                     </Menu.Item>
                                 </Menu.Group>
                                 <Menu.Divider />
@@ -56,7 +57,7 @@ const Header = () => {
                             </Menu>
                         }
                     >
-                        <Avatar cursor="pointer" name={auth.userEmail} size={40} marginRight={16} marginTop={8} />
+                        <Avatar cursor="pointer" name={auth.userEmail} src={profileInfo.avatar} size={40} marginRight={16} marginTop={8} />
                     </Popover>
                     : <React.Fragment>
                         <Link to="/signin" style={{ textDecoration: 'none', marginRight: "16px", marginTop: "8px" }}>

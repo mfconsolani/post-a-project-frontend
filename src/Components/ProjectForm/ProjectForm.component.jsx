@@ -109,7 +109,6 @@ const RolesMultiSelect = ({ input, meta, ...rest }) => {
 
             {roles.length > 0
                 ? <MultiSelect
-                    // fontFamily="ui"
                     fontSize="12px"
                     {...rest}
                     {...input}
@@ -153,10 +152,6 @@ const DatePicker = ({ input, ...rest }) => {
         </Pane>
     )
 }
-//TODO
-//complete company field when I have the proper props
-//implement axios.post on form submission
-//isolate components
 
 const ProjectForm = () => {
     const [errors, setErrors] = useState({})
@@ -253,12 +248,6 @@ const ProjectForm = () => {
                             placeholder="i.e.: 3 months; 10 days; 1 year"
                             required
                         />
-                        {/* <Field
-                            component={TextInputAdapter}
-                            name="company"
-                            label="Company name"
-                            disabled
-                        /> */}
                         <Field
                             component={TextInputAdapter}
                             name="owner"
@@ -279,8 +268,6 @@ const ProjectForm = () => {
         </Pane>
     )
 }
-
-//company, role, skill, duration, expiresBy, likesCount, location, projectOwner
 
 
 export default ProjectForm;

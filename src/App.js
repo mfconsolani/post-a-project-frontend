@@ -2,7 +2,8 @@ import React, { useContext } from 'react';
 import './App.css';
 import { ProjectCardHolder, SignUp, SignIn, ProjectForm, CandidateProfileForm, CompanyProfileForm, RequireAuth, Header, PersistLogin } from './components'
 import ProfileCard from './components/ProfileCard/ProfileCard.component'
-import { Alert, Spinner } from 'evergreen-ui'
+import { Unauthorized } from './components/Unauthorized/Unauthorized.component';
+import { Spinner } from 'evergreen-ui'
 import { Route, Routes } from 'react-router-dom';
 import DataContext from './context/DataContext';
 import useAuth from './hooks/useAuth';
@@ -26,9 +27,7 @@ const App = () => {
           <Route element={<RequireAuth />}>
             <Route path="/postproject" element={auth.profileType === "COMPANY"
               ? <ProjectForm />
-              : <Alert intent="danger" title="Unauthorized route" margin={16}>
-                Sorry! This option is only available for certain type of users 😔
-              </Alert>} />
+              : <Unauthorized/>} />
             <Route path="/profile" element={
               auth.profileType === "USER"
                 ? <CandidateProfileForm />
