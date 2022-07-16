@@ -10,7 +10,7 @@ import PasswordInput from '../PasswordInput/PasswordInput.component'
 import TextInputAdapter from '../TextInput/TextInput.component'
 import SwitchInput from '../SwitchInput/SwitchInput.component';
 
-let strongRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[*.!@#$%^&(){}[]:;<>,.?/~_+-=|])(?=.{10,})');
+let strongRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[*.!@#$%^&(){}[\]:;<>,.?\/~_+-=|])(?=.{10,})');
 
 const checkPass = value => strongRegex.test(value) ? undefined : 'Password must include: at least one capital letter, one lowercase letter, one number and one allwoed special character (*.!@#$%^&(){}[]:;<>,.?/~_+-=|) and have at least 8 characters'
 const required = value => (value ? undefined : 'Required')
