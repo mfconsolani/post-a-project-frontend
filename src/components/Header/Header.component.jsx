@@ -1,7 +1,7 @@
 import React from "react"
 import useAuth from "../../hooks/useAuth";
 import {
-    Button, Avatar, Menu, Popover, Position, PeopleIcon, LogOutIcon, EditIcon,
+    Button, Avatar, Menu, Popover, Position, UserIcon, LogOutIcon, CommentIcon,
     HeartIcon, Pane
 } from 'evergreen-ui'
 import { Link } from 'react-router-dom';
@@ -36,12 +36,12 @@ const Header = () => {
                             <Menu>
                                 <Menu.Group>
                                     <Link to="/profile" style={{ textDecoration: 'none' }}>
-                                        <Menu.Item icon={PeopleIcon}>My Profile</Menu.Item>
+                                        <Menu.Item icon={UserIcon}>My Profile</Menu.Item>
                                     </Link>
 
                                     <Menu.Item icon={HeartIcon} disabled >Favs</Menu.Item>
-                                    <Menu.Item icon={EditIcon} disabled>
-                                        Rename...
+                                    <Menu.Item icon={CommentIcon} disabled>
+                                        Messages
                                     </Menu.Item>
                                 </Menu.Group>
                                 <Menu.Divider />

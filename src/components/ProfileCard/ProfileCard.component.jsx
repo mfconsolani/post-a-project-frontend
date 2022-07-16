@@ -1,4 +1,4 @@
-import { Paragraph, Pane, Avatar, Text, Badge, Button, Dialog, Spinner, toaster } from "evergreen-ui";
+import { Paragraph, Pane, Avatar, Text, Badge, Button, Dialog, Spinner, toaster, FlameIcon, IconButton, ChatIcon } from "evergreen-ui";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import capitalizeFirstLetter from '../../helpers/capitalizeFirstLetter'
@@ -87,7 +87,7 @@ const ProfileCard = () => {
                 justifyContent="space-between"
                 padding="1em"
             >
-                { userProfiles.length < 1 ? <Spinner size={100} /> : userProfiles.map(elem => {
+                {userProfiles.length < 1 ? <Spinner size={100} /> : userProfiles.map(elem => {
                     return (
                         <Pane
                             key={elem.id}
@@ -160,14 +160,34 @@ const ProfileCard = () => {
                                 </Pane>
                                 <Pane
                                     display="flex"
-                                    justifyContent="center"
+                                    justifyContent="space-evenly"
                                     marginTop={24}
                                     // borderTop="1px solid #888"
                                     marginY="1em"
                                     paddingY="0.5em"
                                     paddingX="0.5em"
                                 >
-                                    <CandidateProfileDialog
+
+                                    <IconButton
+                                        icon={FlameIcon}
+                                        size="large"
+                                        className="flame-icon-button"
+                                        intent="danger"
+                                        background="transparent"
+                                        borderRadius="50%"
+
+                                    />
+
+                                    <IconButton
+                                        icon={ChatIcon}
+                                        size="large"
+                                        className="chat-icon-button"
+                                        background="transparent"
+                                        borderRadius="50%"
+                                    />
+
+                                    
+                                    {/* <CandidateProfileDialog
                                         profileData={elem}
                                         body="Some content goes here"
                                         title="Title goes here"
@@ -175,9 +195,9 @@ const ProfileCard = () => {
                                         customLabel=""
                                         appearance="primary"
                                         marginX={8}
-                                        // avatar={avatar}
+                                    // avatar={avatar}
                                     // key={elem.id}
-                                    />
+                                    /> */}
                                 </Pane>
                             </Pane>
                         </Pane>
