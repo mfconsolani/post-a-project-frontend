@@ -1,65 +1,12 @@
-import { Paragraph, Pane, Avatar, Text, Badge, Button, Dialog, Spinner, toaster, FlameIcon, IconButton, ChatIcon } from "evergreen-ui";
+import { Paragraph, Pane, Avatar, Text, Badge, Spinner, toaster, FlameIcon, IconButton, ChatIcon } from "evergreen-ui";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import capitalizeFirstLetter from '../../helpers/capitalizeFirstLetter'
 import './ProfileCard.styles.css'
 import CONSTANTS from "../../config";
 
-
-const CandidateProfileDialog = ({ avatar, title, customLabel, body, buttonName, profileData, ...rest }) => {
-    const [isShown, setIsShown] = React.useState(false)
-
-    return (
-        <Pane key={profileData.profile.id}>
-            <Dialog
-                isShown={isShown}
-                title={title}
-                onCloseComplete={() => setIsShown(false)}
-                confirmLabel={customLabel || "Label"}
-            >
-                <Pane>
-                    <Pane display="flex" flexDirection="column" alignItems="center">
-                        <Avatar
-                            src={avatar}
-                            name="Alan Turing"
-                            size={300}
-                            border="3px solid white"
-
-                        />
-                        <Text size={600}>{profileData.username ? capitalizeFirstLetter(profileData.username) : profileData.email.split('@')[0]}</Text>
-                    </Pane>
-                    <Pane display="flex" flexDirection="column" alignItems="center">
-                        <Paragraph>
-                            {profileData.profile && profileData.profile.country}
-                        </Paragraph>
-                        <Paragraph size={300}>
-                            {profileData.profile && profileData.profile.description}
-                        </Paragraph>
-                        <Pane>
-                            {profileData.profile && profileData.profile.skills.map(elem => {
-                                return (
-                                    <Badge key={elem.id} color="blue" marginRight={8}>
-                                        {elem.skill}
-                                    </Badge>)
-                            })}
-                        </Pane>
-                    </Pane>
-                </Pane>
-            </Dialog>
-
-            <Button
-                {...rest}
-                onClick={() => setIsShown(true)}>
-                {buttonName}
-            </Button>
-        </Pane>
-    )
-}
-
-
 const ProfileCard = () => {
     const [userProfiles, setUserProfiles] = useState([])
-    const [isShown, setIsShown] = useState(false)
 
     useEffect(() => {
         const fetchUserProfiles = async () => {
@@ -84,7 +31,7 @@ const ProfileCard = () => {
                 flexDirection="row"
                 alignItems="center"
                 flexWrap="wrap"
-                justifyContent="space-between"
+                justifyContent="space-around"
                 padding="1em"
             >
                 {userProfiles.length < 1 ? <Spinner size={100} /> : userProfiles.map(elem => {
@@ -100,6 +47,7 @@ const ProfileCard = () => {
                             marginY={30}
                             padding={20}
                             minWidth={300}
+                            maxWidth={300}
                             minHeight={300}
                             margin="0.5em"
                         >
@@ -123,17 +71,6 @@ const ProfileCard = () => {
                                     </Paragraph>
 
                                 </Pane>
-                            </Pane>
-                            <Pane>
-                                <Dialog
-                                    id="dialog"
-                                    isShown={isShown}
-                                    title="Dialog title"
-                                    onCloseComplete={() => setIsShown(false)}
-                                    confirmLabel="Custom Label"
-                                >
-                                    Dialog content
-                                </Dialog>
                             </Pane>
                             <Pane borderTop="1px solid #444" marginY="1em" paddingX="0.5em">
                                 <Paragraph size={300} marginTop={8}>
